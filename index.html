@@ -110,8 +110,6 @@ const RATES = {
   CALLS: { day: 15000, night: 20000 }
 };
 
-const ALLOWED_RANKS = ["ARO", "DC-ARO", "HR", "DOD-GS", "FTO", "MS", "MS-LT", "LT", "COS", "HOD", "DHOD"];
-
 let manual = [], parsedShifts = [], labEntries = [], ftoEntries = [];
 
 const money = n => "$" + Math.round(n).toLocaleString("en-US");
@@ -152,7 +150,6 @@ function cleanLine(s) { return s.replace(/\(edited\)/gi, "").trim(); }
 
 function cleanName(s) { 
   if (!s) return "";
-  
   let cleaned = s.replace(/<@!?\d+>/g, "")
                  .replace(/@\S+/g, "")
                  .replace(/—.*$/g, "")
@@ -161,10 +158,7 @@ function cleanName(s) {
                  .replace(/\s+/g, " ")
                  .replace(/\(edited\)/gi, "")
                  .trim(); 
-
-  // Hard ignore for fired members
   if (cleaned.toLowerCase().includes("munish")) return "";
-
   return cleaned;
 }
 
@@ -282,10 +276,10 @@ function parseFto(text) {
   let formDate = null, day = null, trainee = null, status = null;
 
   function flush() {
-    if (currentFto && day && trainee) {
+    if (currentFto && day) {
       const isPassed = !status || /passed/i.test(status);
       const rate = day === 1 ? 45000 : (day === 2 ? 35000 : 0);
-      records.push({ ftoName: currentFto, date: formDate, day, trainee, passed: isPassed, pay: isPassed ? rate : 0 });
+      records.push({ ftoName: currentFto, date: formDate, day, trainee: trainee || "Unknown", passed: isPassed, pay: isPassed ? rate : 0 });
     }
     day = null; trainee = null; status = null;
   }
@@ -303,27 +297,23 @@ function parseFto(text) {
       const parts = rawHeader.split("|").map(x => x.trim()).filter(Boolean);
 
       if (parts.length >= 2) {
-        const rankTag = parts[0].toUpperCase();
-        const extractedName = cleanName(parts[1]);
-
-        const isValidRank = ALLOWED_RANKS.some(r => rankTag.includes(r));
-        currentFto = (isValidRank && extractedName) ? extractedName : null;
+        currentFto = cleanName(parts[1]);
       } else {
-        currentFto = cleanName(line);
+        currentFto = cleanName(rawHeader);
       }
       continue;
     }
 
     const dateMatch = line.match(/^Date\s*[:\s]\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
     if (dateMatch) {
-      if (day && trainee) flush();
+      if (day) flush();
       formDate = dateMatch[1];
       continue;
     }
 
-    const dayMatch = line.match(/^Training\s*Day\s*(\d+)/i);
+    const dayMatch = line.match(/^Training\s*Day\s*[:\s]*(\d+)/i);
     if (dayMatch) {
-      if (day && trainee) flush();
+      if (day) flush();
       day = +dayMatch[1];
     }
 
