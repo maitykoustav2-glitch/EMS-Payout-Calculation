@@ -110,6 +110,8 @@ const RATES = {
   CALLS: { day: 15000, night: 20000 }
 };
 
+const ALLOWED_RANKS = ["ARO", "DC-ARO", "HR", "DOD-GS", "FTO", "MS", "MS-LT", "LT", "COS", "HOD", "DHOD"];
+
 let manual = [], parsedShifts = [], labEntries = [], ftoEntries = [];
 
 const money = n => "$" + Math.round(n).toLocaleString("en-US");
@@ -149,19 +151,25 @@ function classifyDuty(label) {
 function cleanLine(s) { return s.replace(/\(edited\)/gi, "").trim(); }
 
 function cleanName(s) { 
-  return s.replace(/<@!?\d+>/g, "")
-          .replace(/@\S+/g, "")
-          .replace(/—.*$/g, "")
-          .replace(/\[.*?\]/g, "")
-          .replace(/,/g, "")
-          .replace(/\s+/g, " ")
-          .replace(/\(edited\)/gi, "")
-          .trim(); 
+  if (!s) return "";
+  
+  let cleaned = s.replace(/<@!?\d+>/g, "")
+                 .replace(/@\S+/g, "")
+                 .replace(/—.*$/g, "")
+                 .replace(/\[.*?\]/g, "")
+                 .replace(/,/g, "")
+                 .replace(/\s+/g, " ")
+                 .replace(/\(edited\)/gi, "")
+                 .trim(); 
+
+  // Hard ignore for fired members
+  if (cleaned.toLowerCase().includes("munish")) return "";
+
+  return cleaned;
 }
 
 function isDiscordHeaderTimestamp(line) {
-  // Filters out Discord message header dates/times
-  return /^(\d{1,2}[-\/]\d{1,2}[-\/]\d{4}|\d{1,2}:\d{2}|yesterday\s+at|today\s+at)/i.test(line);
+  return /^(\d{1,2}[-\/]\d{1,2}[-\/]\d{4}|\d{1,2}:\d{2}|yesterday\s+at|today\s+at)/i.test(line.trim());
 }
 
 function parseRota(text) {
@@ -176,7 +184,7 @@ function parseRota(text) {
     const parts = line.split("|").map(x => x.trim()).filter(Boolean);
 
     if (parts.length >= 2 && !/on\s*duty/i.test(line) && !/off\s*duty/i.test(line)) {
-      current = parts.length >= 3 ? cleanName(parts[1]) : cleanName(parts[0]);
+      current = cleanName(parts.length >= 3 ? parts[1] : parts[0]);
       continue;
     }
 
@@ -188,7 +196,9 @@ function parseRota(text) {
       if (!current) flaws.push(`Line ${i + 1}: Duty entry "${duty}" has no active name header above it.`);
       if (start === null) flaws.push(`Line ${i + 1}: Invalid clock-in time format "${tm}".`);
       const type = classifyDuty(duty);
-      out.push({ name: current || "Unknown", label: duty, start, startText: tm, type: type || "OTHER", complete: false, line: i + 1 });
+      if (current) {
+        out.push({ name: current, label: duty, start, startText: tm, type: type || "OTHER", complete: false, line: i + 1 });
+      }
     } else if (offMatch) {
       const duty = offMatch[1].trim(), tm = offMatch[2].replace(/\s+/g, ""), end = toMin(tm), type = classifyDuty(duty);
       if (end === null) flaws.push(`Line ${i + 1}: Invalid clock-out time format "${tm}".`);
@@ -200,8 +210,8 @@ function parseRota(text) {
         out[matchIdx].end = end;
         out[matchIdx].endText = tm;
         out[matchIdx].complete = true;
-      } else {
-        flaws.push(`Line ${i + 1}: Off Duty ${duty} (${tm}) for ${current || "Unknown"} has no matching On Duty clock-in.`);
+      } else if (current) {
+        flaws.push(`Line ${i + 1}: Off Duty ${duty} (${tm}) for ${current} has no matching On Duty clock-in.`);
       }
     }
   }
@@ -233,7 +243,7 @@ function parseLab(text) {
     const parts = line.split("|").map(x => x.trim()).filter(Boolean);
 
     if (parts.length >= 2 && !/^date\s*[:\s]/i.test(line) && !/^captchas?\s+completed\s*[:\s]/i.test(line) && !/^deliveries\s+made\s*[:\s]/i.test(line)) {
-      flush(); current = parts.length >= 3 ? cleanName(parts[1]) : cleanName(parts[0]);
+      flush(); current = cleanName(parts.length >= 3 ? parts[1] : parts[0]);
     }
     const dm = line.match(/^Date\s*[:\s]\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
     if (dm) { if (date && current && (cap !== null || del !== null)) flush(); date = dm[1]; }
@@ -249,6 +259,7 @@ function parseLab(text) {
 
   const map = new Map();
   for (const r of records) {
+    if (!r.name) continue;
     const key = r.name + "|" + r.date;
     if (!map.has(key)) map.set(key, { ...r });
     else {
@@ -276,33 +287,37 @@ function parseFto(text) {
       const rate = day === 1 ? 45000 : (day === 2 ? 35000 : 0);
       records.push({ ftoName: currentFto, date: formDate, day, trainee, passed: isPassed, pay: isPassed ? rate : 0 });
     }
-    day = null; trainee = null; status = null; formDate = null;
+    day = null; trainee = null; status = null;
   }
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    
-    // Ignore Discord metadata lines containing copy headers/timestamps
+
     if (isDiscordHeaderTimestamp(line)) continue;
 
-    // Capture explicit Form Date (e.g., Date : 13/08/2026 or Date 21/08/2026)
-    const dateMatch = line.match(/^Date\s*[:\s]\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
-    if (dateMatch) {
-      formDate = dateMatch[1];
-      continue;
-    }
+    const isFormLabel = /^(date|training\s*day|trainee\s*name|start\s*time|end\s*time|fto\s*feedback|fto\s*shadow|passed\s*[\/\s]*failed)/i.test(line);
 
-    const isLabel = /^(date|training\s*day|trainee\s*name|start\s*time|end\s*time|fto\s*feedback|fto\s*shadow|passed\s*[\/\s]*failed)/i.test(line);
-
-    // FTO Trainer Name Header Line
-    if (!isLabel && (line.includes("|") || line.includes("—"))) {
+    if (!isFormLabel && (line.includes("|") || line.includes("—"))) {
       flush();
-      const parts = line.split("|").map(x => x.trim()).filter(Boolean);
+      const rawHeader = line.split("—")[0];
+      const parts = rawHeader.split("|").map(x => x.trim()).filter(Boolean);
+
       if (parts.length >= 2) {
-        currentFto = cleanName(parts.length >= 3 ? parts[1] : parts[0]);
+        const rankTag = parts[0].toUpperCase();
+        const extractedName = cleanName(parts[1]);
+
+        const isValidRank = ALLOWED_RANKS.some(r => rankTag.includes(r));
+        currentFto = (isValidRank && extractedName) ? extractedName : null;
       } else {
         currentFto = cleanName(line);
       }
+      continue;
+    }
+
+    const dateMatch = line.match(/^Date\s*[:\s]\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
+    if (dateMatch) {
+      if (day && trainee) flush();
+      formDate = dateMatch[1];
       continue;
     }
 
@@ -312,14 +327,14 @@ function parseFto(text) {
       day = +dayMatch[1];
     }
 
-    const traineeMatch = line.match(/^Trainee\s*Name\s*[\/\s]*ID\s*:\s*(.+)/i);
+    const traineeMatch = line.match(/^Trainee\s*Name\s*[\/\s]*ID\s*[:\s]\s*(.+)/i);
     if (traineeMatch) trainee = cleanName(traineeMatch[1]);
 
-    const passMatch = line.match(/^Passed\s*[\/\s]*Failed\s*:\s*(.+)/i);
+    const passMatch = line.match(/^Passed\s*[\/\s]*Failed\s*[:\s]\s*(.+)/i);
     if (passMatch) status = passMatch[1].trim();
   }
-  flush();
 
+  flush();
   return records;
 }
 
@@ -336,22 +351,23 @@ function analyzeAll() {
 
   const people = {};
   const getPerson = name => {
+    if (!name) return null;
     if (!people[name]) people[name] = { name, minutes: 0, shiftBonus: 0, labBonus: 0, ftoBonus: 0, manualBonus: 0, totalBonus: 0, items: [], ftoCount: 0 };
     return people[name];
   };
 
-  // 1. Process Duty Shifts
   for (const x of parsedShifts) {
     if (x.type === "OTHER" || !x.complete) continue;
     const p = splitPay(x.start, x.end, x.type);
     x.pay = p;
     const person = getPerson(x.name);
-    person.minutes += p.minutes;
-    person.shiftBonus += p.total;
-    person.items.push(x);
+    if (person) {
+      person.minutes += p.minutes;
+      person.shiftBonus += p.total;
+      person.items.push(x);
+    }
   }
 
-  // Check Overlapping Shift Times
   const groupedShifts = {};
   for (const x of parsedShifts) if (x.complete && x.type !== "OTHER") (groupedShifts[x.name] ??= []).push(x);
   for (const [name, arr] of Object.entries(groupedShifts)) {
@@ -368,26 +384,24 @@ function analyzeAll() {
     }
   }
 
-  // 2. Process Labtech Rota
   for (const l of labEntries) {
     const person = getPerson(l.name);
-    person.labBonus += l.total;
+    if (person) person.labBonus += l.total;
   }
 
-  // 3. Process FTO Rota
   for (const f of ftoEntries) {
     const person = getPerson(f.ftoName);
-    person.ftoBonus += f.pay;
-    if (f.passed) person.ftoCount++;
+    if (person) {
+      person.ftoBonus += f.pay;
+      if (f.passed) person.ftoCount++;
+    }
   }
 
-  // 4. Process Manual Entries
   for (const m of manual) {
     const person = getPerson(m.name);
-    person.manualBonus += m.total;
+    if (person) person.manualBonus += m.total;
   }
 
-  // Calculate Combined Totals
   for (const p of Object.values(people)) {
     p.totalBonus = p.shiftBonus + p.labBonus + p.ftoBonus + p.manualBonus;
   }
@@ -426,7 +440,7 @@ function renderGrandPayroll(people, flaws) {
 
 function addManual() {
   const name = cleanName(document.getElementById("labName").value);
-  if (!name) { alert("Please enter an employee name."); return; }
+  if (!name) { alert("Please enter a valid employee name."); return; }
   const meds = Math.max(0, +document.getElementById("meds").value || 0);
   const del = Math.max(0, +document.getElementById("deliveries").value || 0);
   const f1 = Math.max(0, +document.getElementById("fto1").value || 0);
