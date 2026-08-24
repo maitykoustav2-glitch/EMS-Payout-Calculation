@@ -163,7 +163,7 @@
     color:var(--muted);
     font-size:13px;
     margin-bottom:16px;
-    line-height:1.4;
+    line-line-height:1.4;
   }
 
   .rank-grid {
@@ -294,6 +294,8 @@
   button.danger:hover{ background:#991b1b; }
   button.sheet-btn { background:#059669; }
   button.sheet-btn:hover { background:#047857; }
+  button.discord-btn { background:#5865F2; }
+  button.discord-btn:hover { background:#4752C4; }
 
   /* Dashboard Stats */
   .stats{
@@ -406,11 +408,10 @@
         <li><b>Starter Ranks (1-10):</b> Authorized to earn standard duty shift pay and labtech bonuses.</li>
         <li><b>FTO-Authorized Ranks (22-27):</b> Exclusive ranks allowed to conduct and claim payouts for FTO Training days ($45k/$35k).</li>
       </ul>
-      <p><b>AI Smart Shift Cross-Checking & Google Sheets Export:</b></p>
+      <p><b>AI Smart Shift Cross-Checking & Direct Spreadsheet Export:</b></p>
       <ul>
-        <li><b>Multi-Day Awareness:</b> Date headers inside Discord posts are grouped into distinct days so shifts on separate dates (e.g. Aug 12 vs. Aug 13) are <i>never</i> flagged as overlapping.</li>
-        <li><b>Flag Detection:</b> Catches over 12+ consecutive shift hour claims, unclosed clock-ins, clock-outs without clock-ins, and unauthorized FTO bonus claims.</li>
-        <li><b>Spreadsheet Integration:</b> Click <b>"Sync to Google Sheet"</b> to push clean, calculated payroll records directly to Admin Google Sheets.</li>
+        <li><b>Multi-Day Awareness:</b> Date headers inside Discord posts are grouped into distinct days so shifts on separate dates are <i>never</i> flagged as overlapping.</li>
+        <li><b>Spreadsheet Sync:</b> Click <b>"📊 Direct Sync to Google Sheet"</b> to stream calculated payroll directly into High Command's master document.</li>
       </ul>
     </div>
   </details>
@@ -419,7 +420,7 @@
   <div class="rank-ref-card">
     <h2>Rank Reference</h2>
     <div class="rank-desc">
-      Only employees whose Discord post starts with one of these rank codes are counted. Anyone with no recognized rank, or an unlisted/unrecognized rank, is treated as not employed and excluded from every calculation below.
+      Only employees whose Discord post starts with one of these rank codes are counted. Anyone with no recognized rank is treated as not employed and excluded.
     </div>
     <div class="rank-grid">
       <div>
@@ -450,13 +451,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Google Sheet Configuration Card -->
-  <section class="card">
-    <h2>🔗 Google Sheets Export Settings</h2>
-    <label>Google Apps Script Web App Endpoint URL</label>
-    <input id="scriptUrl" placeholder="Paste your Google Web App deployment URL here (ends in /exec)" />
-  </section>
 
   <!-- Rota Input Grid -->
   <div class="grid3">
@@ -521,7 +515,10 @@
   <section class="card">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px">
       <h2 style="margin:0">6. Combined Payroll Breakdown</h2>
-      <button class="sheet-btn" onclick="syncToGoogleSheets()">📊 Sync Payroll to Google Sheet</button>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="discord-btn" onclick="copyDiscordSummary()">📋 Copy Discord Payroll Post</button>
+        <button class="sheet-btn" onclick="syncToGoogleSheets()">📊 Direct Sync to Google Sheet</button>
+      </div>
     </div>
     <div id="results" class="table-responsive empty">Insert logs above and click calculate.</div>
   </section>
@@ -533,6 +530,9 @@
 </div>
 
 <script>
+// --- HIGH COMMAND CONFIGURATION ---
+const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzgpnvDLqhLm0Mo24RDE7L2YOvw6jBTPluibYB4K0ic4ADIScCKoUdC1THBkGxLagRg_w/exec";
+
 // Recognized Ranks
 const STARTER_RANKS = ["FRESHER", "TRAINEE", "MS", "INTERN", "LT", "FR", "CA", "JP", "JR-EMT", "CS"];
 const FTO_RANKS = ["FTO", "HR", "DOD", "HOD", "CO-HR", "DC"];
@@ -614,7 +614,6 @@ function parseRota(text) {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-
     const detectedDate = extractHeaderDate(line);
     if (detectedDate) currentDate = detectedDate;
 
@@ -809,7 +808,6 @@ function analyzeAll() {
     }
   }
 
-  // AI Smart Cross-Day Overlap Checker
   const groupedShifts = {};
   for (const x of parsedShifts) {
     if (x.complete && x.type !== "OTHER") {
@@ -901,14 +899,8 @@ function renderGrandPayroll(arr, flaws) {
 }
 
 async function syncToGoogleSheets() {
-  const url = document.getElementById("scriptUrl").value.trim();
-  if (!url) {
-    alert("Please enter your Google Apps Script Web App URL in section 'Google Sheets Export Settings'.");
-    return;
-  }
-  
   if (!currentCompiledPeople || currentCompiledPeople.length === 0) {
-    alert("No calculated payroll data to sync. Please run duty calculations first.");
+    alert("No calculated payroll data to sync. Please calculate shifts first.");
     return;
   }
 
@@ -916,25 +908,47 @@ async function syncToGoogleSheets() {
     rank: p.rank || "N/A",
     name: p.name,
     hours: minsToHM(p.minutes),
-    shiftBonus: p.shiftBonus,
-    labBonus: p.labBonus,
-    ftoBonus: p.ftoBonus,
-    manualBonus: p.manualBonus,
-    totalBonus: p.totalBonus
+    shiftBonus: Math.round(p.shiftBonus),
+    labBonus: Math.round(p.labBonus),
+    ftoBonus: Math.round(p.ftoBonus),
+    manualBonus: Math.round(p.manualBonus),
+    totalBonus: Math.round(p.totalBonus)
   }));
 
   try {
-    await fetch(url, {
+    await fetch(SCRIPT_WEB_APP_URL, {
       method: "POST",
       mode: "no-cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    alert("✅ Payroll successfully sent to Google Sheet!");
+    alert("✅ Payroll successfully streamed to the shared Google Sheet!");
   } catch (err) {
-    alert("❌ Error sending data to Google Sheet. Check console.");
+    alert("❌ Error sending data to Google Sheet.");
     console.error(err);
   }
+}
+
+function copyDiscordSummary() {
+  if (!currentCompiledPeople || currentCompiledPeople.length === 0) {
+    alert("Calculate payroll first!");
+    return;
+  }
+  
+  let grandTotal = 0;
+  let textLines = ["<a:pepemoney:1397678409441607750> PENDING EMPLOYEE BONUS <a:pepemoney:1397678409441607750>\n"];
+  
+  currentCompiledPeople.forEach(p => {
+    if (p.totalBonus > 0) {
+      textLines.push(`${p.name} <a:FPSarrow_kalyug:1196873649152589914> ${money(p.totalBonus)}`);
+      grandTotal += p.totalBonus;
+    }
+  });
+  
+  textLines.push(`\n# Total Employee Bonus <a:FPSarrow_kalyug:1196873649152589914> ${money(grandTotal)}`);
+  
+  navigator.clipboard.writeText(textLines.join("\n"));
+  alert("📋 Clean Discord Payroll Summary copied to clipboard!");
 }
 
 function addManual() {
