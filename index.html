@@ -167,6 +167,7 @@ function isDiscordHeaderTimestamp(line) {
 }
 
 function parseRota(text) {
+  if (!text.trim()) return { out: [], flaws: [] };
   const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
   const out = [], flaws = [];
   let current = null;
@@ -219,6 +220,7 @@ function parseRota(text) {
 }
 
 function parseLab(text) {
+  if (!text.trim()) return { result: [], flaws: [] };
   const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
   const records = [];
   let current = null, date = null, cap = null, del = null;
@@ -270,6 +272,7 @@ function parseLab(text) {
 }
 
 function parseFto(text) {
+  if (!text.trim()) return [];
   const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
   const records = [];
   let currentFto = null;
@@ -304,7 +307,7 @@ function parseFto(text) {
       continue;
     }
 
-    const dateMatch = line.match(/^Date\s*[:\s]\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
+    const dateMatch = line.match(/^Date\s*[:\s]*(\d{1,2}\/\d{1,2}\/\d{4})/i);
     if (dateMatch) {
       if (day) flush();
       formDate = dateMatch[1];
@@ -419,7 +422,7 @@ function renderGrandPayroll(people, flaws) {
         <td>${money(x.ftoBonus)} ${x.ftoCount ? `<span class="pill">${x.ftoCount} sessions</span>` : ''}</td>
         <td>${money(x.manualBonus)}</td>
         <td><b style="color:var(--good);font-size:16px">${money(x.totalBonus)}</b></td>
-        <td>${x.items.length ? x.items.map(i => `<span class="pill">${esc(i.label)} ${i.startText}–${i.endText}</span>`).join("") : '<span class="pill">No duty shifts</span>'}</td>
+        <td>${x.items.length ? x.items.map(i => `<span class="pill">${esc(i.label)} ${i.startText}–${i.endText}</span>`).join("") : '<span class="pill">FTO / Lab Entry</span>'}</td>
       </tr>`).join("")
     }</table>`;
   }
