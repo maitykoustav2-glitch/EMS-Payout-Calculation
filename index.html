@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grand RP EMS Bonus System Pro</title>
+<style>
+  :root { --bg:#0b0e14; --card:#151921; --muted:#8a94a6; --text:#f1f5f9; --line:#242b38; --accent:#6366f1; --good:#10b981; --warn:#f59e0b; --bad:#ef4444; }
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,sans-serif}
+  .wrap{max-width:1300px;margin:auto;padding:24px}
+  .hero{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:20px}
+  h1{margin:0;font-size:28px;font-weight:800;color:#fff}.sub{color:var(--muted);margin-top:4px;font-size:14px}
+  .badge{padding:8px 14px;border:1px solid var(--line);border-radius:20px;color:#cbd5e1;background:#1e2330;font-size:13px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:20px}
+  textarea,input,button{font:inherit} textarea,input{width:100%;background:#0d1117;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+  textarea{min-height:220px;resize:vertical}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px;font-weight:600}
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  button{border:0;border-radius:8px;padding:10px 16px;background:var(--accent);color:white;font-weight:700;cursor:pointer;transition:0.2s}
+  button:hover{opacity:0.9} button.secondary{background:#232936} button.danger{background:#7f1d1d}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .stat{background:#0d1117;border:1px solid var(--line);border-radius:10px;padding:16px}.stat b{display:block;font-size:22px;margin-top:4px;color:#fff}
+  table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line)}th{color:#94a3b8;font-size:12px;text-transform:uppercase}
+  .ok{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+  .pill{display:inline-block;padding:3px 8px;border-radius:6px;background:#1e2330;margin:2px;font-size:12px;border:1px solid var(--line)}
+  .empty{color:var(--muted);padding:20px;text-align:center}
+  @media(max-width:800px){.grid,.row3,.stats{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div><h1>Grand RP EMS Bonus System</h1><div class="sub">Automated Rota Parser • Duty & Task Bonus Calculator</div></div>
+    <div class="badge">UTC+1 Timezone | Night Shift: 21:00 – 06:00</div>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>1. Duty Shift Rota</h2>
+      <p style="color:var(--muted);font-size:13px">Paste duty logs from Discord (`trainee-rota` / `employee-rota`). Handles PH, SH, and GS Calls automatically.</p>
+      <textarea id="raw" placeholder="Paste Discord shifts here..."></textarea>
+      <div class="btns">
+        <button onclick="analyzeAll()">Calculate Duty Bonuses</button>
+        <button class="secondary" onclick="loadExample()">Load Sample Data</button>
+        <button class="danger" onclick="clearAll()">Clear</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Labtech Rota</h2>
+      <p style="color:var(--muted);font-size:13px">Paste logs from `labtech-rota`. Deduplicates repeat posts by taking highest daily counts.</p>
+      <textarea id="labRaw" style="min-height:170px" placeholder="Paste Labtech logs here..."></textarea>
+      <div class="btns">
+        <button onclick="analyzeAll()">Calculate Lab Bonuses</button>
+        <button class="secondary" onclick="loadLabExample()">Load Sample Lab</button>
+      </div>
+      <div id="labResults" style="margin-top:12px" class="empty">No Labtech data processed yet.</div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>3. Manual Adjustments & FTO Bonuses</h2>
+    <div class="row3">
+      <div><label>Employee Name</label><input id="labName" placeholder="e.g. Roger Sagar"></div>
+      <div><label>Medicines Created</label><input id="meds" type="number" min="0" value="0"></div>
+      <div><label>Delivery Trips</label><input id="deliveries" type="number" min="0" value="0"></div>
+    </div>
+    <div class="row3" style="margin-top:10px">
+      <div><label>FTO Day 1 Count ($45k)</label><input id="fto1" type="number" min="0" value="0"></div>
+      <div><label>FTO Day 2 Count ($35k)</label><input id="fto2" type="number" min="0" value="0"></div>
+      <div><label>&nbsp;</label><button style="width:100%" onclick="addManual()">Add Manual Bonus</button></div>
+    </div>
+    <div id="manualList" style="margin-top:12px"></div>
+  </section>
+
+  <section class="card">
+    <h2>4. Summary Dashboard</h2>
+    <div class="stats">
+      <div class="stat">Active Employees<b id="sPeople">0</b></div>
+      <div class="stat">Total Duty Hours<b id="sHours">0h 0m</b></div>
+      <div class="stat">Total Grand Payout<b id="sBonus">$0</b></div>
+      <div class="stat">Rota Anomalies<b id="sFlaws">0</b></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>5. Combined Payroll Breakdown</h2>
+    <div id="results" class="empty">Insert logs above and click calculate.</div>
+  </section>
+
+  <section class="card">
+    <h2>6. System Flags & Rota Flaws</h2>
+    <div id="flaws" class="empty">No anomalies detected yet.</div>
+  </section>
+</div>
+
+<script>
+const RATES = {
+  PH: { day: 10000, night: 25000 },
+  SH: { day: 30000, night: 40000 },
+  CALLS: { day: 15000, night: 20000 }
+};
+
+let manual = [], parsedShifts = [], labEntries = [];
+
+const money = n => "$" + Math.round(n).toLocaleString("en-US");
+const minsToHM = m => `${Math.floor(m / 60)}h ${m % 60}m`;
+
+function toMin(s) {
+  if (!s) return null;
+  const m = String(s).trim().match(/^(\d{1,2}):(\d{2})$/);
+  if (!m) return null;
+  const h = +m[1], mi = +m[2];
+  return (h <= 23 && mi <= 59) ? (h * 60 + mi) : null;
+}
+
+function splitPay(start, end, type) {
+  let total = 0, day = 0, night = 0;
+  let d = end - start;
+  if (d < 0) d += 1440;
+  
+  for (let i = 0; i < d; i++) {
+    const t = (start + i) % 1440;
+    const isNight = (t >= 21 * 60 || t < 6 * 60);
+    if (isNight) { total += RATES[type].night / 60; night++; }
+    else { total += RATES[type].day / 60; day++; }
+  }
+  return { total, day, night, minutes: d };
+}
+
+function classifyDuty(label) {
+  if (!label) return null;
+  const x = label.toLowerCase().replace(/[^a-z]/g, "");
+  if (x.includes("ph")) return "PH";
+  if (x.includes("sh") || x.includes("sandy")) return "SH";
+  if (x.includes("call") || x.includes("gs") || x.includes("ground")) return "CALLS";
+  return null;
+}
+
+function cleanLine(s) { return s.replace(/\(edited\)/gi, "").trim(); }
+function cleanName(s) { return s.replace(/\s+/g, " ").replace(/\(edited\)/gi, "").trim(); }
+
+function parseRota(text) {
+  const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
+  const out = [], flaws = [];
+  let current = null;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const parts = line.split("|").map(x => x.trim()).filter(Boolean);
+
+    if (parts.length >= 2 && !/on\s*duty/i.test(line) && !/off\s*duty/i.test(line)) {
+      current = parts.length >= 3 ? cleanName(parts[1]) : cleanName(parts[0]);
+      continue;
+    }
+
+    const onMatch = line.match(/^On\s*duty\s*[:|]?\s*(.+?)\s*[:|]\s*(\d{1,2}:\d{2})/i);
+    const offMatch = line.match(/^Off\s*duty\s*[:|]?\s*(.+?)\s*[:|]\s*(\d{1,2}:\d{2})/i);
+
+    if (onMatch) {
+      const duty = onMatch[1].trim(), tm = onMatch[2], start = toMin(tm);
+      if (!current) flaws.push(`Line ${i + 1}: Duty entry "${duty}" has no active name header above it.`);
+      if (start === null) flaws.push(`Line ${i + 1}: Invalid clock-in time format "${tm}".`);
+      const type = classifyDuty(duty);
+      out.push({ name: current || "Unknown", label: duty, start, startText: tm, type: type || "OTHER", complete: false, line: i + 1 });
+    } else if (offMatch) {
+      const duty = offMatch[1].trim(), tm = offMatch[2], end = toMin(tm), type = classifyDuty(duty);
+      if (end === null) flaws.push(`Line ${i + 1}: Invalid clock-out time format "${tm}".`);
+      let matchIdx = -1;
+      for (let j = out.length - 1; j >= 0; j--) {
+        if (out[j].name === (current || "Unknown") && out[j].type === type && !out[j].complete) { matchIdx = j; break; }
+      }
+      if (matchIdx >= 0) {
+        out[matchIdx].end = end;
+        out[matchIdx].endText = tm;
+        out[matchIdx].complete = true;
+      } else {
+        flaws.push(`Line ${i + 1}: Off Duty ${duty} (${tm}) for ${current || "Unknown"} has no matching On Duty clock-in.`);
+      }
+    }
+  }
+
+  for (const x of out) {
+    if (x.type !== "OTHER" && !x.complete) {
+      flaws.push(`${x.name}: ${x.label} started at ${x.startText} without an Off Duty clock-out.`);
+    }
+  }
+  return { out, flaws };
+}
+
+function parseLab(text) {
+  const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
+  const records = [];
+  let current = null, date = null, cap = null, del = null;
+  const flaws = [];
+
+  function flush() {
+    if (!current) return;
+    if (date && (cap !== null || del !== null)) records.push({ name: current, date, captchas: cap ?? 0, deliveries: del ?? 0 });
+    cap = null; del = null;
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const parts = line.split("|").map(x => x.trim()).filter(Boolean);
+
+    if (parts.length >= 2 && !/^date\s*:/i.test(line) && !/^captchas?\s+completed\s*:/i.test(line) && !/^deliveries\s+made\s*:/i.test(line)) {
+      flush(); current = parts.length >= 3 ? cleanName(parts[1]) : cleanName(parts[0]);
+    }
+    const dm = line.match(/^Date\s*:\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
+    if (dm) { if (date && current && (cap !== null || del !== null)) flush(); date = dm[1]; }
+    const cm = line.match(/^Captchas?\s+Completed\s*:\s*(\d+)/i); if (cm) cap = +cm[1];
+    const lm = line.match(/^Deliveries\s+Made\s*:\s*(\d+)/i); if (lm) del = +lm[1];
+
+    if (date && cap !== null && del !== null && i + 1 < lines.length) {
+      const next = lines[i + 1];
+      if (!/^Captchas?\s+Completed/i.test(next) && !/^Deliveries\s+Made/i.test(next)) flush();
+    }
+  }
+  flush();
+
+  const map = new Map();
+  for (const r of records) {
+    const key = r.name + "|" + r.date;
+    if (!map.has(key)) map.set(key, { ...r });
+    else {
+      const x = map.get(key);
+      if (r.captchas < x.captchas || r.deliveries < x.deliveries) {
+        flaws.push(`${r.name} (${r.date}): Cumulative Labtech counter decreased in subsequent posts.`);
+      }
+      x.captchas = Math.max(x.captchas, r.captchas);
+      x.deliveries = Math.max(x.deliveries, r.deliveries);
+    }
+  }
+  const result = [...map.values()].map(r => ({ ...r, total: r.captchas * 5000 + r.deliveries * 10000 }));
+  return { result, flaws };
+}
+
+function analyzeAll() {
+  const shiftRes = parseRota(document.getElementById("raw").value);
+  parsedShifts = shiftRes.out;
+  let flaws = [...shiftRes.flaws];
+
+  const labRes = parseLab(document.getElementById("labRaw").value);
+  labEntries = labRes.result;
+  flaws.push(...labRes.flaws);
+
+  // Group everything per employee
+  const people = {};
+
+  const getPerson = name => {
+    if (!people[name]) people[name] = { name, minutes: 0, shiftBonus: 0, labBonus: 0, manualBonus: 0, totalBonus: 0, items: [] };
+    return people[name];
+  };
+
+  // 1. Process Duty Shifts
+  for (const x of parsedShifts) {
+    if (x.type === "OTHER" || !x.complete) continue;
+    const p = splitPay(x.start, x.end, x.type);
+    x.pay = p;
+    const person = getPerson(x.name);
+    person.minutes += p.minutes;
+    person.shiftBonus += p.total;
+    person.items.push(x);
+  }
+
+  // Check Overlapping Shift Times
+  const groupedShifts = {};
+  for (const x of parsedShifts) if (x.complete && x.type !== "OTHER") (groupedShifts[x.name] ??= []).push(x);
+  for (const [name, arr] of Object.entries(groupedShifts)) {
+    for (let a = 0; a < arr.length; a++) {
+      for (let b = a + 1; b < arr.length; b++) {
+        const A = arr[a], B = arr[b];
+        const setA = new Set(), setB = new Set();
+        for (let i = 0; i < A.pay.minutes; i++) setA.add((A.start + i) % 1440);
+        for (let i = 0; i < B.pay.minutes; i++) setB.add((B.start + i) % 1440);
+        let overlap = false;
+        for (const t of setA) { if (setB.has(t)) { overlap = true; break; } }
+        if (overlap) flaws.push(`${name}: Overlapping shift times detected — ${A.label} (${A.startText}–${A.endText}) and ${B.label} (${B.startText}–${B.endText}).`);
+      }
+    }
+  }
+
+  // 2. Process Labtech Rota
+  for (const l of labEntries) {
+    const person = getPerson(l.name);
+    person.labBonus += l.total;
+  }
+
+  // 3. Process Manual & FTO Entries
+  for (const m of manual) {
+    const person = getPerson(m.name);
+    person.manualBonus += m.total;
+  }
+
+  // Calculate Combined Totals
+  for (const p of Object.values(people)) {
+    p.totalBonus = p.shiftBonus + p.labBonus + p.manualBonus;
+  }
+
+  // Render Sub-Views
+  renderLabView(labEntries, labRes.flaws);
+  renderGrandPayroll(people, flaws);
+}
+
+function renderLabView(entries, flaws) {
+  const el = document.getElementById("labResults");
+  if (!entries.length) {
+    el.innerHTML = '<div class="empty">No valid Labtech logs parsed.</div>';
+    return;
+  }
+  el.innerHTML = `<table><tr><th>Employee</th><th>Date</th><th>Captchas</th><th>Deliveries</th><th>Lab Subtotal</th></tr>${
+    entries.map(x => `<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.date)}</td><td>${x.captchas} ($5k ea) = ${money(x.captchas * 5000)}</td><td>${x.deliveries} ($10k ea) = ${money(x.deliveries * 10000)}</td><td><b style="color:var(--good)">${money(x.total)}</b></td></tr>`).join("")
+  }</table>`;
+}
+
+function renderGrandPayroll(people, flaws) {
+  const arr = Object.values(people).sort((a, b) => b.totalBonus - a.totalBonus);
+  
+  document.getElementById("sPeople").textContent = arr.length;
+  document.getElementById("sHours").textContent = minsToHM(arr.reduce((a, x) => a + x.minutes, 0));
+  document.getElementById("sBonus").textContent = money(arr.reduce((a, x) => a + x.totalBonus, 0));
+  document.getElementById("sFlaws").textContent = flaws.length;
+
+  if (!arr.length) {
+    document.getElementById("results").innerHTML = '<div class="empty">Insert logs above and click calculate.</div>';
+  } else {
+    document.getElementById("results").innerHTML = `<table><tr><th>Employee Name</th><th>Shift Hours</th><th>Duty Pay</th><th>Lab Pay</th><th>FTO / Manual</th><th>TOTAL PAYOUT</th><th>Shift Logs</th></tr>${
+      arr.map(x => `<tr>
+        <td><b>${esc(x.name)}</b></td>
+        <td>${minsToHM(x.minutes)}</td>
+        <td>${money(x.shiftBonus)}</td>
+        <td>${money(x.labBonus)}</td>
+        <td>${money(x.manualBonus)}</td>
+        <td><b style="color:var(--good);font-size:16px">${money(x.totalBonus)}</b></td>
+        <td>${x.items.length ? x.items.map(i => `<span class="pill">${esc(i.label)} ${i.startText}–${i.endText}</span>`).join("") : '<span class="pill">No duty shifts</span>'}</td>
+      </tr>`).join("")
+    }</table>`;
+  }
+
+  const f = document.getElementById("flaws");
+  f.innerHTML = flaws.length ? `<table><tr><th>Type</th><th>System Flag</th></tr>${flaws.map(x => `<tr><td class="bad">⚠ Flag</td><td>${esc(x)}</td></tr>`).join("")}</table>` : '<div class="ok">✓ All shift logs, Labtech entries, and time bounds verified.</div>';
+}
+
+function addManual() {
+  const name = cleanName(document.getElementById("labName").value);
+  if (!name) { alert("Please enter an employee name."); return; }
+  const meds = Math.max(0, +document.getElementById("meds").value || 0);
+  const del = Math.max(0, +document.getElementById("deliveries").value || 0);
+  const f1 = Math.max(0, +document.getElementById("fto1").value || 0);
+  const f2 = Math.max(0, +document.getElementById("fto2").value || 0);
+  const captcha = Math.floor(meds / 15);
+  const total = captcha * 5000 + del * 10000 + f1 * 45000 + f2 * 35000;
+  
+  manual.push({ name, meds, del, f1, f2, captcha, total });
+  renderManual();
+  analyzeAll();
+}
+
+function renderManual() {
+  const el = document.getElementById("manualList");
+  if (!manual.length) { el.innerHTML = ""; return; }
+  el.innerHTML = `<table><tr><th>Employee</th><th>Lab Production</th><th>Deliveries</th><th>FTO Training</th><th>Manual Bonus</th><th>Action</th></tr>${manual.map((x, i) => `<tr><td><b>${esc(x.name)}</b></td><td>${x.meds} meds = ${money(x.captcha * 5000)}</td><td>${x.del} trips = ${money(x.del * 10000)}</td><td>${x.f1}×D1 + ${x.f2}×D2 = ${money(x.f1 * 45000 + x.f2 * 35000)}</td><td><b>${money(x.total)}</b></td><td><button class="danger" style="padding:4px 8px;font-size:12px" onclick="manual.splice(${i},1);renderManual();analyzeAll()">Delete</button></td></tr>`).join("")}</table>`;
+}
+
+function loadLabExample() {
+  document.getElementById("labRaw").value = `MS | assasin vortexrp | 182...
+Date: 22/08/2026
+Captchas Completed: 02
+Deliveries Made: 07
+
+MS | assasin vortexrp | 182...
+Date: 22/08/2026
+Captchas Completed: 02
+Deliveries Made: 08
+
+MS | Roger Sagar | 98639
+Date: 22/08/2026
+Captchas Completed: 01
+Deliveries Made: 01
+
+MS | Naruto Wardon | 22249
+Date: 22/08/2026
+Captchas Completed: 01
+Deliveries Made: 01
+
+MS | assasin vortexrp | 182...
+Date: 22/08/2026
+Captchas Completed: 02
+Deliveries Made: 10`;
+  analyzeAll();
+}
+
+function loadExample() {
+  document.getElementById("raw").value = `Trainee | Rocky R... | GRND
+On Duty PH Back : 20:52
+Off Duty PH Back :21:58 (edited)
+
+Trainee | Rocky R... | GRND
+On Duty SH : 21:22
+Off Duty SH :21:49 (edited)
+
+MS| Ansh fedorov | 167311
+On Duty GS Calls: 9:54
+Off Duty GS Calls:12:10 (edited)
+
+MS | Roger Sagar | 98639
+On Duty SH : 11:00
+Off Duty SH :
+
+Trainee | Thor Assassin | 18...
+On Duty PH : 8:58
+Off Duty PH :11:39
+On Duty Labtech 11:45
+
+MS | Roger Sagar | 98639
+On Duty SH : 11:00
+Off Duty SH : 13:30
+
+MS | Naruto Wardon | 22249
+On duty: PH Front: 15:15
+Off duty| PH Front:16:15 (edited)`;
+  analyzeAll();
+}
+
+function clearAll() {
+  document.getElementById("raw").value = ""; 
+  document.getElementById("labRaw").value = ""; 
+  parsedShifts = []; manual = []; labEntries = [];
+  renderManual();
+  document.getElementById("results").innerHTML = '<div class="empty">Insert logs above and click calculate.</div>';
+  document.getElementById("labResults").innerHTML = '<div class="empty">No Labtech data processed yet.</div>';
+  document.getElementById("flaws").innerHTML = '<div class="empty">No anomalies detected yet.</div>';
+  ["sPeople", "sFlaws"].forEach(id => document.getElementById(id).textContent = "0");
+  document.getElementById("sHours").textContent = "0h 0m"; 
+  document.getElementById("sBonus").textContent = "$0";
+}
+
+function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m])); }
+
+renderManual();
+</script>
+</body>
+</html>
