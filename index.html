@@ -11,10 +11,10 @@
   .hero{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:20px}
   h1{margin:0;font-size:28px;font-weight:800;color:#fff}.sub{color:var(--muted);margin-top:4px;font-size:14px}
   .badge{padding:8px 14px;border:1px solid var(--line);border-radius:20px;color:#cbd5e1;background:#1e2330;font-size:13px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:20px}
   textarea,input,button{font:inherit} textarea,input{width:100%;background:#0d1117;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
-  textarea{min-height:220px;resize:vertical}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  textarea{min-height:200px;resize:vertical}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
   label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px;font-weight:600}
   .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
   button{border:0;border-radius:8px;padding:10px 16px;background:var(--accent);color:white;font-weight:700;cursor:pointer;transition:0.2s}
@@ -25,42 +25,50 @@
   .ok{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
   .pill{display:inline-block;padding:3px 8px;border-radius:6px;background:#1e2330;margin:2px;font-size:12px;border:1px solid var(--line)}
   .empty{color:var(--muted);padding:20px;text-align:center}
-  @media(max-width:800px){.grid,.row3,.stats{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}}
+  @media(max-width:1000px){.grid3{grid-template-columns:1fr}.row3,.stats{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="hero">
-    <div><h1>Grand RP EMS Bonus System</h1><div class="sub">Automated Rota Parser • Duty & Task Bonus Calculator</div></div>
+    <div><h1>Grand RP EMS Bonus System</h1><div class="sub">Automated Rota Parser • Duty, Labtech & FTO Training Calculator</div></div>
     <div class="badge">UTC+1 Timezone | Night Shift: 21:00 – 06:00</div>
   </div>
 
-  <div class="grid">
+  <div class="grid3">
     <section class="card">
       <h2>1. Duty Shift Rota</h2>
-      <p style="color:var(--muted);font-size:13px">Paste duty logs from Discord (`trainee-rota` / `employee-rota`). Handles PH, SH, and GS Calls automatically.</p>
-      <textarea id="raw" placeholder="Paste Discord shifts here..."></textarea>
+      <p style="color:var(--muted);font-size:12px">Paste duty logs (`trainee-rota` / `employee-rota`).</p>
+      <textarea id="raw" placeholder="Paste Discord duty shifts here..."></textarea>
       <div class="btns">
-        <button onclick="analyzeAll()">Calculate Duty Bonuses</button>
-        <button class="secondary" onclick="loadExample()">Load Sample Data</button>
-        <button class="danger" onclick="clearAll()">Clear</button>
+        <button onclick="analyzeAll()">Calculate Duty</button>
+        <button class="secondary" onclick="loadExample()">Sample Duty</button>
       </div>
     </section>
 
     <section class="card">
       <h2>2. Labtech Rota</h2>
-      <p style="color:var(--muted);font-size:13px">Paste logs from `labtech-rota`. Deduplicates repeat posts by taking highest daily counts.</p>
-      <textarea id="labRaw" style="min-height:170px" placeholder="Paste Labtech logs here..."></textarea>
+      <p style="color:var(--muted);font-size:12px">Paste logs from `labtech-rota` channel.</p>
+      <textarea id="labRaw" placeholder="Paste Labtech logs here..."></textarea>
       <div class="btns">
-        <button onclick="analyzeAll()">Calculate Lab Bonuses</button>
-        <button class="secondary" onclick="loadLabExample()">Load Sample Lab</button>
+        <button onclick="analyzeAll()">Calculate Lab</button>
+        <button class="secondary" onclick="loadLabExample()">Sample Lab</button>
       </div>
-      <div id="labResults" style="margin-top:12px" class="empty">No Labtech data processed yet.</div>
+    </section>
+
+    <section class="card">
+      <h2>3. FTO Training Rota</h2>
+      <p style="color:var(--muted);font-size:12px">Paste logs from `fto-training-rota` channel.</p>
+      <textarea id="ftoRaw" placeholder="Paste FTO Training logs here..."></textarea>
+      <div class="btns">
+        <button onclick="analyzeAll()">Calculate FTO</button>
+        <button class="secondary" onclick="loadFtoExample()">Sample FTO</button>
+      </div>
     </section>
   </div>
 
   <section class="card">
-    <h2>3. Manual Adjustments & FTO Bonuses</h2>
+    <h2>4. Manual Adjustments</h2>
     <div class="row3">
       <div><label>Employee Name</label><input id="labName" placeholder="e.g. Roger Sagar"></div>
       <div><label>Medicines Created</label><input id="meds" type="number" min="0" value="0"></div>
@@ -69,13 +77,13 @@
     <div class="row3" style="margin-top:10px">
       <div><label>FTO Day 1 Count ($45k)</label><input id="fto1" type="number" min="0" value="0"></div>
       <div><label>FTO Day 2 Count ($35k)</label><input id="fto2" type="number" min="0" value="0"></div>
-      <div><label>&nbsp;</label><button style="width:100%" onclick="addManual()">Add Manual Bonus</button></div>
+      <div><label>&nbsp;</label><button style="width:100%" onclick="addManual()">Add Adjustment</button></div>
     </div>
     <div id="manualList" style="margin-top:12px"></div>
   </section>
 
   <section class="card">
-    <h2>4. Summary Dashboard</h2>
+    <h2>5. Summary Dashboard</h2>
     <div class="stats">
       <div class="stat">Active Employees<b id="sPeople">0</b></div>
       <div class="stat">Total Duty Hours<b id="sHours">0h 0m</b></div>
@@ -85,12 +93,12 @@
   </section>
 
   <section class="card">
-    <h2>5. Combined Payroll Breakdown</h2>
+    <h2>6. Combined Payroll Breakdown</h2>
     <div id="results" class="empty">Insert logs above and click calculate.</div>
   </section>
 
   <section class="card">
-    <h2>6. System Flags & Rota Flaws</h2>
+    <h2>7. System Flags & Rota Flaws</h2>
     <div id="flaws" class="empty">No anomalies detected yet.</div>
   </section>
 </div>
@@ -102,7 +110,7 @@ const RATES = {
   CALLS: { day: 15000, night: 20000 }
 };
 
-let manual = [], parsedShifts = [], labEntries = [];
+let manual = [], parsedShifts = [], labEntries = [], ftoEntries = [];
 
 const money = n => "$" + Math.round(n).toLocaleString("en-US");
 const minsToHM = m => `${Math.floor(m / 60)}h ${m % 60}m`;
@@ -139,7 +147,13 @@ function classifyDuty(label) {
 }
 
 function cleanLine(s) { return s.replace(/\(edited\)/gi, "").trim(); }
-function cleanName(s) { return s.replace(/\s+/g, " ").replace(/\(edited\)/gi, "").trim(); }
+function cleanName(s) { 
+  return s.replace(/<@!?\d+>/g, "")
+          .replace(/@/g, "")
+          .replace(/\s+/g, " ")
+          .replace(/\(edited\)/gi, "")
+          .trim(); 
+}
 
 function parseRota(text) {
   const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
@@ -237,6 +251,47 @@ function parseLab(text) {
   return { result, flaws };
 }
 
+function parseFto(text) {
+  const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
+  const records = [];
+  let currentFto = null;
+  let day = null, trainee = null, status = null;
+
+  function flush() {
+    if (currentFto && day && trainee) {
+      const isPassed = !status || /passed/i.test(status);
+      const rate = day === 1 ? 45000 : (day === 2 ? 35000 : 0);
+      records.push({ ftoName: currentFto, day, trainee, passed: isPassed, pay: isPassed ? rate : 0 });
+    }
+    day = null; trainee = null; status = null;
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const parts = line.split("|").map(x => x.trim()).filter(Boolean);
+
+    if (parts.length >= 2 && !/^date/i.test(line) && !/^training\s+day/i.test(line) && !/^trainee/i.test(line) && !/^start\s+time/i.test(line) && !/^end\s+time/i.test(line) && !/^fto\s+/i.test(line) && !/^passed/i.test(line)) {
+      flush();
+      currentFto = parts.length >= 3 ? cleanName(parts[1]) : cleanName(parts[0]);
+    }
+
+    const dayMatch = line.match(/^Training\s+Day\s+(\d+)/i);
+    if (dayMatch) {
+      if (day && trainee) flush();
+      day = +dayMatch[1];
+    }
+
+    const traineeMatch = line.match(/^Trainee\s+Name\s*\/?\s*ID\s*:\s*(.+)/i);
+    if (traineeMatch) trainee = cleanName(traineeMatch[1]);
+
+    const passMatch = line.match(/^Passed\s*\/\s*Failed\s*:\s*(.+)/i);
+    if (passMatch) status = passMatch[1].trim();
+  }
+  flush();
+
+  return records;
+}
+
 function analyzeAll() {
   const shiftRes = parseRota(document.getElementById("raw").value);
   parsedShifts = shiftRes.out;
@@ -246,11 +301,11 @@ function analyzeAll() {
   labEntries = labRes.result;
   flaws.push(...labRes.flaws);
 
-  // Group everything per employee
-  const people = {};
+  ftoEntries = parseFto(document.getElementById("ftoRaw").value);
 
+  const people = {};
   const getPerson = name => {
-    if (!people[name]) people[name] = { name, minutes: 0, shiftBonus: 0, labBonus: 0, manualBonus: 0, totalBonus: 0, items: [] };
+    if (!people[name]) people[name] = { name, minutes: 0, shiftBonus: 0, labBonus: 0, ftoBonus: 0, manualBonus: 0, totalBonus: 0, items: [], ftoCount: 0 };
     return people[name];
   };
 
@@ -288,7 +343,14 @@ function analyzeAll() {
     person.labBonus += l.total;
   }
 
-  // 3. Process Manual & FTO Entries
+  // 3. Process FTO Rota
+  for (const f of ftoEntries) {
+    const person = getPerson(f.ftoName);
+    person.ftoBonus += f.pay;
+    if (f.passed) person.ftoCount++;
+  }
+
+  // 4. Process Manual Entries
   for (const m of manual) {
     const person = getPerson(m.name);
     person.manualBonus += m.total;
@@ -296,23 +358,10 @@ function analyzeAll() {
 
   // Calculate Combined Totals
   for (const p of Object.values(people)) {
-    p.totalBonus = p.shiftBonus + p.labBonus + p.manualBonus;
+    p.totalBonus = p.shiftBonus + p.labBonus + p.ftoBonus + p.manualBonus;
   }
 
-  // Render Sub-Views
-  renderLabView(labEntries, labRes.flaws);
   renderGrandPayroll(people, flaws);
-}
-
-function renderLabView(entries, flaws) {
-  const el = document.getElementById("labResults");
-  if (!entries.length) {
-    el.innerHTML = '<div class="empty">No valid Labtech logs parsed.</div>';
-    return;
-  }
-  el.innerHTML = `<table><tr><th>Employee</th><th>Date</th><th>Captchas</th><th>Deliveries</th><th>Lab Subtotal</th></tr>${
-    entries.map(x => `<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.date)}</td><td>${x.captchas} ($5k ea) = ${money(x.captchas * 5000)}</td><td>${x.deliveries} ($10k ea) = ${money(x.deliveries * 10000)}</td><td><b style="color:var(--good)">${money(x.total)}</b></td></tr>`).join("")
-  }</table>`;
 }
 
 function renderGrandPayroll(people, flaws) {
@@ -326,12 +375,13 @@ function renderGrandPayroll(people, flaws) {
   if (!arr.length) {
     document.getElementById("results").innerHTML = '<div class="empty">Insert logs above and click calculate.</div>';
   } else {
-    document.getElementById("results").innerHTML = `<table><tr><th>Employee Name</th><th>Shift Hours</th><th>Duty Pay</th><th>Lab Pay</th><th>FTO / Manual</th><th>TOTAL PAYOUT</th><th>Shift Logs</th></tr>${
+    document.getElementById("results").innerHTML = `<table><tr><th>Employee Name</th><th>Shift Hours</th><th>Duty Pay</th><th>Lab Pay</th><th>FTO Pay</th><th>Manual</th><th>TOTAL PAYOUT</th><th>Details</th></tr>${
       arr.map(x => `<tr>
         <td><b>${esc(x.name)}</b></td>
         <td>${minsToHM(x.minutes)}</td>
         <td>${money(x.shiftBonus)}</td>
         <td>${money(x.labBonus)}</td>
+        <td>${money(x.ftoBonus)} ${x.ftoCount ? `<span class="pill">${x.ftoCount} sessions</span>` : ''}</td>
         <td>${money(x.manualBonus)}</td>
         <td><b style="color:var(--good);font-size:16px">${money(x.totalBonus)}</b></td>
         <td>${x.items.length ? x.items.map(i => `<span class="pill">${esc(i.label)} ${i.startText}–${i.endText}</span>`).join("") : '<span class="pill">No duty shifts</span>'}</td>
@@ -340,7 +390,7 @@ function renderGrandPayroll(people, flaws) {
   }
 
   const f = document.getElementById("flaws");
-  f.innerHTML = flaws.length ? `<table><tr><th>Type</th><th>System Flag</th></tr>${flaws.map(x => `<tr><td class="bad">⚠ Flag</td><td>${esc(x)}</td></tr>`).join("")}</table>` : '<div class="ok">✓ All shift logs, Labtech entries, and time bounds verified.</div>';
+  f.innerHTML = flaws.length ? `<table><tr><th>Type</th><th>System Flag</th></tr>${flaws.map(x => `<tr><td class="bad">⚠ Flag</td><td>${esc(x)}</td></tr>`).join("")}</table>` : '<div class="ok">✓ All shift logs, Labtech entries, FTO training, and time bounds verified.</div>';
 }
 
 function addManual() {
@@ -364,31 +414,48 @@ function renderManual() {
   el.innerHTML = `<table><tr><th>Employee</th><th>Lab Production</th><th>Deliveries</th><th>FTO Training</th><th>Manual Bonus</th><th>Action</th></tr>${manual.map((x, i) => `<tr><td><b>${esc(x.name)}</b></td><td>${x.meds} meds = ${money(x.captcha * 5000)}</td><td>${x.del} trips = ${money(x.del * 10000)}</td><td>${x.f1}×D1 + ${x.f2}×D2 = ${money(x.f1 * 45000 + x.f2 * 35000)}</td><td><b>${money(x.total)}</b></td><td><button class="danger" style="padding:4px 8px;font-size:12px" onclick="manual.splice(${i},1);renderManual();analyzeAll()">Delete</button></td></tr>`).join("")}</table>`;
 }
 
+function loadFtoExample() {
+  document.getElementById("ftoRaw").value = `HK | Demondoma ... | GRND
+Date 22/08/2026
+Training Day 2
+Trainee Name | ID : @MS-LT | Agent Armanii | 42048
+Start Time : 13:32
+End Time : 13:42
+FTO Feedback : Good
+FTO Shadow : N/A
+Passed/Failed: Passed
+
+FTO | David Vukovi... | RMA
+Date 22/08/2026
+Training Day 1
+Trainee Name | ID : @MS | Roger Sagar | 98639
+Start Time : 12:50
+End Time : 14:20
+FTO Feedback : Good
+FTO Shadow : N/A
+Passed/Failed: passed
+
+Date 22/08/2026
+Training Day 1
+Trainee Name | ID : @MS | Naruto Wardon | 22249
+Start Time : 12:50
+End Time : 14:20
+FTO Feedback : Good
+FTO Shadow : N/A
+Passed/Failed: passed`;
+  analyzeAll();
+}
+
 function loadLabExample() {
   document.getElementById("labRaw").value = `MS | assasin vortexrp | 182...
 Date: 22/08/2026
 Captchas Completed: 02
 Deliveries Made: 07
 
-MS | assasin vortexrp | 182...
-Date: 22/08/2026
-Captchas Completed: 02
-Deliveries Made: 08
-
 MS | Roger Sagar | 98639
 Date: 22/08/2026
 Captchas Completed: 01
-Deliveries Made: 01
-
-MS | Naruto Wardon | 22249
-Date: 22/08/2026
-Captchas Completed: 01
-Deliveries Made: 01
-
-MS | assasin vortexrp | 182...
-Date: 22/08/2026
-Captchas Completed: 02
-Deliveries Made: 10`;
+Deliveries Made: 01`;
   analyzeAll();
 }
 
@@ -397,44 +464,10 @@ function loadExample() {
 On Duty PH Back : 20:52
 Off Duty PH Back :21:58 (edited)
 
-Trainee | Rocky R... | GRND
-On Duty SH : 21:22
-Off Duty SH :21:49 (edited)
-
-MS| Ansh fedorov | 167311
-On Duty GS Calls: 9:54
-Off Duty GS Calls:12:10 (edited)
-
 MS | Roger Sagar | 98639
 On Duty SH : 11:00
-Off Duty SH :
-
-Trainee | Thor Assassin | 18...
-On Duty PH : 8:58
-Off Duty PH :11:39
-On Duty Labtech 11:45
-
-MS | Roger Sagar | 98639
-On Duty SH : 11:00
-Off Duty SH : 13:30
-
-MS | Naruto Wardon | 22249
-On duty: PH Front: 15:15
-Off duty| PH Front:16:15 (edited)`;
+Off Duty SH : 13:30`;
   analyzeAll();
-}
-
-function clearAll() {
-  document.getElementById("raw").value = ""; 
-  document.getElementById("labRaw").value = ""; 
-  parsedShifts = []; manual = []; labEntries = [];
-  renderManual();
-  document.getElementById("results").innerHTML = '<div class="empty">Insert logs above and click calculate.</div>';
-  document.getElementById("labResults").innerHTML = '<div class="empty">No Labtech data processed yet.</div>';
-  document.getElementById("flaws").innerHTML = '<div class="empty">No anomalies detected yet.</div>';
-  ["sPeople", "sFlaws"].forEach(id => document.getElementById(id).textContent = "0");
-  document.getElementById("sHours").textContent = "0h 0m"; 
-  document.getElementById("sBonus").textContent = "$0";
 }
 
 function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m])); }
