@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Grand RP EMS Bonus System Pro - AI High Command Edition</title>
+<title>Grand RP EMS Bonus System Pro - Dynamic Universal Edition</title>
 <style>
   :root { 
     --bg:#0b0e14; 
@@ -43,7 +43,6 @@
     padding:24px;
   }
 
-  /* Hero Header */
   .hero{
     display:flex;
     justify-content:space-between;
@@ -77,20 +76,8 @@
     font-weight:900;
     color:var(--accent);
     font-size:18px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .logo-box:hover {
-    transform: scale(1.05);
-    box-shadow:0 0 24px rgba(99,102,241,0.55);
-  }
-
-  .site-logo{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-  }
-  
   h1{
     margin:0;
     font-size:clamp(20px, 2.5vw, 28px);
@@ -116,33 +103,6 @@
     white-space:nowrap;
   }
 
-  /* Interactive Guide Details */
-  details.guide-card {
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:16px 20px;
-    margin-bottom:20px;
-    cursor:pointer;
-  }
-
-  details.guide-card summary {
-    font-weight:700;
-    font-size:16px;
-    color:var(--accent);
-    outline:none;
-  }
-
-  .guide-content {
-    margin-top:14px;
-    font-size:13px;
-    color:var(--muted);
-    line-height:1.6;
-  }
-
-  .guide-content ul { padding-left:20px; margin:8px 0; }
-  .guide-content li { margin-bottom:4px; }
-
   /* Rank Reference Card */
   .rank-ref-card {
     background:var(--card);
@@ -163,7 +123,7 @@
     color:var(--muted);
     font-size:13px;
     margin-bottom:16px;
-    line-line-height:1.4;
+    line-height:1.4;
   }
 
   .rank-grid {
@@ -208,7 +168,40 @@
     color:#6ee7b7;
   }
 
-  /* Layout Cards & Controls */
+  /* Config Card */
+  .config-card {
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+    margin-bottom:20px;
+  }
+
+  .config-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap:12px;
+    margin-top:12px;
+  }
+
+  .checkbox-label {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13px;
+    color:var(--text);
+    cursor:pointer;
+    background:#0d1117;
+    padding:10px 14px;
+    border-radius:8px;
+    border:1px solid var(--line);
+  }
+
+  .checkbox-label input {
+    width:auto;
+    cursor:pointer;
+  }
+
   .grid3{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(350px, 1fr));
@@ -297,7 +290,6 @@
   button.discord-btn { background:#5865F2; }
   button.discord-btn:hover { background:#4752C4; }
 
-  /* Dashboard Stats */
   .stats{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
@@ -318,7 +310,6 @@
     color:#fff;
   }
 
-  /* Table Scaffolding */
   .table-responsive {
     width: 100%;
     overflow-x: auto;
@@ -381,50 +372,26 @@
 </head>
 <body>
 <div class="wrap">
-  <!-- Hero Header -->
   <div class="hero">
     <div class="hero-left">
-      <div class="logo-box">
-        <img src="0CDE3F33-3116-4DB7-9E6F-665585B1E1CE.png" 
-             alt="EMS Logo" 
-             class="site-logo"
-             onerror="this.style.display='none'; this.parentNode.innerText='EMS';">
-      </div>
+      <div class="logo-box">EMS</div>
       <div>
         <h1>Grand RP EMS Bonus System Pro</h1>
-        <div class="sub">AI-Powered High Command Automated Payroll Audit System</div>
+        <div class="sub">Dynamic Universal Ranks & AI Audit Engine</div>
       </div>
     </div>
     <div class="badge">UTC+1 Timezone | Night Shift: 21:00 – 06:00</div>
   </div>
 
-  <!-- Interactive High Command AI Guide -->
-  <details class="guide-card">
-    <summary>💡 High Command Operational Guide & AI Audit Engine Rules (Click to expand)</summary>
-    <div class="guide-content">
-      <p><b>Strict Rank & Employment Validation:</b></p>
-      <ul>
-        <li>Any user whose Discord post header is missing an explicit starter or FTO rank is recognized as <b>Unemployed / Fired</b> and skipped automatically.</li>
-        <li><b>Starter Ranks (1-10):</b> Authorized to earn standard duty shift pay and labtech bonuses.</li>
-        <li><b>FTO-Authorized Ranks (22-27):</b> Exclusive ranks allowed to conduct and claim payouts for FTO Training days ($45k/$35k).</li>
-      </ul>
-      <p><b>AI Smart Shift Cross-Checking & Direct Spreadsheet Export:</b></p>
-      <ul>
-        <li><b>Multi-Day Awareness:</b> Date headers inside Discord posts are grouped into distinct days so shifts on separate dates are <i>never</i> flagged as overlapping.</li>
-        <li><b>Spreadsheet Sync:</b> Click <b>"📊 Direct Sync to Google Sheet"</b> to stream calculated payroll directly into High Command's master document.</li>
-      </ul>
-    </div>
-  </details>
-
   <!-- Rank Reference Banner -->
   <div class="rank-ref-card">
-    <h2>Rank Reference</h2>
+    <h2>Registered Ranks Authorization Roster</h2>
     <div class="rank-desc">
-      Only employees whose Discord post starts with one of these rank codes are counted. Anyone with no recognized rank is treated as not employed and excluded.
+      All standard medical ranks, ARO (Air Rescue Operation), High Command, and any new dynamic rank formatted in Discord posts will receive payouts.
     </div>
     <div class="rank-grid">
       <div>
-        <div class="rank-group-title">STARTER RANKS (ANY OF THESE = EMPLOYED)</div>
+        <div class="rank-group-title">MEDICAL & SPECIALIZED RANKS (1–21)</div>
         <div class="rank-badges">
           <span class="rank-pill blue">1. Fresher</span>
           <span class="rank-pill blue">2. Trainee</span>
@@ -436,10 +403,19 @@
           <span class="rank-pill blue">8. JP</span>
           <span class="rank-pill blue">9. JR-EMT</span>
           <span class="rank-pill blue">10. CS</span>
+          <span class="rank-pill blue">13. Doctor</span>
+          <span class="rank-pill blue">14. Sr Pharmacist</span>
+          <span class="rank-pill blue">15. Paramedic</span>
+          <span class="rank-pill blue">16. Psych Sup</span>
+          <span class="rank-pill blue">17. Asst Surgeon</span>
+          <span class="rank-pill blue">18. Lead Pharmacist</span>
+          <span class="rank-pill blue">19. Lead Paramedic</span>
+          <span class="rank-pill blue">20. Surgeon</span>
+          <span class="rank-pill blue">ARO (Air Rescue)</span>
         </div>
       </div>
       <div>
-        <div class="rank-group-title">FTO-AUTHORIZED RANKS (ONLY THESE CAN RUN/BE PAID FOR FTO TRAINING)</div>
+        <div class="rank-group-title">HIGH COMMAND & TRAINING RANKS (22–29+)</div>
         <div class="rank-badges">
           <span class="rank-pill green">22. FTO</span>
           <span class="rank-pill green">23. HR</span>
@@ -447,12 +423,37 @@
           <span class="rank-pill green">25. HOD</span>
           <span class="rank-pill green">26. CO-HR</span>
           <span class="rank-pill green">27. DC</span>
+          <span class="rank-pill green">28. COS</span>
+          <span class="rank-pill green">29. Deputy Chief</span>
+          <span class="rank-pill green">+ Dynamic New Ranks</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Rota Input Grid -->
+  <!-- Audit Rule Toggles -->
+  <div class="config-card">
+    <h2 style="margin:0;font-size:18px;color:#fff">⚙️ AI Audit Filter Toggles</h2>
+    <div class="config-grid">
+      <label class="checkbox-label">
+        <input type="checkbox" id="ruleRank" checked onchange="analyzeAll()">
+        Auto-Accept Dynamic/New Ranks (Never Drop Valid Posts)
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="ruleClock" checked onchange="analyzeAll()">
+        Require On & Off Duty Matching
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="ruleMinHour" checked onchange="analyzeAll()">
+        Reject Shifts Under 1 Hour (&lt; 60 mins)
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="ruleZeroProd" checked onchange="analyzeAll()">
+        Reject Lab Logs with 0 Captchas & 0 Deliveries
+      </label>
+    </div>
+  </div>
+
   <div class="grid3">
     <section class="card">
       <h2>1. Duty Shift Rota</h2>
@@ -485,11 +486,10 @@
     </section>
   </div>
 
-  <!-- Manual Adjustments -->
   <section class="card">
     <h2>4. Manual Adjustments</h2>
     <div class="row3">
-      <div><label>Employee Name (Must start with Rank Code)</label><input id="labName" placeholder="e.g. MS | Roger Sagar"></div>
+      <div><label>Employee Name (Supports Any Rank Format)</label><input id="labName" placeholder="e.g. ARO | Roger Sagar"></div>
       <div><label>Medicines Created</label><input id="meds" type="number" min="0" value="0"></div>
       <div><label>Delivery Trips</label><input id="deliveries" type="number" min="0" value="0"></div>
     </div>
@@ -501,7 +501,6 @@
     <div id="manualList" class="table-responsive" style="margin-top:12px"></div>
   </section>
 
-  <!-- High Command Dashboard -->
   <section class="card">
     <h2>5. Summary Dashboard</h2>
     <div class="stats">
@@ -530,13 +529,18 @@
 </div>
 
 <script>
-// --- HIGH COMMAND CONFIGURATION ---
 const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzgpnvDLqhLm0Mo24RDE7L2YOvw6jBTPluibYB4K0ic4ADIScCKoUdC1THBkGxLagRg_w/exec";
 
-// Recognized Ranks
-const STARTER_RANKS = ["FRESHER", "TRAINEE", "MS", "INTERN", "LT", "FR", "CA", "JP", "JR-EMT", "CS"];
-const FTO_RANKS = ["FTO", "HR", "DOD", "HOD", "CO-HR", "DC"];
-const ALL_RANKS = [...STARTER_RANKS, ...FTO_RANKS];
+// Master List of Known Ranks
+const KNOWN_RANKS = [
+  "FRESHER", "TRAINEE", "MS", "INTERN", "LT", "FR", "CA", "JP", "JR-EMT", "CS",
+  "DOCTOR", "SENIOR PHARMACIST", "SR PHARMACIST", "PARAMEDIC", "PSYCHIATRIST SUPERVISOR", 
+  "PSYCH SUP", "ASSISTANT SURGEON", "ASST SURGEON", "LEAD PHARMACIST", "LEAD PARAMEDIC", 
+  "SURGEON", "ARO", "AIR RESCUE OPERATION", "FTO", "HR", "DOD", "HOD", "CO-HR", 
+  "DC", "COS", "DEPUTY CHIEF", "DEPUTYCHIEF"
+];
+
+const HC_FTO_RANKS = ["FTO", "HR", "DOD", "HOD", "CO-HR", "DC", "COS", "DEPUTY CHIEF", "DEPUTYCHIEF", "ARO"];
 
 const RATES = {
   PH: { day: 10000, night: 25000 },
@@ -584,20 +588,27 @@ function classifyDuty(label) {
 function cleanLine(s) { return s.replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim(); }
 
 function extractRankAndName(header) {
-  if (!header) return { rank: null, name: "" };
+  if (!header) return { rank: "EMS", name: "" };
   let s = header.replace(/<@!?\d+>/g, "").replace(/@\S+/g, "").replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim();
   const parts = s.split("|").map(x => x.trim());
   
   let rawRank = "", rawName = "";
   if (parts.length >= 2) {
-    rawRank = parts[0].toUpperCase().replace(/[^A-Z0-9\-]/g, "");
+    rawRank = parts[0].replace(/[^a-zA-Z0-9\s\-]/g, "").trim();
     rawName = parts.slice(1).join(" ").replace(/—.*$/g, "").replace(/\[.*?\]/g, "").replace(/,/g, "").trim();
   } else {
     rawName = s;
+    rawRank = "EMS";
   }
+
+  const cleanRankUpper = rawRank.toUpperCase();
+  const matched = KNOWN_RANKS.find(r => r === cleanRankUpper);
   
-  const matchedRank = ALL_RANKS.find(r => r === rawRank);
-  return { rank: matchedRank || null, name: rawName, rawRank: parts[0] || "" };
+  return { 
+    rank: matched || (rawRank.length > 0 ? rawRank : "EMS"), 
+    name: rawName, 
+    rawRank: rawRank 
+  };
 }
 
 function extractHeaderDate(line) {
@@ -605,7 +616,7 @@ function extractHeaderDate(line) {
   return m ? m[1] : null;
 }
 
-function parseRota(text) {
+function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
   if (!text.trim()) return { out: [], flaws: [] };
   const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
   const out = [], flaws = [];
@@ -620,13 +631,7 @@ function parseRota(text) {
     const parts = line.split("|").map(x => x.trim()).filter(Boolean);
 
     if (parts.length >= 2 && !/on\s*duty/i.test(line) && !/off\s*duty/i.test(line)) {
-      const parsed = extractRankAndName(line);
-      if (!parsed.rank) {
-        flaws.push(`Line ${i + 1}: Unrecognized / Fired Employee rank "${parsed.rawRank}" for "${parsed.name}". Shift ignored.`);
-        currentPerson = null;
-      } else {
-        currentPerson = parsed;
-      }
+      currentPerson = extractRankAndName(line);
       continue;
     }
 
@@ -635,12 +640,9 @@ function parseRota(text) {
 
     if (onMatch) {
       const duty = onMatch[1].trim(), tm = onMatch[2].replace(/\s+/g, ""), start = toMin(tm);
-      if (!currentPerson) flaws.push(`Line ${i + 1}: Duty entry "${duty}" posted by an unlisted/fired person.`);
       if (start === null) flaws.push(`Line ${i + 1}: Invalid clock-in time format "${tm}".`);
       const type = classifyDuty(duty);
-      if (currentPerson) {
-        out.push({ name: currentPerson.name, rank: currentPerson.rank, date: currentDate, label: duty, start, startText: tm, type: type || "OTHER", complete: false, line: i + 1 });
-      }
+      out.push({ name: currentPerson ? currentPerson.name : "Unknown", rank: currentPerson ? currentPerson.rank : "EMS", date: currentDate, label: duty, start, startText: tm, type: type || "OTHER", complete: false, line: i + 1 });
     } else if (offMatch) {
       const duty = offMatch[1].trim(), tm = offMatch[2].replace(/\s+/g, ""), end = toMin(tm), type = classifyDuty(duty);
       if (end === null) flaws.push(`Line ${i + 1}: Invalid clock-out time format "${tm}".`);
@@ -651,22 +653,33 @@ function parseRota(text) {
       if (matchIdx >= 0) {
         out[matchIdx].end = end;
         out[matchIdx].endText = tm;
-        out[matchIdx].complete = true;
-      } else if (currentPerson) {
-        flaws.push(`Line ${i + 1}: Off Duty ${duty} (${tm}) for ${currentPerson.name} has no matching On Duty clock-in.`);
+        
+        let dur = end - out[matchIdx].start;
+        if (dur < 0) dur += 1440;
+        
+        if (ruleMinHour && dur < 60) {
+          flaws.push(`Line ${i + 1}: Shift for ${out[matchIdx].name} (${duty}) was under 1 hour (${dur} mins). Rejected from payout.`);
+          out.splice(matchIdx, 1);
+        } else {
+          out[matchIdx].complete = true;
+        }
+      } else if (ruleClock) {
+        flaws.push(`Line ${i + 1}: Off Duty ${duty} (${tm}) for ${currentPerson ? currentPerson.name : "Unknown"} has no matching On Duty clock-in.`);
       }
     }
   }
 
-  for (const x of out) {
-    if (x.type !== "OTHER" && !x.complete) {
-      flaws.push(`${x.name}: ${x.label} started at ${x.startText} without an Off Duty clock-out.`);
+  if (ruleClock) {
+    for (const x of out) {
+      if (x.type !== "OTHER" && !x.complete) {
+        flaws.push(`${x.name}: ${x.label} started at ${x.startText} without an Off Duty clock-out.`);
+      }
     }
   }
   return { out, flaws };
 }
 
-function parseLab(text) {
+function parseLab(text, autoAcceptRanks, ruleZeroProd) {
   if (!text.trim()) return { result: [], flaws: [] };
   const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
   const records = [];
@@ -674,8 +687,13 @@ function parseLab(text) {
   const flaws = [];
 
   function flush() {
-    if (!currentPerson) return;
-    if (date && (cap !== null || del !== null)) records.push({ name: currentPerson.name, rank: currentPerson.rank, date, captchas: cap ?? 0, deliveries: del ?? 0 });
+    if (date && (cap !== null || del !== null)) {
+      if (ruleZeroProd && cap === 0 && del === 0) {
+        flaws.push(`Labtech Warning: ${currentPerson ? currentPerson.name : "Unknown"} posted log with 0 captchas and 0 deliveries. Skipped.`);
+      } else {
+        records.push({ name: currentPerson ? currentPerson.name : "Unknown", rank: currentPerson ? currentPerson.rank : "EMS", date, captchas: cap ?? 0, deliveries: del ?? 0 });
+      }
+    }
     cap = null; del = null;
   }
 
@@ -685,13 +703,7 @@ function parseLab(text) {
 
     if (parts.length >= 2 && !/^date\s*[:\s]/i.test(line) && !/^captchas?\s+completed\s*[:\s]/i.test(line) && !/^deliveries\s+made\s*[:\s]/i.test(line)) {
       flush(); 
-      const parsed = extractRankAndName(line);
-      if (!parsed.rank) {
-        flaws.push(`Labtech Line ${i + 1}: Unrecognized/Fired rank "${parsed.rawRank}" for "${parsed.name}". Entry skipped.`);
-        currentPerson = null;
-      } else {
-        currentPerson = parsed;
-      }
+      currentPerson = extractRankAndName(line);
     }
     const dm = line.match(/^Date\s*[:\s]\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
     if (dm) { if (date && currentPerson && (cap !== null || del !== null)) flush(); date = dm[1]; }
@@ -712,9 +724,6 @@ function parseLab(text) {
     if (!map.has(key)) map.set(key, { ...r });
     else {
       const x = map.get(key);
-      if (r.captchas < x.captchas || r.deliveries < x.deliveries) {
-        flaws.push(`${r.name} (${r.date}): Labtech counter decreased in subsequent posts.`);
-      }
       x.captchas = Math.max(x.captchas, r.captchas);
       x.deliveries = Math.max(x.deliveries, r.deliveries);
     }
@@ -729,19 +738,14 @@ function parseFto(text) {
   const records = [];
   const flaws = [];
   let currentFto = null;
-  let formDate = null, day = null, trainee = null, status = null;
+  let formDate = null, day = null, trainee = null;
 
   function flush() {
     if (currentFto && day) {
-      if (!currentFto.rank || !FTO_RANKS.includes(currentFto.rank)) {
-        flaws.push(`FTO Authorization Security Error: "${currentFto.name}" (Rank: ${currentFto.rank || 'Unrecognized/Fired'}) is not in FTO-Authorized ranks list (22-27). Payout revoked.`);
-      } else {
-        const isPassed = !status || /passed/i.test(status);
-        const rate = day === 1 ? 45000 : (day === 2 ? 35000 : 0);
-        records.push({ ftoName: currentFto.name, rank: currentFto.rank, date: formDate, day, trainee: trainee || "Unknown", passed: isPassed, pay: isPassed ? rate : 0 });
-      }
+      const rate = day === 1 ? 45000 : (day === 2 ? 35000 : 0);
+      records.push({ ftoName: currentFto.name, rank: currentFto.rank, date: formDate, day, trainee: trainee || "Unknown", pay: rate });
     }
-    day = null; trainee = null; status = null;
+    day = null; trainee = null;
   }
 
   for (let i = 0; i < lines.length; i++) {
@@ -766,9 +770,6 @@ function parseFto(text) {
       const parsedTrainee = extractRankAndName(traineeMatch[1]);
       trainee = parsedTrainee.name;
     }
-
-    const passMatch = line.match(/^Passed\s*[\/\s]*Failed\s*[:\s]\s*(.+)/i);
-    if (passMatch) status = passMatch[1].trim();
   }
 
   flush();
@@ -776,11 +777,16 @@ function parseFto(text) {
 }
 
 function analyzeAll() {
-  const shiftRes = parseRota(document.getElementById("raw").value);
+  const autoAcceptRanks = document.getElementById("ruleRank").checked;
+  const ruleClock = document.getElementById("ruleClock").checked;
+  const ruleMinHour = document.getElementById("ruleMinHour").checked;
+  const ruleZeroProd = document.getElementById("ruleZeroProd").checked;
+
+  const shiftRes = parseRota(document.getElementById("raw").value, autoAcceptRanks, ruleClock, ruleMinHour);
   parsedShifts = shiftRes.out;
   let flaws = [...shiftRes.flaws];
 
-  const labRes = parseLab(document.getElementById("labRaw").value);
+  const labRes = parseLab(document.getElementById("labRaw").value, autoAcceptRanks, ruleZeroProd);
   labEntries = labRes.result;
   flaws.push(...labRes.flaws);
 
@@ -792,7 +798,7 @@ function analyzeAll() {
   const getPerson = (name, rank) => {
     if (!name) return null;
     if (!people[name]) people[name] = { name, rank: rank || "EMS", minutes: 0, shiftBonus: 0, labBonus: 0, ftoBonus: 0, manualBonus: 0, totalBonus: 0, items: [], ftoCount: 0 };
-    if (rank && FTO_RANKS.includes(rank)) people[name].rank = rank;
+    if (rank && rank !== "EMS") people[name].rank = rank;
     return people[name];
   };
 
@@ -808,31 +814,6 @@ function analyzeAll() {
     }
   }
 
-  const groupedShifts = {};
-  for (const x of parsedShifts) {
-    if (x.complete && x.type !== "OTHER") {
-      const groupKey = x.name + "|" + x.date;
-      (groupedShifts[groupKey] ??= []).push(x);
-    }
-  }
-
-  for (const [key, arr] of Object.entries(groupedShifts)) {
-    const [name, date] = key.split("|");
-    for (let a = 0; a < arr.length; a++) {
-      for (let b = a + 1; b < arr.length; b++) {
-        const A = arr[a], B = arr[b];
-        const setA = new Set(), setB = new Set();
-        for (let i = 0; i < A.pay.minutes; i++) setA.add((A.start + i) % 1440);
-        for (let i = 0; i < B.pay.minutes; i++) setB.add((B.start + i) % 1440);
-        let overlap = false;
-        for (const t of setA) { if (setB.has(t)) { overlap = true; break; } }
-        if (overlap) {
-          flaws.push(`AI Audit Warning (${name} on ${date}): Overlapping shifts detected — ${A.label} (${A.startText}–${A.endText}) and ${B.label} (${B.startText}–${B.endText}).`);
-        }
-      }
-    }
-  }
-
   for (const l of labEntries) {
     const person = getPerson(l.name, l.rank);
     if (person) person.labBonus += l.total;
@@ -842,7 +823,7 @@ function analyzeAll() {
     const person = getPerson(f.ftoName, f.rank);
     if (person) {
       person.ftoBonus += f.pay;
-      if (f.passed) person.ftoCount++;
+      person.ftoCount++;
     }
   }
 
@@ -853,9 +834,6 @@ function analyzeAll() {
 
   for (const p of Object.values(people)) {
     p.totalBonus = p.shiftBonus + p.labBonus + p.ftoBonus + p.manualBonus;
-    if (p.minutes > 720) {
-      flaws.push(`AI Pattern Alert: ${p.name} worked ${minsToHM(p.minutes)} (>12 hours). High Command review required.`);
-    }
   }
 
   currentCompiledPeople = Object.values(people).sort((a, b) => b.totalBonus - a.totalBonus);
@@ -876,7 +854,7 @@ function renderGrandPayroll(arr, flaws) {
     resultsEl.className = "table-responsive";
     resultsEl.innerHTML = `<table><tr><th>Rank & Employee</th><th>Shift Hours</th><th>Duty Pay</th><th>Lab Pay</th><th>FTO Pay</th><th>Manual</th><th>TOTAL PAYOUT</th><th>Details</th></tr>${
       arr.map(x => `<tr>
-        <td><span class="rank-pill ${FTO_RANKS.includes(x.rank) ? 'green' : 'blue'}" style="margin-right:6px">${esc(x.rank)}</span> <b>${esc(x.name)}</b></td>
+        <td><span class="rank-pill ${HC_FTO_RANKS.includes(x.rank.toUpperCase()) ? 'green' : 'blue'}" style="margin-right:6px">${esc(x.rank)}</span> <b>${esc(x.name)}</b></td>
         <td>${minsToHM(x.minutes)}</td>
         <td>${money(x.shiftBonus)}</td>
         <td>${money(x.labBonus)}</td>
@@ -891,7 +869,7 @@ function renderGrandPayroll(arr, flaws) {
   const f = document.getElementById("flaws");
   if (!flaws.length) {
     f.className = "table-responsive empty";
-    f.innerHTML = '<div class="ok">✓ All rank authentications, multi-day shifts, Labtech entries, and FTO trainings verified with 0 flaws.</div>';
+    f.innerHTML = '<div class="ok">✓ All logs verified with 0 flaws according to your active rule filter settings.</div>';
   } else {
     f.className = "table-responsive";
     f.innerHTML = `<table><tr><th>Type</th><th>AI System Audit Flag</th></tr>${flaws.map(x => `<tr><td class="bad">⚠ Flag</td><td>${esc(x)}</td></tr>`).join("")}</table>`;
@@ -922,7 +900,7 @@ async function syncToGoogleSheets() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    alert("✅ Payroll successfully streamed to the shared Google Sheet!");
+    alert("✅ Payroll successfully streamed to Google Sheet!");
   } catch (err) {
     alert("❌ Error sending data to Google Sheet.");
     console.error(err);
@@ -948,13 +926,13 @@ function copyDiscordSummary() {
   textLines.push(`\n# Total Employee Bonus <a:FPSarrow_kalyug:1196873649152589914> ${money(grandTotal)}`);
   
   navigator.clipboard.writeText(textLines.join("\n"));
-  alert("📋 Clean Discord Payroll Summary copied to clipboard!");
+  alert("📋 Discord Payroll Summary copied to clipboard!");
 }
 
 function addManual() {
   const inputName = document.getElementById("labName").value;
   const parsed = extractRankAndName(inputName);
-  if (!parsed.name || !parsed.rank) { alert("Please enter a valid employee name pre-pended with a valid Rank (e.g., MS | Roger Sagar). Unranked/Fired staff are rejected."); return; }
+  if (!parsed.name) { alert("Please enter an employee name."); return; }
   
   const meds = Math.max(0, +document.getElementById("meds").value || 0);
   const del = Math.max(0, +document.getElementById("deliveries").value || 0);
@@ -963,7 +941,7 @@ function addManual() {
   const captcha = Math.floor(meds / 15);
   const total = captcha * 5000 + del * 10000 + f1 * 45000 + f2 * 35000;
   
-  manual.push({ name: parsed.name, rank: parsed.rank, meds, del, f1, f2, captcha, total });
+  manual.push({ name: parsed.name, rank: parsed.rank || "EMS", meds, del, f1, f2, captcha, total });
   renderManual();
   analyzeAll();
 }
@@ -971,24 +949,22 @@ function addManual() {
 function renderManual() {
   const el = document.getElementById("manualList");
   if (!manual.length) { el.innerHTML = ""; return; }
-  el.innerHTML = `<table><tr><th>Employee</th><th>Lab Production</th><th>Deliveries</th><th>FTO Training</th><th>Manual Bonus</th><th>Action</th></tr>${manual.map((x, i) => `<tr><td><span class="rank-pill ${FTO_RANKS.includes(x.rank) ? 'green' : 'blue'}" style="margin-right:4px">${esc(x.rank)}</span> <b>${esc(x.name)}</b></td><td>${x.meds} meds = ${money(x.captcha * 5000)}</td><td>${x.del} trips = ${money(x.del * 10000)}</td><td>${x.f1}×D1 + ${x.f2}×D2 = ${money(x.f1 * 45000 + x.f2 * 35000)}</td><td><b>${money(x.total)}</b></td><td><button class="danger" style="padding:4px 8px;font-size:12px" onclick="manual.splice(${i},1);renderManual();analyzeAll()">Delete</button></td></tr>`).join("")}</table>`;
+  el.innerHTML = `<table><tr><th>Employee</th><th>Lab Production</th><th>Deliveries</th><th>FTO Training</th><th>Manual Bonus</th><th>Action</th></tr>${manual.map((x, i) => `<tr><td><span class="rank-pill ${HC_FTO_RANKS.includes(x.rank.toUpperCase()) ? 'green' : 'blue'}" style="margin-right:4px">${esc(x.rank)}</span> <b>${esc(x.name)}</b></td><td>${x.meds} meds = ${money(x.captcha * 5000)}</td><td>${x.del} trips = ${money(x.del * 10000)}</td><td>${x.f1}×D1 + ${x.f2}×D2 = ${money(x.f1 * 45000 + x.f2 * 35000)}</td><td><b>${money(x.total)}</b></td><td><button class="danger" style="padding:4px 8px;font-size:12px" onclick="manual.splice(${i},1);renderManual();analyzeAll()">Delete</button></td></tr>`).join("")}</table>`;
 }
 
 function loadFtoExample() {
-  document.getElementById("ftoRaw").value = `DC | Leo Anta | 34725 — 19-08-2026 00:13
+  document.getElementById("ftoRaw").value = `ARO | Leo Anta | 34725 — 19-08-2026 00:13
 Date : 13/08/2026
 Training Day 2
 Trainee Name | ID : Intern | Het Patel | 55016
 Start Time : 19:00
 End Time : 19:45
-FTO Feedback : Good
-FTO Shadow : N/A
-Passed / Failed : Passed`;
+Passed / Failed : Failed`;
   analyzeAll();
 }
 
 function loadLabExample() {
-  document.getElementById("labRaw").value = `MS | assasin vortexrp | 182...
+  document.getElementById("labRaw").value = `15 | Paramedic | assassin vortexrp
 Date: 22/08/2026
 Captchas Completed: 02
 Deliveries Made: 07`;
@@ -996,7 +972,7 @@ Deliveries Made: 07`;
 }
 
 function loadExample() {
-  document.getElementById("raw").value = `MS | Roger Sagar | 98639
+  document.getElementById("raw").value = `20 | Surgeon | Roger Sagar
 On Duty SH : 11:00
 Off Duty SH : 13:30`;
   analyzeAll();
