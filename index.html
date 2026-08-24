@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Grand RP EMS Bonus System Pro - Dynamic Universal Edition</title>
+<title>Grand RP EMS Bonus System Pro - High Command Audit Engine</title>
 <style>
   :root { 
     --bg:#0b0e14; 
@@ -78,6 +78,12 @@
     font-size:18px;
   }
 
+  .logo-box img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
   h1{
     margin:0;
     font-size:clamp(20px, 2.5vw, 28px);
@@ -101,6 +107,57 @@
     font-size:13px;
     font-weight:600;
     white-space:nowrap;
+  }
+
+  /* Guide Section Styling */
+  .guide-card {
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px 24px;
+    margin-bottom:24px;
+  }
+
+  .guide-card h2 {
+    margin:0 0 10px 0;
+    font-size:20px;
+    font-weight:700;
+    color:#fff;
+  }
+
+  .guide-steps {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap:16px;
+    margin-top:14px;
+  }
+
+  .guide-step {
+    background:#0d1117;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px;
+  }
+
+  .guide-step-num {
+    font-size:12px;
+    font-weight:800;
+    color:var(--accent);
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+
+  .guide-step-title {
+    font-size:14px;
+    font-weight:700;
+    color:#fff;
+    margin-bottom:6px;
+  }
+
+  .guide-step-desc {
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.4;
   }
 
   /* Rank Reference Card */
@@ -374,13 +431,43 @@
 <div class="wrap">
   <div class="hero">
     <div class="hero-left">
-      <div class="logo-box">EMS</div>
+      <div class="logo-box" id="logoContainer">
+        <!-- Default fallback text badge, dynamic img injection via JS or src below -->
+        <span>EMS</span>
+      </div>
       <div>
         <h1>Grand RP EMS Bonus System Pro</h1>
-        <div class="sub">Dynamic Universal Ranks & AI Audit Engine</div>
+        <div class="sub">Global High Command Automated Audit Engine</div>
       </div>
     </div>
     <div class="badge">UTC+1 Timezone | Night Shift: 21:00 – 06:00</div>
+  </div>
+
+  <!-- High Command Quick Guide -->
+  <div class="guide-card">
+    <h2>📘 High Command Payroll & Audit Guide</h2>
+    <div class="guide-steps">
+      <div class="guide-step">
+        <div class="guide-step-num">Step 1</div>
+        <div class="guide-step-title">Paste Discord Logs</div>
+        <div class="guide-step-desc">Copy raw shift channels directly from Discord into Duty, Labtech, or FTO text boxes.</div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">Step 2</div>
+        <div class="guide-step-title">Set Audit Rules</div>
+        <div class="guide-step-desc">Check or uncheck strict filters such as shift time minimums (&gt;60m) or mandatory clock-out pairing.</div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">Step 3</div>
+        <div class="guide-step-title">Calculate & Review</div>
+        <div class="guide-step-desc">Click Calculate to automatically run payroll split calculations, day/night bonuses, and flaw detections.</div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">Step 4</div>
+        <div class="guide-step-title">Export & Sync</div>
+        <div class="guide-step-desc">Use one-click buttons to post formatted results to Discord or stream live data to your Google Sheet.</div>
+      </div>
+    </div>
   </div>
 
   <!-- Rank Reference Banner -->
