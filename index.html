@@ -20,6 +20,7 @@
     --rank-blue-border:#3b82f6;
     --rank-green:#022c22;
     --rank-green-border:#10b981;
+    --youtube:#ff0000;
   }
   
   *{box-sizing:border-box} 
@@ -38,35 +39,35 @@
   ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
   .wrap{
-    max-width:1400px;
+    max-width:1600px;
     margin:auto;
-    padding:24px;
+    padding:32px;
   }
 
   .hero{
     display:flex;
     justify-content:space-between;
-    gap:20px;
+    gap:24px;
     align-items:center;
-    margin-bottom:20px;
+    margin-bottom:28px;
     background:var(--card);
-    padding:20px 24px;
-    border-radius:14px;
+    padding:28px 32px;
+    border-radius:16px;
     border:1px solid var(--line);
   }
   
   .hero-left{
     display:flex;
     align-items:center;
-    gap:20px;
+    gap:24px;
   }
   
   .logo-box {
-    width:72px;
-    height:72px;
+    width:88px;
+    height:88px;
     border-radius:50%;
     border:2px solid var(--accent);
-    box-shadow:0 0 16px rgba(99,102,241,0.35);
+    box-shadow:0 0 20px rgba(99,102,241,0.35);
     flex-shrink:0;
     background:#1e2330;
     display:flex;
@@ -75,7 +76,9 @@
     overflow:hidden;
     font-weight:900;
     color:var(--accent);
-    font-size:18px;
+    font-size:20px;
+    cursor:pointer;
+    position:relative;
   }
 
   .logo-box img {
@@ -86,7 +89,7 @@
 
   h1{
     margin:0;
-    font-size:clamp(20px, 2.5vw, 28px);
+    font-size:clamp(22px, 2.8vw, 32px);
     font-weight:800;
     color:#fff;
     letter-spacing:-0.5px;
@@ -94,118 +97,144 @@
   
   .sub{
     color:var(--muted);
-    margin-top:4px;
-    font-size:clamp(12px, 1.2vw, 14px);
+    margin-top:6px;
+    font-size:clamp(13px, 1.3vw, 16px);
   }
   
   .badge{
-    padding:10px 16px;
+    padding:12px 20px;
     border:1px solid var(--line);
-    border-radius:20px;
+    border-radius:24px;
     color:#cbd5e1;
     background:#1e2330;
-    font-size:13px;
+    font-size:14px;
     font-weight:600;
     white-space:nowrap;
   }
 
-  /* Guide Section Styling */
+  /* Guide Cards & Banner */
   .guide-card {
     background:var(--card);
     border:1px solid var(--line);
-    border-radius:14px;
-    padding:20px 24px;
-    margin-bottom:24px;
+    border-radius:16px;
+    padding:28px 32px;
+    margin-bottom:28px;
+  }
+
+  .guide-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+    margin-bottom:20px;
   }
 
   .guide-card h2 {
-    margin:0 0 10px 0;
-    font-size:20px;
+    margin:0;
+    font-size:22px;
     font-weight:700;
     color:#fff;
   }
 
+  .yt-button {
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--youtube);
+    color:#fff;
+    padding:10px 20px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:700;
+    font-size:14px;
+    transition:transform 0.2s, background 0.2s;
+  }
+
+  .yt-button:hover {
+    background:#cc0000;
+    transform:translateY(-1px);
+  }
+
   .guide-steps {
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap:16px;
-    margin-top:14px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap:20px;
   }
 
   .guide-step {
     background:#0d1117;
     border:1px solid var(--line);
-    border-radius:10px;
-    padding:14px;
+    border-radius:12px;
+    padding:20px;
   }
 
   .guide-step-num {
-    font-size:12px;
+    font-size:13px;
     font-weight:800;
     color:var(--accent);
     text-transform:uppercase;
-    margin-bottom:6px;
+    margin-bottom:8px;
   }
 
   .guide-step-title {
-    font-size:14px;
+    font-size:16px;
     font-weight:700;
     color:#fff;
-    margin-bottom:6px;
+    margin-bottom:8px;
   }
 
   .guide-step-desc {
-    font-size:12px;
+    font-size:13px;
     color:var(--muted);
-    line-height:1.4;
+    line-height:1.5;
   }
 
-  /* Rank Reference Card */
   .rank-ref-card {
     background:var(--card);
     border:1px solid var(--line);
-    border-radius:14px;
-    padding:20px 24px;
-    margin-bottom:24px;
+    border-radius:16px;
+    padding:28px 32px;
+    margin-bottom:28px;
   }
 
   .rank-ref-card h2 {
-    margin:0 0 8px 0;
-    font-size:20px;
+    margin:0 0 10px 0;
+    font-size:22px;
     font-weight:700;
     color:#fff;
   }
 
   .rank-desc {
     color:var(--muted);
-    font-size:13px;
-    margin-bottom:16px;
-    line-height:1.4;
+    font-size:14px;
+    margin-bottom:20px;
+    line-height:1.5;
   }
 
   .rank-grid {
     display:grid;
     grid-template-columns: 1fr 1fr;
-    gap:24px;
+    gap:28px;
   }
 
   .rank-group-title {
-    font-size:11px;
+    font-size:12px;
     font-weight:800;
     letter-spacing:0.8px;
     text-transform:uppercase;
     color:var(--muted);
-    margin-bottom:10px;
+    margin-bottom:12px;
   }
 
   .rank-badges {
     display:flex;
     flex-wrap:wrap;
-    gap:8px;
+    gap:10px;
   }
 
   .rank-pill {
-    padding:5px 12px;
+    padding:6px 14px;
     border-radius:8px;
     font-size:13px;
     font-weight:700;
@@ -225,32 +254,31 @@
     color:#6ee7b7;
   }
 
-  /* Config Card */
   .config-card {
     background:var(--card);
     border:1px solid var(--line);
-    border-radius:14px;
-    padding:20px;
-    margin-bottom:20px;
+    border-radius:16px;
+    padding:28px 32px;
+    margin-bottom:28px;
   }
 
   .config-grid {
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap:12px;
-    margin-top:12px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap:16px;
+    margin-top:16px;
   }
 
   .checkbox-label {
     display:flex;
     align-items:center;
-    gap:10px;
-    font-size:13px;
+    gap:12px;
+    font-size:14px;
     color:var(--text);
     cursor:pointer;
     background:#0d1117;
-    padding:10px 14px;
-    border-radius:8px;
+    padding:14px 18px;
+    border-radius:10px;
     border:1px solid var(--line);
   }
 
@@ -261,21 +289,21 @@
 
   .grid3{
     display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(350px, 1fr));
-    gap:20px;
+    grid-template-columns:repeat(auto-fit, minmax(380px, 1fr));
+    gap:24px;
   }
   
   .card{
     background:var(--card);
     border:1px solid var(--line);
-    border-radius:14px;
-    padding:20px;
-    margin-bottom:20px;
+    border-radius:16px;
+    padding:28px;
+    margin-bottom:28px;
   }
   
   .card h2 {
     margin-top:0;
-    font-size:18px;
+    font-size:20px;
     color:#fff;
   }
 
@@ -286,8 +314,8 @@
     background:#0d1117;
     color:var(--text);
     border:1px solid var(--line);
-    border-radius:8px;
-    padding:10px 12px;
+    border-radius:10px;
+    padding:12px 16px;
     transition:border-color 0.2s;
   }
 
@@ -297,35 +325,36 @@
   }
   
   textarea{
-    min-height:180px;
+    min-height:200px;
     resize:vertical;
+    line-height:1.4;
   }
   
   .row3{
     display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
-    gap:12px;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:16px;
   }
   
   label{
-    font-size:12px;
+    font-size:13px;
     color:var(--muted);
     display:block;
-    margin-bottom:6px;
+    margin-bottom:8px;
     font-weight:600;
   }
   
   .btns{
     display:flex;
     flex-wrap:wrap;
-    gap:10px;
-    margin-top:12px;
+    gap:12px;
+    margin-top:16px;
   }
   
   button{
     border:0;
-    border-radius:8px;
-    padding:10px 18px;
+    border-radius:10px;
+    padding:12px 22px;
     background:var(--accent);
     color:white;
     font-weight:700;
@@ -349,21 +378,21 @@
 
   .stats{
     display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
-    gap:16px;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    gap:20px;
   }
   
   .stat{
     background:#0d1117;
     border:1px solid var(--line);
-    border-radius:10px;
-    padding:16px;
+    border-radius:12px;
+    padding:20px;
   }
   
   .stat b{
     display:block;
-    font-size:24px;
-    margin-top:4px;
+    font-size:26px;
+    margin-top:6px;
     color:#fff;
   }
 
@@ -382,7 +411,7 @@
   
   th,td{
     text-align:left;
-    padding:12px 14px;
+    padding:14px 16px;
     border-bottom:1px solid var(--line);
   }
   
@@ -402,7 +431,7 @@
   
   .pill{
     display:inline-block;
-    padding:3px 8px;
+    padding:4px 10px;
     border-radius:6px;
     background:#1e2330;
     margin:2px;
@@ -412,15 +441,19 @@
   
   .empty{
     color:var(--muted);
-    padding:30px;
+    padding:40px;
     text-align:center;
   }
 
+  #imageInput {
+    display: none;
+  }
+
   @media(max-width:768px){
-    .wrap{ padding:12px; }
+    .wrap{ padding:16px; }
     .hero{ flex-direction:column; align-items:flex-start; }
     .hero-left{ flex-direction:row; align-items:center; }
-    .logo-box{ width:56px; height:56px; }
+    .logo-box{ width:64px; height:64px; }
     .badge{ width:100%; text-align:center; }
     .rank-grid{ grid-template-columns:1fr; }
     .grid3{ grid-template-columns:1fr; }
@@ -431,10 +464,11 @@
 <div class="wrap">
   <div class="hero">
     <div class="hero-left">
-      <div class="logo-box" id="logoContainer">
-        <!-- Default fallback text badge, dynamic img injection via JS or src below -->
-        <span>EMS</span>
-      </div>
+      <label for="imageInput" class="logo-box" title="Click to upload/change logo image">
+        <img id="logoImg" src="./0CDE3F33-3116-4DB7-9E6F-665585B1E1CE.png" alt="EMS Logo" onerror="this.onerror=null; this.style.display='none'; document.getElementById('logoFallback').style.display='block';">
+        <span id="logoFallback" style="display:none">EMS</span>
+      </label>
+      <input type="file" id="imageInput" accept="image/*" onchange="loadLocalImage(event)">
       <div>
         <h1>Grand RP EMS Bonus System Pro</h1>
         <div class="sub">Global High Command Automated Audit Engine</div>
@@ -443,9 +477,16 @@
     <div class="badge">UTC+1 Timezone | Night Shift: 21:00 – 06:00</div>
   </div>
 
-  <!-- High Command Quick Guide -->
+  <!-- High Command Step-by-Step Guide + Video Link -->
   <div class="guide-card">
-    <h2>📘 High Command Payroll & Audit Guide</h2>
+    <div class="guide-header">
+      <h2>📘 High Command Payroll & Audit Guide</h2>
+      <!-- Replace the href below with your YouTube video URL once uploaded -->
+      <a href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID_HERE" target="_blank" rel="noopener noreferrer" class="yt-button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        Watch Video Tutorial
+      </a>
+    </div>
     <div class="guide-steps">
       <div class="guide-step">
         <div class="guide-step-num">Step 1</div>
@@ -470,7 +511,6 @@
     </div>
   </div>
 
-  <!-- Rank Reference Banner -->
   <div class="rank-ref-card">
     <h2>Registered Ranks Authorization Roster</h2>
     <div class="rank-desc">
@@ -518,9 +558,8 @@
     </div>
   </div>
 
-  <!-- Audit Rule Toggles -->
   <div class="config-card">
-    <h2 style="margin:0;font-size:18px;color:#fff">⚙️ AI Audit Filter Toggles</h2>
+    <h2 style="margin:0;font-size:20px;color:#fff">⚙️ AI Audit Filter Toggles</h2>
     <div class="config-grid">
       <label class="checkbox-label">
         <input type="checkbox" id="ruleRank" checked onchange="analyzeAll()">
@@ -544,7 +583,7 @@
   <div class="grid3">
     <section class="card">
       <h2>1. Duty Shift Rota</h2>
-      <p style="color:var(--muted);font-size:12px">Paste duty logs (`trainee-rota` / `employee-rota`).</p>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Paste duty logs (`trainee-rota` / `employee-rota`).</p>
       <textarea id="raw" placeholder="Paste Discord duty shifts here..."></textarea>
       <div class="btns">
         <button onclick="analyzeAll()">Calculate Duty</button>
@@ -554,7 +593,7 @@
 
     <section class="card">
       <h2>2. Labtech Rota</h2>
-      <p style="color:var(--muted);font-size:12px">Paste logs from `labtech-rota` channel.</p>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Paste logs from `labtech-rota` channel.</p>
       <textarea id="labRaw" placeholder="Paste Labtech logs here..."></textarea>
       <div class="btns">
         <button onclick="analyzeAll()">Calculate Lab</button>
@@ -564,7 +603,7 @@
 
     <section class="card">
       <h2>3. FTO Training Rota</h2>
-      <p style="color:var(--muted);font-size:12px">Paste logs from `fto-training-rota` channel.</p>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Paste logs from `fto-training-rota` channel.</p>
       <textarea id="ftoRaw" placeholder="Paste FTO Training logs here..."></textarea>
       <div class="btns">
         <button onclick="analyzeAll()">Calculate FTO</button>
@@ -580,12 +619,12 @@
       <div><label>Medicines Created</label><input id="meds" type="number" min="0" value="0"></div>
       <div><label>Delivery Trips</label><input id="deliveries" type="number" min="0" value="0"></div>
     </div>
-    <div class="row3" style="margin-top:10px">
+    <div class="row3" style="margin-top:16px">
       <div><label>FTO Day 1 Count ($45k)</label><input id="fto1" type="number" min="0" value="0"></div>
       <div><label>FTO Day 2 Count ($35k)</label><input id="fto2" type="number" min="0" value="0"></div>
       <div><label>&nbsp;</label><button style="width:100%" onclick="addManual()">Add Adjustment</button></div>
     </div>
-    <div id="manualList" class="table-responsive" style="margin-top:12px"></div>
+    <div id="manualList" class="table-responsive" style="margin-top:16px"></div>
   </section>
 
   <section class="card">
@@ -599,9 +638,9 @@
   </section>
 
   <section class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px">
       <h2 style="margin:0">6. Combined Payroll Breakdown</h2>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
         <button class="discord-btn" onclick="copyDiscordSummary()">📋 Copy Discord Payroll Post</button>
         <button class="sheet-btn" onclick="syncToGoogleSheets()">📊 Direct Sync to Google Sheet</button>
       </div>
@@ -618,7 +657,20 @@
 <script>
 const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzgpnvDLqhLm0Mo24RDE7L2YOvw6jBTPluibYB4K0ic4ADIScCKoUdC1THBkGxLagRg_w/exec";
 
-// Master List of Known Ranks
+function loadLocalImage(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.getElementById('logoImg');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.getElementById('logoFallback').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
 const KNOWN_RANKS = [
   "FRESHER", "TRAINEE", "MS", "INTERN", "LT", "FR", "CA", "JP", "JR-EMT", "CS",
   "DOCTOR", "SENIOR PHARMACIST", "SR PHARMACIST", "PARAMEDIC", "PSYCHIATRIST SUPERVISOR", 
