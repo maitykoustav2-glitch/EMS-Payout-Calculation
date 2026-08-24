@@ -268,16 +268,21 @@ function parseFto(text) {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    const parts = line.split("|").map(x => x.trim()).filter(Boolean);
+    
+    // Ignore normal form field labels
+    const isLabel = /^(date|training\s+day|trainee|start\s+time|end\s+time|fto\s+feedback|fto\s+shadow|passed)/i.test(line);
 
-    if (parts.length >= 2 && !/^date/i.test(line) && !/^training\s+day/i.test(line) && !/^trainee/i.test(line) && !/^start\s+time/i.test(line) && !/^end\s+time/i.test(line) && !/^fto\s+/i.test(line) && !/^passed/i.test(line)) {
+    // Any line with "|" that is NOT a form field is treated as a Trainer Header line
+    if (line.includes("|") && !isLabel) {
       flush();
+      const parts = line.split("|").map(x => x.trim()).filter(Boolean);
       currentFto = parts.length >= 3 ? cleanName(parts[1]) : cleanName(parts[0]);
+      continue;
     }
 
     const dayMatch = line.match(/^Training\s+Day\s+(\d+)/i);
     if (dayMatch) {
-      if (day && trainee) flush();
+      if (day && trainee) flush(); // Handles dual-trainees trained together in a single block
       day = +dayMatch[1];
     }
 
@@ -415,34 +420,24 @@ function renderManual() {
 }
 
 function loadFtoExample() {
-  document.getElementById("ftoRaw").value = `HK | Demondoma ... | GRND
-Date 22/08/2026
+  document.getElementById("ftoRaw").value = `DC-ARO | Leo Anta | 34725
+Date 24/08/2026
 Training Day 2
-Trainee Name | ID : @MS-LT | Agent Armanii | 42048
-Start Time : 13:32
-End Time : 13:42
+Trainee Name | ID : @MS | Liynox Zheng | 91451
+Start Time : 12:02
+End Time : 13:01
 FTO Feedback : Good
 FTO Shadow : N/A
 Passed/Failed: Passed
 
-FTO | David Vukovi... | RMA
-Date 22/08/2026
-Training Day 1
-Trainee Name | ID : @MS | Roger Sagar | 98639
-Start Time : 12:50
-End Time : 14:20
+Date 24/08/2026
+Training Day 2
+Trainee Name | ID : @unknown-user
+Start Time : 12:02
+End Time : 13:01
 FTO Feedback : Good
 FTO Shadow : N/A
-Passed/Failed: passed
-
-Date 22/08/2026
-Training Day 1
-Trainee Name | ID : @MS | Naruto Wardon | 22249
-Start Time : 12:50
-End Time : 14:20
-FTO Feedback : Good
-FTO Shadow : N/A
-Passed/Failed: passed`;
+Passed/Failed: Passed`;
   analyzeAll();
 }
 
@@ -450,21 +445,12 @@ function loadLabExample() {
   document.getElementById("labRaw").value = `MS | assasin vortexrp | 182...
 Date: 22/08/2026
 Captchas Completed: 02
-Deliveries Made: 07
-
-MS | Roger Sagar | 98639
-Date: 22/08/2026
-Captchas Completed: 01
-Deliveries Made: 01`;
+Deliveries Made: 07`;
   analyzeAll();
 }
 
 function loadExample() {
-  document.getElementById("raw").value = `Trainee | Rocky R... | GRND
-On Duty PH Back : 20:52
-Off Duty PH Back :21:58 (edited)
-
-MS | Roger Sagar | 98639
+  document.getElementById("raw").value = `MS | Roger Sagar | 98639
 On Duty SH : 11:00
 Off Duty SH : 13:30`;
   analyzeAll();
