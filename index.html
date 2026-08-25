@@ -107,7 +107,7 @@
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 2</div>
-        <div class="guide-step-desc">Configure Rules</div>
+        <div class="guide-step-title">Configure Rules</div>
         <div class="guide-step-desc">Enforces the 4.6 hours weekly threshold even with short sub-60m shifts.</div>
       </div>
       <div class="guide-step">
@@ -229,7 +229,7 @@
 </div>
 
 <script>
-const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvdH1bTYg76JER-OCRPZiMMkDd_ebKkp51I3lnBg47M2tpWQ7hQLOCEJkXLH6X_NaitA/exec";
+const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyO8lBNMRAbMnsJefFhpXCnk8B7QM1cb8K8Giv6XEJy/dev";
 const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1WoJm1_bMVqwUeP8rd_86O933sfIkdWf6VrqM4ZqOFaQ/edit?gid=0#gid=0";
 
 function loadLocalImage(event) {
@@ -513,10 +513,9 @@ function analyzeAll() {
   Object.values(peopleMap).forEach(p => {
     if (!ruleWeeklyThreshold || p.minutes >= 276) {
       p.bonusEligible = true;
-      p.pay += p.shiftPay; // Grant shift pay bonus since they passed weekly threshold or rule is disabled
+      p.pay += p.shiftPay; 
     } else {
       p.bonusEligible = false;
-      // Shift pay withheld due to failing 4.6 hour weekly threshold rule, but lab/FTO bonuses remain
     }
   });
 
