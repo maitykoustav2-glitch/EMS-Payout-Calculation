@@ -211,7 +211,7 @@
     <div class="chip-container">
       <div class="chip" onclick="askAssistant('Hi! How are you?')">Say Hello</div>
       <div class="chip" onclick="askAssistant('Explain all flaws and errors recognized in the logs')">Explain All Flaws & Lines</div>
-      <div class="chip" onclick="askAssistant('Give me solutions to fix the detected log issues')">Get Solutions</div>
+      <div class="chip" onclick="askAssistant('Get solutions to fix the detected log issues')">Get Solutions</div>
       <div class="chip" onclick="askAssistant('Who is our top earner?')">Top Earner Analysis</div>
     </div>
     <div class="chat-box">
@@ -227,7 +227,7 @@
 </div>
 
 <script>
-const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbziobqgW2vVkKfuNuRdmdDFsJdEV_pZv0krlncV1Aji4ejK6Sn3lOXECnxEjiJijBu3/exec";
+const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwcxGp2Bo3j1Q-Z_U8MRu8Up3cl-QkBTfuIXCHG-F0OZ751aXEy3pPiv6xaGL_3RkX/exec";
 const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1WoJm1_bMVqwUeP8rd_86O933sfIkdWf6VrqM4ZqOFaQ/edit?gid=0#gid=0";
 
 function loadLocalImage(event) {
@@ -340,19 +340,16 @@ function classifyDuty(label) {
 
 function cleanLine(s) { return s.replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim(); }
 
-// ADVANCED AI CREDENTIAL & RANK READER ENGINE WITH DEPARTMENT & EX-EMPLOYEE FILTERING
 function parseHeaderAndExtractRank(header, autoAcceptRanks) {
   if (!header) return { rank: null, dept: "", name: "", valid: false, isExEmployee: false, canTrain: false };
   
   let cleanStr = header.replace(/<@!?\d+>/g, "").replace(/@\S+/g, "").replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim();
   
-  // Ex-Employee / Former / No Rank guard rule (e.g. EX FTO David Vukovic or raw names without ranks)
   const isExEmployee = /ex[- ]?employee|former|ex\s+[a-z]+|blacklist|retired|resigned/i.test(cleanStr);
   if (isExEmployee) {
     return { rank: "Ex-Employee", dept: "", name: cleanStr, valid: false, isExEmployee: true, canTrain: false };
   }
 
-  // Extract department tag if attached like [HS], [GS], -LT, -ARD, etc.
   let foundDept = "";
   DEPARTMENTS.forEach(d => {
     const regex = new RegExp(`(?:\\[|\\-|\\s)+(${d})(?:\\]|\\s)*$`, "i");
@@ -370,7 +367,6 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
     const upperSeg = segment.toUpperCase();
     let subParts = upperSeg.split(/[\-\/\s]+/);
     
-    // Check rank match against 29-Rank Dictionary
     if (RANK_DICTIONARY[subParts[0]] || RANK_DICTIONARY[upperSeg]) {
       foundNormalizedRank = RANK_DICTIONARY[subParts[0]] || RANK_DICTIONARY[upperSeg];
       rankIndex = i;
@@ -382,7 +378,6 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
     }
   }
 
-  // If no rank prefix found and auto-accept is off, or if it's just a raw name (e.g., "David Vukovic"), treat as invalid/no rank
   if (!foundNormalizedRank) {
     if (autoAcceptRanks && parts.length > 1) {
       foundNormalizedRank = parts[0];
@@ -396,7 +391,6 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
   let rawName = nameParts.join(" ").replace(/—.*$/g, "").replace(/\[.*?\]/g, "").replace(/,/g, "").trim();
   if (!rawName) rawName = cleanStr;
 
-  // Check if trainer/rank is authorized to conduct training (FTO up to Deputy Chief)
   const upperRankCheck = foundNormalizedRank.toUpperCase();
   const canTrain = AUTHORIZED_TRAINERS.some(t => upperRankCheck.includes(t));
 
@@ -673,17 +667,12 @@ function analyzeAll() {
 
   currentCompiledPeople = Object.values(peopleMap);
 
-  let totalMins = 0, totalBonus = 0;
-  currentCompiledPeople.forEach(p => { totalMins += p.minutes; totalBonus += p.pay; });
-
-  document.getElementById('sPeople').innerText = currentCompiledPeople.length;
-  document.getElementById('sHours').innerText = minsToHM(totalMins);
-  document.getElementById('sBonus').innerText = money(totalBonus);
   document.getElementById('sFlaws').innerText = currentFlawsList.length;
 
   renderResults(currentCompiledPeople);
   renderFlaws(currentFlawsList);
   renderInspectionScreen(allRotaInspectionRows);
+  updateDashboardStats();
 }
 
 function renderResults(people) {
@@ -691,7 +680,7 @@ function renderResults(people) {
   if (!people.length) { el.className = "table-responsive empty"; el.innerHTML = "Insert logs above and click calculate."; return; }
   el.className = "table-responsive";
   let html = `<table><thead><tr>
-    <th><input type="checkbox" class="row-checkbox" checked onclick="toggleSelectAll(this)"></th>
+    <th><input type="checkbox" id="masterCheckbox" class="row-checkbox" checked onclick="toggleSelectAll(this)"></th>
     <th>Normalized Rank (AI)</th><th>Department</th><th>Employee Name</th><th>Duty Hours</th><th>Day Mins</th><th>Night Mins</th><th>Shift Pay</th><th>Lab/FTO Pay</th><th>Total Payout</th><th>4.6h Status</th>
   </tr></thead><tbody>`;
 
@@ -699,7 +688,7 @@ function renderResults(people) {
     const statusBadge = p.bonusEligible ? `<span class="ok" style="font-weight:700">Eligible (≥4.6h)</span>` : `<span class="bad" style="font-weight:700">Withheld (&lt;4.6h)</span>`;
     const deptBadge = p.dept ? `<span class="pill" style="background:#065f46;color:#6ee7b7">${p.dept}</span>` : `<span class="pill" style="background:#1f2937;color:#9ca3af">General</span>`;
     html += `<tr>
-      <td><input type="checkbox" class="row-checkbox person-checkbox" checked data-index="${idx}"></td>
+      <td><input type="checkbox" class="row-checkbox person-checkbox" checked data-index="${idx}" onchange="updateDashboardStats()"></td>
       <td><span class="pill" style="background:#1e3a8a;color:#93c5fd">${p.rank}</span></td>
       <td>${deptBadge}</td>
       <td><b>${p.name}</b></td>
@@ -716,8 +705,29 @@ function renderResults(people) {
   el.innerHTML = html;
 }
 
+function updateDashboardStats() {
+  const checkedBoxes = document.querySelectorAll('.person-checkbox:checked');
+  let activeCount = checkedBoxes.length;
+  let totalMins = 0;
+  let totalBonus = 0;
+
+  checkedBoxes.forEach(b => {
+    const idx = parseInt(b.getAttribute('data-index'), 10);
+    const p = currentCompiledPeople[idx];
+    if (p) {
+      totalMins += p.minutes;
+      totalBonus += p.pay;
+    }
+  });
+
+  document.getElementById('sPeople').innerText = activeCount;
+  document.getElementById('sHours').innerText = minsToHM(totalMins);
+  document.getElementById('sBonus').innerText = money(totalBonus);
+}
+
 function toggleSelectAll(master) {
   document.querySelectorAll('.person-checkbox').forEach(b => b.checked = master.checked);
+  updateDashboardStats();
 }
 
 function renderFlaws(flaws) {
@@ -777,29 +787,37 @@ function copyDiscordSummary() {
 }
 
 function syncToGoogleSheets() {
-  if (!currentCompiledPeople.length) { 
-    alert("No calculated payroll data available to sync."); 
+  const checkedBoxes = document.querySelectorAll('.person-checkbox:checked');
+  if (!checkedBoxes.length) { 
+    alert("No employees checked/selected to sync."); 
     return; 
   }
 
-  // 1. Open spreadsheet tab INSTANTLY to avoid browser popup blockers
+  // 1. Open spreadsheet tab instantly to bypass browser popup blockers
   window.open(GOOGLE_SHEET_URL, '_blank');
 
-  // 2. Transmit data to backend in background
-  const payload = currentCompiledPeople.map(p => ({
-    rank: p.rank,
-    dept: p.dept || "General",
-    name: p.name,
-    dutyHours: minsToHM(p.minutes),
-    dayMins: minsToHM(p.dayMins),
-    nightMins: minsToHM(p.nightMins),
-    shiftPay: p.shiftPay,
-    labPay: p.labPay,
-    ftoPay: p.ftoPay,
-    manualBonus: p.manualBonus,
-    pay: p.pay,
-    bonusEligible: p.bonusEligible ? "Eligible" : "Withheld"
-  }));
+  // 2. Build payload only for checked/active employees
+  const payload = [];
+  checkedBoxes.forEach(b => {
+    const idx = parseInt(b.getAttribute('data-index'), 10);
+    const p = currentCompiledPeople[idx];
+    if (p) {
+      payload.push({
+        rank: p.rank,
+        dept: p.dept || "General",
+        name: p.name,
+        dutyHours: minsToHM(p.minutes),
+        dayMins: minsToHM(p.dayMins),
+        nightMins: minsToHM(p.nightMins),
+        shiftPay: p.shiftPay,
+        labPay: p.labPay,
+        ftoPay: p.ftoPay,
+        manualBonus: p.manualBonus,
+        pay: p.pay,
+        bonusEligible: p.bonusEligible ? "Eligible" : "Withheld"
+      });
+    }
+  });
 
   fetch(SCRIPT_WEB_APP_URL, {
     method: "POST",
