@@ -561,7 +561,7 @@
       <div class="guide-step">
         <div class="guide-step-num">Step 1</div>
         <div class="guide-step-title">Paste Discord Logs</div>
-        <div class="guide-step-desc">Copy raw shift channels directly from Discord into Duty, Labtech, or FTO text boxes. Rank & departmental tags (HS, GS, ARO, T) are parsed automatically.</div>
+        <div class="guide-step-desc">Copy raw shift channels directly into Duty, Labtech, or FTO text boxes. Custom shorthand, department tags (HS, GS, ARO, T), and ARD divisions are parsed automatically.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 2</div>
@@ -580,16 +580,16 @@
       </div>
     </div>
     <div style="margin-top:20px; padding:16px; background:#0d1117; border-radius:10px; border:1px solid var(--line); font-size:13px; color:var(--muted); line-height:1.6;">
-      <b>Header format:</b> Departmental extensions like <code style="color:#fff">HS</code>, <code style="color:#fff">GS</code>, <code style="color:#fff">ARO</code>, or <code style="color:#fff">T</code> attached to ranks (e.g. <code style="color:#fff">DOD-T</code> or <code style="color:#fff">DOD-HS</code>) are fully supported and recognized automatically!<br>
-      <b>Invalid prefixes</b> (such as unrecognized roles like <code style="color:#fff">OD-GS</code>) are correctly caught and flagged.<br>
-      <b>FTO Training</b> is only paid out when the trainer's rank is one of the FTO-Authorized ranks below, and only for training days marked <code style="color:var(--good)">Passed</code> — a logged <code style="color:var(--bad)">Failed</code> pays $0.
+      <b>Flexible Ranks & Shorthands:</b> Custom short forms (e.g. Pharm, Psych, Trainee, Doc) along with department tags (<code style="color:#fff">HS</code>, <code style="color:#fff">GS</code>, <code style="color:#fff">ARO</code>, <code style="color:#fff">T</code>, <code style="color:#fff">ARD</code>) are fully supported!<br>
+      <b>Note on ARD:</b> ARD is recognized as a department extension/division tag and kept distinct from Rank 21 (ARO).<br>
+      <b>Invalid prefixes</b> (such as unrecognized roles like <code style="color:#fff">OD-GS</code>) are correctly caught and flagged.
     </div>
   </div>
 
   <div class="rank-ref-card">
     <h2>Registered Ranks Authorization Roster</h2>
     <div class="rank-desc">
-      All standard medical ranks, departmental tags (HS, GS, ARO, T/Training), High Command, and compound titles (e.g., DOD-T, DOD-HS) are fully recognized.
+      All standard medical ranks (including Pharmacist rank 11, Psychiatrist rank 12, ARO rank 21), custom short forms, department tags (HS, GS, ARO, T, ARD), and High Command compound titles are fully recognized.
     </div>
     <div class="rank-grid">
       <div>
@@ -605,6 +605,8 @@
           <span class="rank-pill blue">8. JP</span>
           <span class="rank-pill blue">9. JR-EMT</span>
           <span class="rank-pill blue">10. CS</span>
+          <span class="rank-pill blue">11. Pharmacist (Pharm)</span>
+          <span class="rank-pill blue">12. Psychiatrist (Psych)</span>
           <span class="rank-pill blue">13. Doctor</span>
           <span class="rank-pill blue">14. Sr Pharmacist</span>
           <span class="rank-pill blue">15. Paramedic</span>
@@ -613,7 +615,8 @@
           <span class="rank-pill blue">18. Lead Pharmacist</span>
           <span class="rank-pill blue">19. Lead Paramedic</span>
           <span class="rank-pill blue">20. Surgeon</span>
-          <span class="rank-pill blue">ARO / HS / GS / T</span>
+          <span class="rank-pill blue">21. ARO (Air Rescue)</span>
+          <span class="rank-pill blue">HS / GS / ARD / T</span>
         </div>
       </div>
       <div>
@@ -690,7 +693,7 @@
   <section class="card">
     <h2>4. Manual Adjustments</h2>
     <div class="row3">
-      <div><label>Employee Name & Rank Format</label><input id="labName" placeholder="e.g. DOD-HS | Roger Sagar"></div>
+      <div><label>Employee Name & Rank Format</label><input id="labName" placeholder="e.g. Pharm-HS | Roger Sagar"></div>
       <div><label>Medicines Created</label><input id="meds" type="number" min="0" value="0"></div>
       <div><label>Delivery Trips</label><input id="deliveries" type="number" min="0" value="0"></div>
     </div>
@@ -740,7 +743,7 @@
     </div>
     <div class="chat-box">
       <div id="chatLog" class="chat-log">
-        <div class="chat-msg assistant">Hey — I'm the built-in assistant. Ask me about rank rules, the Discord format, why a flag was raised, how pay is calculated, or type an employee's name to get their current earnings breakdown.</div>
+        <div class="chat-msg assistant">Hey — I'm the built-in assistant. Ask me about rank rules, shorthand formats, ARD vs ARO, why a flag was raised, how pay is calculated, or type an employee's name to get their current earnings breakdown.</div>
       </div>
       <div class="chat-input-row">
         <input type="text" id="chatInput" placeholder="Ask a question, or type an employee's name..." onkeydown="if(event.key==='Enter')submitChat()">
@@ -770,13 +773,13 @@ function loadLocalImage(event) {
 
 const KNOWN_BASE_RANKS = [
   "FRESHER", "TRAINEE", "MS", "INTERN", "LT", "FR", "CA", "JP", "JR-EMT", "CS",
-  "DOCTOR", "SENIOR PHARMACIST", "SR PHARMACIST", "PARAMEDIC", "PSYCHIATRIST SUPERVISOR", 
-  "PSYCH SUP", "ASSISTANT SURGEON", "ASST SURGEON", "LEAD PHARMACIST", "LEAD PARAMEDIC", 
-  "SURGEON", "ARO", "AIR RESCUE OPERATION", "FTO", "HR", "DOD", "HOD", "CO-HR", 
-  "DC", "COS", "DEPUTY CHIEF", "DEPUTYCHIEF"
+  "PHARMACIST", "PHARM", "PSYCHIATRIST", "PSYCH", "DOCTOR", "DOC", "SENIOR PHARMACIST", "SR PHARMACIST", 
+  "PARAMEDIC", "PSYCHIATRIST SUPERVISOR", "PSYCH SUP", "ASSISTANT SURGEON", "ASST SURGEON", 
+  "LEAD PHARMACIST", "LEAD PARAMEDIC", "SURGEON", "ARO", "AIR RESCUE OPERATION", 
+  "FTO", "HR", "DOD", "HOD", "CO-HR", "DC", "COS", "DEPUTY CHIEF", "DEPUTYCHIEF"
 ];
 
-const VALID_DEPARTMENTS = ["HS", "GS", "ARO", "T", "TRAINING"];
+const VALID_DEPARTMENTS = ["HS", "GS", "ARO", "ARD", "T", "TRAINING"];
 const HC_FTO_RANKS = ["FTO", "HR", "DOD", "HOD", "CO-HR", "DC", "COS", "DEPUTY CHIEF", "DEPUTYCHIEF", "ARO"];
 
 const RATES = {
@@ -831,8 +834,9 @@ function normalizeLocationCategory(label) {
 function cleanLine(s) { return s.replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim(); }
 
 /**
- * Intelligent Department & Rank parser.
- * Handles compound ranks like DOD-T, DOD-HS, or separated tags like DOD HS, OD-GS (which gets rejected).
+ * Intelligent Shorthand, Department & Rank parser.
+ * Handles custom shorthand forms (Pharm, Psych), department/division tags (HS, GS, ARO, ARD, T), 
+ * and compound formats (e.g. Pharm-HS, DOD-T, Psych-ARD).
  */
 function parseHeaderAndExtractRank(header, autoAcceptRanks) {
   if (!header) return { rank: null, name: "", valid: false };
@@ -846,18 +850,16 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
     const segment = parts[i].trim();
     const upperSeg = segment.toUpperCase();
 
-    // Check direct match with base ranks or compound department formats (e.g. DOD-HS, DOD-T)
     let matchedBase = null;
     let subParts = upperSeg.split(/[\-\/\s]+/);
 
-    // Check if first subpart is a valid known rank
+    // Check if the first subpart matches known base ranks or shorthand tags
     if (KNOWN_BASE_RANKS.includes(subParts[0])) {
-      // If there's a second subpart, ensure it is a valid department tag (HS, GS, ARO, T, TRAINING)
       if (subParts.length > 1) {
+        // Ensure second subpart is a recognized department/division tag (HS, GS, ARO, ARD, T, TRAINING)
         if (VALID_DEPARTMENTS.includes(subParts[1])) {
-          matchedBase = segment; // Valid compound rank (e.g., DOD-T, DOD-HS)
+          matchedBase = segment; // Valid compound rank (e.g., Pharm-HS, Psych-ARD, DOD-T)
         } else {
-          // Invalid department extension (e.g., OD-GS where OD is invalid or unrecognized)
           continue;
         }
       } else {
@@ -873,7 +875,7 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
   }
 
   if (!foundRank) {
-    // Fallback search for general strings if auto-accept is enabled
+    // Fallback general search if auto-accept is enabled
     for (let i = 0; i < parts.length; i++) {
       const cleaned = parts[i].replace(/[^a-zA-Z0-9\s\-]/g, "").trim().toUpperCase();
       if (cleaned.length > 0 && !/^\d+$/.test(cleaned) && !cleaned.includes("ID")) {
@@ -938,7 +940,7 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
         flaws.push({ 
           name: res.name || "Unknown Header", 
           reason: res.unverified ? 
-            `Line ${i + 1}: Unrecognized rank/department "${res.rank}" submitted without auto-accept enabled.` : 
+            `Line ${i + 1}: Unrecognized shorthand rank/department "${res.rank}" submitted without auto-accept enabled.` : 
             `Line ${i + 1}: Header "${line}" contains no recognized rank or invalid departmental extension (e.g. OD-GS). Post excluded.` 
         });
       }
@@ -1063,7 +1065,7 @@ function parseLab(text, autoAcceptRanks, ruleZeroProd) {
       if (!res.valid) {
         flaws.push({
           name: res.name || "Unknown Header",
-          reason: `Lab Header "${line}" has no recognized rank/department tag. Excluded.`
+          reason: `Lab Header "${line}" has no recognized rank/shorthand department. Excluded.`
         });
       }
     }
@@ -1135,7 +1137,7 @@ function parseFto(text, autoAcceptRanks) {
       if (!res.valid) {
         flaws.push({
           name: res.name || "Unknown FTO",
-          reason: `FTO Header "${rawHeader}" has no recognized rank/department. Excluded.`
+          reason: `FTO Header "${rawHeader}" has no recognized rank/shorthand. Excluded.`
         });
       }
       continue;
@@ -1393,8 +1395,8 @@ function submitChat() {
       reply = `⚠️ There are currently <b>${currentFlawsList.length} flag(s)</b> detected:<br>` +
               currentFlawsList.map(f => `• <b>${esc(f.name)}:</b> ${esc(f.reason)}`).join("<br>");
     }
-  } else if (lowerQ.includes("header") || lowerQ.includes("format")) {
-    reply = "<b>Header Format Rule:</b> Department tags like HS, GS, ARO, or T (e.g., DOD-T, DOD-HS) attached to authorized ranks are recognized automatically. Unrecognized prefixes like OD-GS are caught and rejected.";
+  } else if (lowerQ.includes("header") || lowerQ.includes("format") || lowerQ.includes("short")) {
+    reply = "<b>Shorthand & Header Format Rule:</b> Custom short forms (e.g., Pharm, Psych, Doc) and department/division tags like HS, GS, ARO, ARD, or T attached to valid ranks are recognized automatically. ARD is kept strictly separate from rank 21 (ARO).";
   } else if (lowerQ.includes("fto") || lowerQ.includes("rank")) {
     reply = "<b>FTO Authorization:</b> FTO training payouts are restricted to High Command and Training ranks (FTO, HR, DOD, HOD, CO-HR, DC, COS, Deputy Chief, ARO, etc.). Also, FTO logs must be marked <b>Passed</b>; logged <b>Failed</b> sessions pay $0.";
   } else if (lowerQ.includes("night") || lowerQ.includes("hour") || lowerQ.includes("pay")) {
@@ -1414,7 +1416,7 @@ function loadFtoExample() {
   document.getElementById("ftoRaw").value = `DOD-T | Leo Anta | 34725 — 19-08-2026 00:13
 Date : 13/08/2026
 Training Day 2
-Trainee Name | ID : Intern-HS | Het Patel | 55016
+Trainee Name | ID : Psych-ARD | Het Patel | 55016
 Start Time : 19:00
 End Time : 19:45
 Passed / Failed : Passed`;
@@ -1422,7 +1424,7 @@ Passed / Failed : Passed`;
 }
 
 function loadLabExample() {
-  document.getElementById("labRaw").value = `DOD-HS | assassin vortexrp
+  document.getElementById("labRaw").value = `Pharm-ARD | assassin vortexrp
 Date: 22/08/2026
 Captchas Completed: 02
 Deliveries Made: 07`;
@@ -1430,7 +1432,7 @@ Deliveries Made: 07`;
 }
 
 function loadExample() {
-  document.getElementById("raw").value = `SURGEON-GS | Roger Sagar
+  document.getElementById("raw").value = `Pharm-GS | Roger Sagar
 On Duty SH: 19:00
 Off Duty PH Front: 21:00`;
   analyzeAll();
