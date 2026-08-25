@@ -154,7 +154,7 @@
 
     <section class="card">
       <h2>3. FTO Training Rota</h2>
-      <textarea id="ftoRaw" placeholder="Paste FTO training logs here...&#10;Deputy | Jane Smith&#10;Day 1: 2&#10;Day 2: 1"></textarea>
+      <textarea id="ftoRaw" placeholder="HR | DemonDoma | 101843 [GRND] — 22-08-2026 18:15&#10;Training Day 2&#10;Trainee Name | ID : @MS-LT | Agent Armanii | 42048&#10;Start Time : 13:32&#10;End Time : 13:42&#10;FTO Feedback : Good&#10;Passed/Failed: Passed"></textarea>
       <div class="btns">
         <button onclick="analyzeAll()">Calculate FTO</button>
         <button class="secondary" onclick="loadFtoExample()">Sample FTO</button>
@@ -391,7 +391,6 @@ function parseLabtechLogs(text, autoAcceptRanks, ruleZeroProd) {
     const rawLine = lines[i], lineNum = i + 1;
     if (!rawLine) continue;
 
-    // Check if line is a header
     const parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
     if (parts.length >= 2 && !/captcha|medicine|delivery|meds|labs|on duty|off duty/i.test(rawLine)) {
       const res = parseHeaderAndExtractRank(rawLine, autoAcceptRanks);
@@ -400,7 +399,6 @@ function parseLabtechLogs(text, autoAcceptRanks, ruleZeroProd) {
       continue;
     }
 
-    // Match counts anywhere on the line or specific key-values
     const capMatch = rawLine.match(/(?:captcha|captchas|cap)\s*[:|=]?\s*(\d+)/i);
     const delMatch = rawLine.match(/(?:medicine\s*delivery|delivery|deliveries|meds)\s*[:|=]?\s*(\d+)/i);
 
@@ -425,28 +423,48 @@ function parseFtoLogs(text, autoAcceptRanks) {
   if (!text.trim()) return { entries: [], flaws: [], inspection: [] };
   const lines = text.split(/\r?\n/).map(cleanLine);
   const entries = [], flaws = [], inspection = [];
-  let currentPerson = { rank: "FTO", name: "Unknown Employee", valid: true };
+  
+  let currentTrainer = { rank: "FTO", name: "Unknown Trainer" };
+  let currentTrainingDay = 1;
 
   for (let i = 0; i < lines.length; i++) {
     const rawLine = lines[i], lineNum = i + 1;
     if (!rawLine) continue;
 
-    const parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
-    if (parts.length >= 2 && !/day\s*1|day\s*2/i.test(rawLine)) {
+    // Detect Trainer Header block
+    if (/^(hr|fto|command|hc|deputy)\s*\|/i.test(rawLine) || (rawLine.includes("|") && !rawLine.includes("Trainee"))) {
       const res = parseHeaderAndExtractRank(rawLine, autoAcceptRanks);
-      currentPerson = res.valid ? res : { rank: "FTO", name: rawLine, valid: true };
-      inspection.push({ lineNum, content: rawLine, type: "FTO Header", status: "Verified", reason: "Processed FTO header" });
+      if (res.valid) {
+        currentTrainer = res;
+      }
+      inspection.push({ lineNum, content: rawLine, type: "FTO Trainer Header", status: "Verified", reason: `Trainer set to ${currentTrainer.name} (${currentTrainer.rank})` });
       continue;
     }
 
-    const fto1Match = rawLine.match(/day\s*1\s*[:|=]?\s*(\d+)/i);
-    const fto2Match = rawLine.match(/day\s*2\s*[:|=]?\s*(\d+)/i);
+    // Detect Training Day type (Day 1 or Day 2)
+    if (/training\s*day\s*2/i.test(rawLine)) {
+      currentTrainingDay = 2;
+      continue;
+    } else if (/training\s*day\s*1/i.test(rawLine)) {
+      currentTrainingDay = 1;
+      continue;
+    }
 
-    if (fto1Match || fto2Match) {
-      const fto1 = fto1Match ? parseInt(fto1Match[1], 10) : 0;
-      const fto2 = fto2Match ? parseInt(fto2Match[1], 10) : 0;
-      entries.push({ name: currentPerson.name, rank: currentPerson.rank || "FTO", fto1, fto2, lineNum });
-      inspection.push({ lineNum, content: rawLine, type: "FTO Stats", status: "Verified", reason: `Parsed Day 1: ${fto1}, Day 2: ${fto2}` });
+    // Detect Trainee block line
+    if (/trainee/i.test(rawLine) || rawLine.includes("@")) {
+      let traineeNamePart = rawLine.replace(/trainee\s*name\s*[:|]/i, "").trim();
+      const parsedTrainee = parseHeaderAndExtractRank(traineeNamePart, true);
+      const tName = parsedTrainee.name || traineeNamePart;
+
+      entries.push({
+        name: currentTrainer.name,
+        rank: currentTrainer.rank,
+        fto1: currentTrainingDay === 1 ? 1 : 0,
+        fto2: currentTrainingDay === 2 ? 1 : 0,
+        lineNum
+      });
+
+      inspection.push({ lineNum, content: rawLine, type: "FTO Trainee Log", status: "Verified", reason: `Credited 1 Training Day ${currentTrainingDay} to trainer ${currentTrainer.name} for trainee ${tName}` });
     }
   }
   return { entries, flaws, inspection };
@@ -457,7 +475,7 @@ function loadExample() {
   analyzeAll();
 }
 function loadLabExample() { document.getElementById('labRaw').value = `FTO | David Vuković | 181883 [RMA] — 02:24\nOn Duty Labs: 14:00\nOff Duty Labs: 15:00\nCaptchas: 5\nMedicine Delivery: 10`; analyzeAll(); }
-function loadFtoExample() { document.getElementById('ftoRaw').value = `Deputy | Jane Smith\nDay 1: 2\nDay 2: 1`; analyzeAll(); }
+function loadFtoExample() { document.getElementById('ftoRaw').value = `HR | DemonDoma | 101843 [GRND] — 22-08-2026 18:15\nTraining Day 2\nTrainee Name | ID : @MS-LT | Agent Armanii | 42048\nStart Time : 13:32\nEnd Time : 13:42\nFTO Feedback : Good\nPassed/Failed: Passed`; analyzeAll(); }
 
 function addManual() {
   const name = document.getElementById('labName').value.trim();
@@ -657,7 +675,7 @@ function copyDiscordSummary() {
   msg += `# Total Employee Bonus  <a:FPSarrow_kalyug:1196873649152589914>  ${money(totalSum)} <:JG_CatShyAtamas:749600429272465518>\n\n`;
   msg += `Note: If you have any queries regarding your bonus, please contact : <@735845569972535337>  \n`;
   msg += `@Former Medic  @Former High Command Former EMS members are welcome back!\n`;
-  msg + `Saving Lives, Building Futures\n`;
+  msg += `Saving Lives, Building Futures\n`;
   msg += `Best Regards !\n\n`;
   msg += `<@&1405437550050410496> <@&1405432868511023134>`;
 
