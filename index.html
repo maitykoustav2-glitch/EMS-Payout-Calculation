@@ -660,9 +660,8 @@
 </div>
 
 <script>
-const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzgpnvDLqhLm0Mo24RDE7L2YOvw6jBTPluibYB4K0ic4ADIScCKoUdC1THBkGxLagRg_w/exec";
-// REPLACE THIS URL WITH YOUR ACTUAL GOOGLE SPREADSHEET URL
-const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit";
+const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx2Oll1NoHpkTodLDEYVbYwf8V6EwpOYeYhtw8_uZ6cMBwufIW0DBzIX993pcA66aZSbQ/exec";
+const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1WoJm1_bMVqwUeP8rd_86O933sfIkdWf6VrqM4ZqOFaQ/edit?usp=sharing";
 
 function loadLocalImage(event) {
   const file = event.target.files[0];
@@ -1131,7 +1130,7 @@ function copyDiscordSummary() {
   
   const formattedText = textLines.join("\n");
   navigator.clipboard.writeText(formattedText);
-  alert(`📋 Copied summary for ${selectedBoxes.length} selected employee(s) to clipboard!\nCharacter count: ${formattedText.length}`);
+  alert(`📋 Copied summary for ${selectedBoxes.length} selected employee(s) to clipboard!\nCharacter character count: ${formattedText.length}`);
 }
 
 function addManual() {
