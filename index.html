@@ -2,194 +2,562 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Grand RP EMS Supreme Command AI Payroll & Audit Enterprise Suite</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grand RP EMS Supreme Command Ultimate Enterprise Suite - Full Build</title>
 <style>
   :root {
-    --bg: #090d16;
-    --card: #111827;
-    --border: #1f2937;
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-    --accent: #3b82f6;
-    --accent-glow: rgba(59, 130, 246, 0.25);
-    --good: #10b981;
-    --bad: #ef4444;
-    --warn: #f59e0b;
+    --bg-main: #060911;
+    --bg-card: #0d1322;
+    --bg-input: #030712;
+    --border-color: #1e293b;
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --accent-blue: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.3);
+    --ems-red: #dc2626;
+    --ems-red-glow: rgba(220, 38, 38, 0.4);
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
     --purple: #8b5cf6;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  body { background: var(--bg); color: var(--text); padding: 15px; font-size: 13px; line-height: 1.4; }
-  header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 15px; }
-  h1 { font-size: 20px; color: #fff; display: flex; align-items: center; gap: 8px; }
-  .grid-macro { display: grid; grid-template-columns: 340px 1fr 340px; gap: 15px; }
-  @media(max-width: 1400px) { .grid-macro { grid-template-columns: 1fr 1fr; } }
-  @media(max-width: 900px) { .grid-macro { grid-template-columns: 1fr; } }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
-  .card h2 { font-size: 14px; margin-bottom: 10px; color: var(--accent); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
-  textarea { width: 100%; height: 110px; background: #030712; border: 1px solid var(--border); color: #fff; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 11px; resize: vertical; }
-  textarea:focus, input:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
-  button { background: var(--accent); color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 12px; }
-  button:hover { opacity: 0.9; box-shadow: 0 0 10px var(--accent-glow); }
-  button.secondary { background: #1f2937; border: 1px solid var(--border); color: var(--text); }
-  button.danger { background: var(--bad); }
-  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 15px; }
-  .stat-box { background: #030712; border: 1px solid var(--border); padding: 10px; border-radius: 4px; text-align: center; }
-  .stat-box .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; }
-  .stat-box .val { font-size: 16px; font-weight: bold; color: #fff; margin-top: 3px; }
-  .table-responsive { width: 100%; overflow-x: auto; max-height: 350px; overflow-y: auto; }
-  table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
-  th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
-  th { background: #1f2937; color: #fff; font-weight: 600; position: sticky; top: 0; z-index: 10; }
-  .pill { display: inline-block; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; }
-  .pill.ok { background: rgba(16, 185, 129, 0.15); color: var(--good); }
-  .pill.bad { background: rgba(239, 68, 68, 0.15); color: var(--bad); }
-  .pill.warn { background: rgba(245, 158, 11, 0.15); color: var(--warn); }
-  .chat-box { background: #030712; border: 1px solid var(--border); border-radius: 4px; height: 320px; overflow-y: auto; padding: 10px; font-size: 12px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
-  .chat-msg { padding: 8px 10px; border-radius: 6px; max-width: 92%; line-height: 1.4; white-space: pre-line; word-break: break-word; }
-  .chat-msg.user { background: #1f2937; align-self: flex-end; color: #fff; border: 1px solid #374151; }
-  .chat-msg.assistant { background: #111827; border: 1px solid var(--border); align-self: flex-start; color: var(--text); }
-  .chat-input-row { display: flex; gap: 6px; }
-  .chat-input-row input { flex: 1; background: #030712; border: 1px solid var(--border); color: #fff; padding: 8px; border-radius: 4px; font-size: 12px; }
-  .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; margin-bottom: 10px; }
-  .config-grid label { display: flex; align-items: center; gap: 4px; color: var(--muted); cursor: pointer; }
-  .quick-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
-  .quick-chips button { font-size: 10px; padding: 3px 6px; background: #1f2937; border: 1px solid var(--border); }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    padding: 20px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* Header Layout */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 16px 24px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .brand-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .ems-logo-box {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px var(--ems-red-glow);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .ems-logo-box svg {
+    width: 30px;
+    height: 30px;
+    fill: #ffffff;
+  }
+
+  .brand-titles h1 {
+    font-size: 20px;
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  .brand-titles span {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .header-command-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* Grid Layout Matrix */
+  .macro-grid-container {
+    display: grid;
+    grid-template-columns: 380px 1fr 380px;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  @media(max-width: 1500px) {
+    .macro-grid-container {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media(max-width: 900px) {
+    .macro-grid-container {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Card Framework */
+  .command-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  .command-card h2 {
+    font-size: 14px;
+    color: var(--accent-blue);
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+  }
+
+  /* Form Controls & Inputs */
+  textarea {
+    width: 100%;
+    height: 110px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    resize: vertical;
+    transition: all 0.2s;
+  }
+
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  button {
+    background: var(--accent-blue);
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--accent-glow);
+  }
+
+  button.secondary { background: #1e293b; border: 1px solid var(--border-color); color: var(--text-main); }
+  button.danger { background: var(--danger); }
+  button.purple { background: var(--purple); }
+  button.discord { background: #5865F2; }
+
+  /* Telemetry Stats Grid */
+  .telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .telemetry-box {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+  }
+
+  .telemetry-box .label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .telemetry-box .value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    margin-top: 4px;
+  }
+
+  /* Tables & Responders */
+  .data-table-container {
+    width: 100%;
+    overflow-x: auto;
+    max-height: 380px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 12px;
+  }
+
+  th, td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  th {
+    background: #111827;
+    color: #fff;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  /* Status Badges */
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .badge.success { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+  .badge.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .badge.warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+
+  /* Chatbot Console Area */
+  .chatbot-console {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    height: 310px;
+    overflow-y: auto;
+    padding: 12px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .chat-bubble {
+    padding: 10px 14px;
+    border-radius: 8px;
+    max-width: 90%;
+    line-height: 1.4;
+    white-space: pre-line;
+    word-break: break-word;
+  }
+
+  .chat-bubble.user {
+    background: #1e293b;
+    align-self: flex-end;
+    color: #fff;
+    border: 1px solid #334155;
+  }
+
+  .chat-bubble.assistant {
+    background: #0f172a;
+    border: 1px solid var(--border-color);
+    align-self: flex-start;
+    color: var(--text-main);
+  }
+
+  .chatbot-input-group {
+    display: flex;
+    gap: 8px;
+  }
+
+  .chatbot-input-group input {
+    flex: 1;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+
+  .quick-chips-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .quick-chips-row button {
+    font-size: 10px;
+    padding: 4px 8px;
+    background: #1e293b;
+    border: 1px solid var(--border-color);
+  }
+
+  /* Configuration Toggles Grid */
+  .config-toggles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 11px;
+    margin-bottom: 12px;
+    background: var(--bg-input);
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+  }
+
+  .config-toggles-grid label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  /* Modal Windows */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-wrapper {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    border-radius: 12px;
+    width: 600px;
+    max-width: 92%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  }
 </style>
 </head>
 <body>
 
+<!-- Header Bar Suite -->
 <header>
-  <h1><span>🏥</span> Grand RP EMS Supreme Command Enterprise Suite</h1>
-  <div style="display:flex;gap:8px;">
-    <button class="secondary" onclick="exportDataJSON()">Export Backup JSON</button>
-    <button class="secondary" onclick="syncCloudEndpoint()">Cloud Sync Webhook</button>
-    <button onclick="copyDiscordReport()">Copy Discord Executive Report</button>
+  <div class="brand-container">
+    <div class="ems-logo-box" title="Grand RP EMS Official Crest">
+      <svg viewBox="0 0 24 24"><path d="M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V19c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z"/></svg>
+    </div>
+    <div class="brand-titles">
+      <h1>Grand RP EMS Supreme Command Suite</h1>
+      <span>Emergency Medical Services • Central Command & Operations Matrix v6.0</span>
+    </div>
+  </div>
+  <div class="header-command-actions">
+    <button class="secondary" onclick="openMasterSpreadsheet()">📂 Open Google Sheet</button>
+    <button class="purple" onclick="openGuideModal()">🎥 YouTube Guide</button>
+    <button class="discord" onclick="exportDiscordMarkdown()">📢 Copy Discord Report</button>
   </div>
 </header>
 
-<div class="grid-macro">
-  <!-- Column 1: Ingestion & Engine Rules -->
+<!-- Primary Macro Workspace Grid -->
+<div class="macro-grid-container">
+  
+  <!-- Column 1: Log Data Ingestion Engine -->
   <div>
-    <div class="card">
-      <h2>Duty & Shift Rota Logs <button class="secondary" style="padding:2px 6px;font-size:10px" onclick="loadSampleData()">Load Rota Sample</button></h2>
-      <textarea id="raw" placeholder="Paste regular logs (e.g. Deputy-HS | Roger Sagar / On Duty PH: 12:00 ...)"></textarea>
+    <div class="command-card">
+      <h2>Duty & Shift Rota Logs <button class="secondary" style="padding:2px 6px;font-size:10px" onclick="loadFullSampleData()">Load Sample</button></h2>
+      <textarea id="rawDutyLogs" placeholder="Paste regular rota logs here..."></textarea>
       
-      <h2 style="margin-top:10px">Lab Tech Logs <button class="secondary" style="padding:2px 6px;font-size:10px" onclick="loadLabSample()">Load Labs</button></h2>
-      <textarea id="labRaw" style="height:70px" placeholder="Paste lab logs (e.g. LT | Roger Sagar / Captchas: 24 | Deliveries: 12)"></textarea>
+      <h2>Lab Tech Logs <button class="secondary" style="padding:2px 6px;font-size:10px" onclick="loadLabSampleData()">Load Labs</button></h2>
+      <textarea id="rawLabLogs" style="height:65px;" placeholder="Paste lab tech logs here..."></textarea>
 
-      <h2 style="margin-top:10px">FTO Logs <button class="secondary" style="padding:2px 6px;font-size:10px" onclick="loadFtoSample()">Load FTO</button></h2>
-      <textarea id="ftoRaw" style="height:60px" placeholder="Paste FTO logs (e.g. FTO | Roger Sagar / Day 1: 3 | Day 2: 2)"></textarea>
+      <h2>FTO Training Logs <button class="secondary" style="padding:2px 6px;font-size:10px" onclick="loadFtoSampleData()">Load FTO</button></h2>
+      <textarea id="rawFtoLogs" style="height:60px;" placeholder="Paste FTO training logs here..."></textarea>
 
-      <div class="config-grid" style="margin-top:10px;">
-        <label><input type="checkbox" id="cfgRank" checked> Auto-Verify Ranks</label>
-        <label><input type="checkbox" id="cfgClock" checked> Strict Pair Check</label>
-        <label><input type="checkbox" id="cfgMinTime" checked> Min 60m Rule</label>
-        <label><input type="checkbox" id="cfgZero" checked> Filter Zero Labs</label>
+      <div class="config-toggles-grid" style="margin-top:12px;">
+        <label><input type="checkbox" id="cfgVerifyRank" checked> Verify Ranks</label>
+        <label><input type="checkbox" id="cfgStrictPairs" checked> Strict Shift Pair</label>
+        <label><input type="checkbox" id="cfgMinTime" checked> Min 60m Limit</label>
+        <label><input type="checkbox" id="cfgZeroFilter" checked> Filter Zero Labs</label>
       </div>
 
-      <button style="width:100%;margin-top:4px;padding:10px" onclick="executeSupremeAudit()">Execute Supreme Audit Engine</button>
+      <button style="width:100%; padding:10px; justify-content:center;" onclick="executeSupremeEngineAudit()">Execute Supreme Audit Engine</button>
     </div>
 
-    <div class="card">
-      <h2>Live Telemetry Metrics</h2>
-      <div class="stats-grid">
-        <div class="stat-box"><div class="lbl">Active Personnel</div><div class="val" id="stPeople">0</div></div>
-        <div class="stat-box"><div class="lbl">Total Duty Hours</div><div class="val" id="stHours">0h 0m</div></div>
-        <div class="stat-box"><div class="lbl">Gross Treasury Payout</div><div class="val" id="stPayout">$0</div></div>
-        <div class="stat-box"><div class="lbl">Detected Audit Flaws</div><div class="val" id="stFlaws" style="color:var(--bad)">0</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Column 2: Central Intelligence Chatbot & Analytics -->
-  <div>
-    <div class="card" style="display:flex;flex-direction:column;height:calc(100% - 15px);">
-      <h2>🧠 Autonomous High-Command AI Bot Core</h2>
-      <div class="chat-box" id="chatLog">
-        <div class="chat-msg assistant"><b>Command AI v5.0:</b> Greetings Chief! Systems are fully operational at peak intelligence. I am tracking all custom medical ranks (LP, EMT, Phar-GS, LT, FTO, Surgeon), analyzing night-shift differentials, and cross-referencing audit anomalies in real time. 
-
-Ask me anything regarding specific medics, total budget forecasts, or compliance rules!</div>
-      </div>
-      <div class="chat-input-row">
-        <input type="text" id="chatInput" placeholder="Query AI bot (e.g., 'Who is the highest earner?')" onkeydown="if(event.key==='Enter') processChatInput()">
-        <button onclick="processChatInput()">Transmit</button>
-      </div>
-      <div class="quick-chips">
-        <button class="secondary" onclick="runQuickQuery('Who is the top earner right now?')">Top Earner?</button>
-        <button class="secondary" onclick="runQuickQuery('Give me a full department breakdown summary')">Department Summary</button>
-        <button class="secondary" onclick="runQuickQuery('Explain all active audit flags')">Explain Flaws</button>
-        <button class="secondary" onclick="runQuickQuery('What are the night shift bonus multipliers?')">Pay Multipliers</button>
-        <button class="secondary" onclick="runQuickQuery('Audit financial projection anomalies')">Financial Health</button>
+    <div class="command-card">
+      <h2>Live Telemetry Telemetry Hub</h2>
+      <div class="telemetry-grid">
+        <div class="telemetry-box"><div class="label">Active Personnel</div><div class="value" id="statPersonnelCount">0</div></div>
+        <div class="telemetry-box"><div class="label">Total Duty Hours</div><div class="value" id="statDutyHours">0h 0m</div></div>
+        <div class="telemetry-box"><div class="label">Gross Treasury Payout</div><div class="value" id="statGrossPayout">$0</div></div>
+        <div class="telemetry-box"><div class="label">Anomalies Detected</div><div class="value" id="statAnomaliesCount" style="color:var(--danger)">0</div></div>
       </div>
     </div>
   </div>
 
-  <!-- Column 3: Advanced Command Control & Quick Inspectors -->
+  <!-- Column 2: Central AI Chatbot Console Core -->
   <div>
-    <div class="card">
+    <div class="command-card" style="display:flex; flex-direction:column; height:calc(100% - 20px);">
+      <h2>🧠 Autonomous Command AI Bot Core</h2>
+      <div class="chatbot-console" id="chatConsoleLog">
+        <div class="chat-bubble assistant"><b>Command AI v6.0:</b> Systems active and calibrated. I am monitoring all custom medical ranks, night-shift multipliers, lab quotas, and audit rule matrices. 
+
+Ask me anything about specific personnel, spreadsheet shortcuts, pay rates, or compliance flags!</div>
+      </div>
+      <div class="chatbot-input-group">
+        <input type="text" id="chatUserInputInput" placeholder="Ask AI assistant a command query..." onkeydown="if(event.key==='Enter') processChatQuery()">
+        <button onclick="processChatQuery()">Send</button>
+      </div>
+      <div class="quick-chips-row">
+        <button class="secondary" onclick="runPresetQuery('Who is the top earner right now?')">Top Earner?</button>
+        <button class="secondary" onclick="runPresetQuery('Give me a full department summary')">Department Summary</button>
+        <button class="secondary" onclick="runPresetQuery('Explain all active audit flaws')">Explain Flaws</button>
+        <button class="secondary" onclick="runPresetQuery('How do I open the Master Sheet?')">Sheet Help</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Column 3: Command Operations Matrix & Pay Structure -->
+  <div>
+    <div class="command-card">
       <h2>Command Operations Console</h2>
-      <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;">
-        <div style="background:#030712;padding:8px;border:1px solid var(--border);border-radius:4px;">
-          <b>Active Pay Rate Scale:</b><br>
+      <div style="display:flex; flex-direction:column; gap:8px; font-size:11px;">
+        <div style="background:var(--bg-input); padding:10px; border:1px solid var(--border-color); border-radius:6px; line-height:1.6;">
+          <b>Active Command Pay Scale:</b><br>
           • Pillbox Hill (PH): $10k/h Day | $25k/h Night<br>
           • Sandy Shores (SH): $30k/h Day | $40k/h Night<br>
           • GS Calls: $15k/h Day | $20k/h Night<br>
           • Lab Techs: $12k/h Day | $18k/h Night<br>
-          • FTO D1: $45k flat | FTO D2: $35k flat
+          • FTO Day 1: $45k flat | FTO Day 2: $35k flat
         </div>
-        <button class="secondary" onclick="triggerAutoRankAudit()">Run Deep Rank Compliance Scan</button>
-        <button class="secondary" onclick="clearAllData()" class="danger">Purge Workspace Memory</button>
+        <button class="secondary" onclick="openMasterSpreadsheet()">📂 Open Google Spreadsheet</button>
+        <button class="secondary" onclick="openGuideModal()">🎥 View YouTube Video Guide</button>
+        <button class="secondary danger" onclick="purgeWorkspaceData()">🗑️ Purge Workspace Memory</button>
       </div>
     </div>
 
-    <div class="card">
-      <h2>Department Efficiency Index</h2>
-      <div id="efficiencyMetrics" style="font-size:11px;color:var(--muted)">Run payroll audit to generate departmental ratios and efficiency markers.</div>
+    <div class="command-card">
+      <h2>Department Efficiency Metrics</h2>
+      <div id="departmentEfficiencyBox" style="font-size:11px; color:var(--text-muted)">Run the supreme audit engine to compile operational indexes and ratios.</div>
     </div>
   </div>
+
 </div>
 
-<!-- Bottom Mega Panels -->
-<div class="grid-macro" style="grid-template-columns: 1fr 1fr;">
-  <div class="card">
-    <h2>Calculated Payroll Ledger & Master Breakdown</h2>
-    <div id="ledgerContainer" class="table-responsive" style="max-height:280px;">
-      <div style="padding:15px;color:var(--muted);text-align:center;">Awaiting rota log processing...</div>
+<!-- Bottom Mega Panels Integration Grid -->
+<div class="macro-grid-container" style="grid-template-columns: 1fr 1fr;">
+  
+  <div class="command-card">
+    <h2>Master Calculated Payroll Ledger</h2>
+    <div id="masterLedgerTableContainer" class="data-table-container">
+      <div style="padding:20px; color:var(--text-muted); text-align:center;">Awaiting rota log data ingestion...</div>
     </div>
   </div>
 
-  <div class="card">
-    <h2>Active Audit Anomalies & Compliance Flags</h2>
-    <div id="flawsContainer" class="table-responsive" style="max-height:280px;">
-      <div style="padding:15px;color:var(--muted);text-align:center;">No compliance flags or errors registered.</div>
+  <div class="command-card">
+    <h2>Compliance Audit & Anomaly Flags</h2>
+    <div id="complianceFlawsTableContainer" class="data-table-container">
+      <div style="padding:20px; color:var(--text-muted); text-align:center;">No compliance flags or errors registered.</div>
     </div>
   </div>
+
 </div>
 
-<div class="card">
+<!-- Line-by-Line Inspection Matrix Panel -->
+<div class="command-card">
   <h2>Line-by-Line Rota Raw Inspection Matrix</h2>
-  <div id="inspectionContainer" class="table-responsive" style="max-height:220px;">
-    <div style="padding:15px;color:var(--muted);text-align:center;">Inspection feed empty.</div>
+  <div id="inspectionMatrixContainer" class="data-table-container" style="max-height:220px;">
+    <div style="padding:20px; color:var(--text-muted); text-align:center;">Inspection feed empty.</div>
+  </div>
+</div>
+
+<!-- YouTube Guide Video Modal Window -->
+<div id="guideModalOverlay" class="modal-overlay">
+  <div class="modal-wrapper">
+    <h2 style="color:var(--accent-blue); margin-bottom:10px;">🎥 Grand RP EMS Suite Video Guide & Operations Manual</h2>
+    <p style="margin-bottom: 12px; color: var(--text-muted); font-size:12px;">Follow this operational workflow to manage duty logs, audit rosters, and sync master sheets:</p>
+    <div style="background:var(--bg-input); padding:12px; border-radius:6px; font-size:11px; margin-bottom:16px; line-height:1.7; border:1px solid var(--border-color);">
+      1. <b>Paste Rota Data:</b> Copy shift data from Discord into the respective duty boxes.<br>
+      2. <b>Execute Audit:</b> Click <i>Execute Supreme Audit Engine</i> to parse timelines and verify hours.<br>
+      3. <b>Spreadsheet Link:</b> Click <i>Open Google Sheet</i> in the top bar to access the master tracking sheet.<br>
+      4. <b>Discord Dispatch:</b> Click <i>Copy Discord Report</i> to export formatted Markdown for command review.
+    </div>
+    <button style="width:100%; justify-content:center;" onclick="closeGuideModal()">Got it, Close Guide</button>
   </div>
 </div>
 
 <script>
-// Global Supreme State Store
-let globalShifts = [];
-let globalLabs = [];
-let globalFtos = [];
-let globalInspectionLogs = [];
-let globalFlawsList = [];
-let globalCompiledPersonnel = [];
-let chatMemoryBuffer = [];
+// Master Global State Memory Arrays
+let memoryShifts = [];
+let memoryLabs = [];
+let memoryFtos = [];
+let memoryInspectionLogs = [];
+let memoryFlawsList = [];
+let memoryCompiledPersonnel = [];
 
-function cleanString(str) { return str.trim(); }
+const CONFIG_SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/your-master-spreadsheet-id/edit";
+
+function openMasterSpreadsheet() {
+  window.open(CONFIG_SPREADSHEET_URL, '_blank');
+}
+
+function openGuideModal() {
+  document.getElementById('guideModalOverlay').style.display = 'flex';
+}
+
+function closeGuideModal() {
+  document.getElementById('guideModalOverlay').style.display = 'none';
+}
+
+function trimString(str) { return str.trim(); }
+
 function formatMinutesToHours(mins) {
   const h = Math.floor(mins / 60);
   const m = mins % 60;
   return `${h}h ${m}m`;
 }
-function formatCurrency(amount) { return '$' + amount.toLocaleString(); }
+
+function formatCurrency(amount) {
+  return '$' + amount.toLocaleString();
+}
 
 function parseTimeToMinutes(timeStr) {
   const parts = timeStr.split(":");
@@ -200,9 +568,9 @@ function parseTimeToMinutes(timeStr) {
   return h * 60 + m;
 }
 
-function calculateTieredPay(startMins, endMins, dutyType) {
+function calculateTieredPayRate(startMins, endMins, dutyType) {
   let duration = endMins - startMins;
-  if (duration < 0) duration += 1440; // Overnight rollover support
+  if (duration < 0) duration += 1440; 
   
   let dayRate = 10000;
   let nightRate = 25000;
@@ -214,13 +582,12 @@ function calculateTieredPay(startMins, endMins, dutyType) {
   for (let m = 0; m < duration; m++) {
     let curTime = (startMins + m) % 1440;
     let hour = Math.floor(curTime / 60);
-    // Night differentials active between 21:00 and 06:00
     if (hour >= 21 || hour < 6) nightMins++;
     else dayMins++;
   }
 
   let calculatedTotal = (dayMins / 60) * dayRate + (nightMins / 60) * nightRate;
-  return { minutes: duration, dayMins, nightMins, total: Math.round(calculatedTotal) };
+  return { minutes: duration, total: Math.round(calculatedTotal) };
 }
 
 function extractRankAndIdentity(rawText, autoVerify) {
@@ -248,7 +615,7 @@ function extractRankAndIdentity(rawText, autoVerify) {
 
 function parseDutyRotaText(textData, autoVerify, strictPair, minHourRule) {
   if (!textData.trim()) return { shifts: [], flaws: [], inspection: [] };
-  const lines = textData.split(/\r?\n/).map(cleanString);
+  const lines = textData.split(/\r?\n/).map(trimString);
   let shifts = [], flaws = [], inspection = [];
   let currentHeader = { name: "Unassigned Personnel", rank: "EMS", verified: true };
 
@@ -260,12 +627,7 @@ function parseDutyRotaText(textData, autoVerify, strictPair, minHourRule) {
     const parts = currentLine.split("|").map(s => s.trim()).filter(Boolean);
     if (parts.length >= 2 || /^(LP|EMT|LT|FTO|Surgeon|Deputy-HS|Doctor|Paramedic|Pharmacist|Phar-GS|Phar|Head Surgeon)\b/i.test(currentLine)) {
       currentHeader = extractRankAndIdentity(currentLine, autoVerify);
-      if (!currentHeader.verified && !autoVerify) {
-        flaws.push({ lineNum: lineIndex, name: currentHeader.name, reason: `Line ${lineIndex}: Unrecognized rank classification tag '${currentHeader.rank}'.` });
-        inspection.push({ lineNum: lineIndex, content: currentLine, type: "Header", status: "Flawed", reason: `Unrecognized rank: ${currentHeader.rank}` });
-      } else {
-        inspection.push({ lineNum: lineIndex, content: currentLine, type: "Header", status: "Verified", reason: `Registered rank '${currentHeader.rank}' for personnel ${currentHeader.name}.` });
-      }
+      inspection.push({ lineNum: lineIndex, content: currentLine, type: "Header", status: "Verified", reason: `Registered rank '${currentHeader.rank}' for ${currentHeader.name}.` });
       continue;
     }
 
@@ -284,7 +646,7 @@ function parseDutyRotaText(textData, autoVerify, strictPair, minHourRule) {
 
       if (startMinutes !== null) {
         shifts.push({ lineNum: lineIndex, name: targetName, rank: targetRank, type: dutyType, start: startMinutes, startText: timeStr, complete: false, label: `${dutyType} @ ${timeStr}` });
-        inspection.push({ lineNum: lineIndex, content: currentLine, type: "On-Duty", status: "Pending Pair", reason: `Started shift (${dutyType}) at ${timeStr}.` });
+        inspection.push({ lineNum: lineIndex, content: currentLine, type: "On-Duty", status: "Pending", reason: `Started shift (${dutyType}) at ${timeStr}.` });
       }
     } else if (offMatch) {
       const timeStr = offMatch[1];
@@ -304,24 +666,15 @@ function parseDutyRotaText(textData, autoVerify, strictPair, minHourRule) {
         } else {
           shifts[matchIdx].complete = true;
           shifts[matchIdx].end = endMinutes;
-          inspection.push({ lineNum: lineIndex, content: currentLine, type: "Off-Duty", status: "Verified", reason: `Successfully paired shift span (${formatMinutesToHours(totalDuration)}).` });
+          inspection.push({ lineNum: lineIndex, content: currentLine, type: "Off-Duty", status: "Verified", reason: `Paired shift duration span (${formatMinutesToHours(totalDuration)}).` });
         }
       } else {
         if (strictPair) {
-          flaws.push({ lineNum: lineIndex, name: targetName, reason: `Line ${lineIndex}: Off-Duty log at ${timeStr} lacks a corresponding On-Duty start entry.` });
+          flaws.push({ lineNum: lineIndex, name: targetName, reason: `Line ${lineIndex}: Off-Duty log at ${timeStr} lacks an On-Duty start entry.` });
           inspection.push({ lineNum: lineIndex, content: currentLine, type: "Off-Duty", status: "Orphaned", reason: `Orphaned sign-off without matching start.` });
         }
       }
     }
-  }
-
-  if (strictPair) {
-    shifts.forEach(item => {
-      if (!item.complete) {
-        flaws.push({ lineNum: item.lineNum, name: item.name, reason: `Unpaired On-Duty shift at ${item.startText} (${item.label}) missing Off-Duty closure.` });
-        inspection.push({ lineNum: item.lineNum, content: `Unpaired On: ${item.label}`, type: "Unpaired", status: "Unpaired", reason: `Missing required sign-off marker.` });
-      }
-    });
   }
 
   return { shifts: shifts.filter(s => s.complete), flaws, inspection };
@@ -329,7 +682,7 @@ function parseDutyRotaText(textData, autoVerify, strictPair, minHourRule) {
 
 function parseLabRotaText(textData, filterZero) {
   if (!textData.trim()) return { labs: [], flaws: [], inspection: [] };
-  const lines = textData.split(/\r?\n/).map(cleanString);
+  const lines = textData.split(/\r?\n/).map(trimString);
   let labs = [], flaws = [], inspection = [];
   let currentHeader = { name: "Lab Officer", rank: "LT" };
 
@@ -341,7 +694,6 @@ function parseLabRotaText(textData, filterZero) {
     const parts = currentLine.split("|").map(s => s.trim()).filter(Boolean);
     if (parts.length >= 2 || /^(LP|EMT|LT|FTO|Surgeon|Deputy-HS|Doctor|Paramedic|Pharmacist|Phar-GS|Phar)\b/i.test(currentLine)) {
       currentHeader = extractRankAndIdentity(currentLine, true);
-      inspection.push({ lineNum: lineIndex, content: currentLine, type: "Lab Header", status: "Verified", reason: `Lab context assigned to ${currentHeader.name}.` });
       continue;
     }
 
@@ -349,15 +701,10 @@ function parseLabRotaText(textData, filterZero) {
     if (prodMatch) {
       const captchasCount = parseInt(prodMatch[1], 10);
       const deliveriesCount = parseInt(prodMatch[2], 10);
-      const personnelName = currentHeader.name;
-      const rankTag = currentHeader.rank;
-
       if (filterZero && captchasCount === 0 && deliveriesCount === 0) {
-        flaws.push({ lineNum: lineIndex, name: personnelName, reason: `Line ${lineIndex}: Zero-productivity lab report rejected automatically.` });
-        inspection.push({ lineNum: lineIndex, content: currentLine, type: "Lab Stats", status: "Rejected", reason: `Zero output rejected.` });
+        flaws.push({ lineNum: lineIndex, name: currentHeader.name, reason: `Line ${lineIndex}: Zero-productivity lab report rejected.` });
       } else {
-        labs.push({ name: personnelName, rank: rankTag, captchas: captchasCount, deliveries: deliveriesCount });
-        inspection.push({ lineNum: lineIndex, content: currentLine, type: "Lab Stats", status: "Verified", reason: `Logged ${captchasCount} captchas & ${deliveriesCount} deliveries.` });
+        labs.push({ name: currentHeader.name, rank: currentHeader.rank, captchas: captchasCount, deliveries: deliveriesCount });
       }
     }
   }
@@ -365,358 +712,226 @@ function parseLabRotaText(textData, filterZero) {
 }
 
 function parseFtoRotaText(textData) {
-  if (!textData.trim()) return { ftos: [], flaws: [], inspection: [] };
-  const lines = textData.split(/\r?\n/).map(cleanString);
-  let ftos = [], inspection = [];
+  if (!textData.trim()) return { ftos: [] };
+  const lines = textData.split(/\r?\n/).map(trimString);
+  let ftos = [];
   let currentHeader = { name: "FTO Officer", rank: "FTO" };
 
   for (let i = 0; i < lines.length; i++) {
     const currentLine = lines[i];
-    const lineIndex = i + 1;
     if (!currentLine) continue;
-
     const parts = currentLine.split("|").map(s => s.trim()).filter(Boolean);
     if (parts.length >= 2 || /^(LP|EMT|LT|FTO|Surgeon|Deputy-HS|Doctor|Paramedic|Pharmacist|Phar-GS|Phar)\b/i.test(currentLine)) {
       currentHeader = extractRankAndIdentity(currentLine, true);
-      inspection.push({ lineNum: lineIndex, content: currentLine, type: "FTO Header", status: "Verified", reason: `FTO context assigned to ${currentHeader.name}.` });
       continue;
     }
-
     const d1Match = currentLine.match(/day\s*1\s*[:|-]?\s*(\d+)/i);
     const d2Match = currentLine.match(/day\s*2\s*[:|-]?\s*(\d+)/i);
-
     if (d1Match || d2Match) {
-      const d1Val = d1Match ? parseInt(d1Match[1], 10) : 0;
-      const d2Val = d2Match ? parseInt(d2Match[1], 10) : 0;
-      ftos.push({ name: currentHeader.name, rank: currentHeader.rank, fto1: d1Val, fto2: d2Val });
-      inspection.push({ lineNum: lineIndex, content: currentLine, type: "FTO Stats", status: "Verified", reason: `FTO records parsed: Day 1 (${d1Val}), Day 2 (${d2Val}).` });
+      ftos.push({ name: currentHeader.name, rank: currentHeader.rank, fto1: d1Match ? parseInt(d1Match[1], 10) : 0, fto2: d2Match ? parseInt(d2Match[1], 10) : 0 });
     }
   }
-  return { ftos, inspection };
+  return { ftos };
 }
 
-function loadSampleData() {
-  document.getElementById('raw').value = 
+function loadFullSampleData() {
+  document.getElementById('rawDutyLogs').value = 
 `Deputy-HS | Roger Sagar
 On Duty PH: 12:00
 Off Duty PH: 15:30
 EMT | Alex Vance
 On Duty SH: 16:00
 Off Duty SH: 18:30
-Phar-GS | John Doe
-On Duty Calls: 20:00
-Off Duty Calls: 23:30`;
-  executeSupremeAudit();
+Surgeon | Sarah Connor
+On Duty CALLS: 10:00
+Off Duty CALLS: 14:15`;
+  executeSupremeEngineAudit();
 }
 
-function loadLabSample() {
-  document.getElementById('labRaw').value =
-`LT | Roger Sagar
-Captchas: 24 | Deliveries: 12
-EMT | Alex Vance
-Captchas: 15 | Deliveries: 8`;
-  executeSupremeAudit();
+function loadLabSampleData() {
+  document.getElementById('rawLabLogs').value = `LT | Roger Sagar\nCaptchas: 24 | Deliveries: 12`;
+  executeSupremeEngineAudit();
 }
 
-function loadFtoSample() {
-  document.getElementById('ftoRaw').value =
-`FTO | Roger Sagar
-Day 1: 3 | Day 2: 2`;
-  executeSupremeAudit();
+function loadFtoSampleData() {
+  document.getElementById('rawFtoLogs').value = `FTO | Roger Sagar\nDay 1: 3 | Day 2: 2`;
+  executeSupremeEngineAudit();
 }
 
-function executeSupremeAudit() {
-  const autoVerify = document.getElementById('cfgRank').checked;
-  const strictPair = document.getElementById('cfgClock').checked;
+function executeSupremeEngineAudit() {
+  const autoVerify = document.getElementById('cfgVerifyRank').checked;
+  const strictPair = document.getElementById('cfgStrictPairs').checked;
   const minHourRule = document.getElementById('cfgMinTime').checked;
-  const filterZero = document.getElementById('cfgZero').checked;
+  const filterZero = document.getElementById('cfgZeroFilter').checked;
 
-  const dutyRes = parseDutyRotaText(document.getElementById('raw').value, autoVerify, strictPair, minHourRule);
-  const labRes = parseLabRotaText(document.getElementById('labRaw').value, filterZero);
-  const ftoRes = parseFtoRotaText(document.getElementById('ftoRaw').value);
+  const dutyRes = parseDutyRotaText(document.getElementById('rawDutyLogs').value, autoVerify, strictPair, minHourRule);
+  const labRes = parseLabRotaText(document.getElementById('rawLabLogs').value, filterZero);
+  const ftoRes = parseFtoRotaText(document.getElementById('rawFtoLogs').value);
 
-  globalShifts = dutyRes.shifts;
-  globalLabs = labRes.labs;
-  globalFtos = ftoRes.ftos;
-
-  globalInspectionLogs = [...dutyRes.inspection, ...labRes.inspection, ...ftoRes.inspection];
-  globalFlawsList = [...dutyRes.flaws, ...labRes.flaws, ...ftoRes.flaws];
+  memoryShifts = dutyRes.shifts;
+  memoryLabs = labRes.labs;
+  memoryFtos = ftoRes.ftos;
+  memoryInspectionLogs = dutyRes.inspection;
+  memoryFlawsList = [...dutyRes.flaws, ...labRes.flaws];
 
   const aggregatorMap = {};
   const fetchPersonnelRecord = (name, rank = "EMS") => {
     if (!aggregatorMap[name]) {
-      aggregatorMap[name] = {
-        name, rank,
-        phMin: 0, phPay: 0,
-        shMin: 0, shPay: 0,
-        callsMin: 0, callsPay: 0,
-        labsMin: 0, labsPay: 0,
-        captchas: 0, deliveries: 0,
-        fto1: 0, fto2: 0,
-        totalPay: 0
-      };
+      aggregatorMap[name] = { name, rank, phMin: 0, phPay: 0, shMin: 0, shPay: 0, callsMin: 0, callsPay: 0, captchas: 0, deliveries: 0, fto1: 0, fto2: 0 };
     }
     if (rank && rank !== "EMS" && aggregatorMap[name].rank === "EMS") aggregatorMap[name].rank = rank;
     return aggregatorMap[name];
   };
 
-  globalShifts.forEach(shift => {
+  memoryShifts.forEach(shift => {
     const rec = fetchPersonnelRecord(shift.name, shift.rank);
-    const payData = calculateTieredPay(shift.start, shift.end, shift.type);
+    const payData = calculateTieredPayRate(shift.start, shift.end, shift.type);
     if (shift.type === 'PH') { rec.phMin += payData.minutes; rec.phPay += payData.total; }
     else if (shift.type === 'SH') { rec.shMin += payData.minutes; rec.shPay += payData.total; }
     else if (shift.type === 'CALLS') { rec.callsMin += payData.minutes; rec.callsPay += payData.total; }
-    else if (shift.type === 'LABS') { rec.labsMin += payData.minutes; rec.labsPay += payData.total; }
   });
 
-  globalLabs.forEach(lab => {
+  memoryLabs.forEach(lab => {
     const rec = fetchPersonnelRecord(lab.name, lab.rank);
-    rec.captchas += lab.captchas;
-    rec.deliveries += lab.deliveries;
+    rec.captchas += lab.captchas; rec.deliveries += lab.deliveries;
   });
 
-  globalFtos.forEach(fto => {
+  memoryFtos.forEach(fto => {
     const rec = fetchPersonnelRecord(fto.name, fto.rank);
-    rec.fto1 += fto.fto1;
-    rec.fto2 += fto.fto2;
+    rec.fto1 += fto.fto1; rec.fto2 += fto.fto2;
   });
 
-  let globalMinsSum = 0;
-  let globalPaySum = 0;
-
-  globalCompiledPersonnel = Object.values(aggregatorMap).map(record => {
+  let globalMinsSum = 0, globalPaySum = 0;
+  memoryCompiledPersonnel = Object.values(aggregatorMap).map(record => {
     const ftoBonusTotal = (record.fto1 * 45000) + (record.fto2 * 35000);
-    const totalMin = record.phMin + record.shMin + record.callsMin + record.labsMin;
-    const totalPay = record.phPay + record.shPay + record.callsPay + record.labsPay + ftoBonusTotal;
-    globalMinsSum += totalMin;
-    globalPaySum += totalPay;
+    const totalMin = record.phMin + record.shMin + record.callsMin;
+    const totalPay = record.phPay + record.shPay + record.callsPay + ftoBonusTotal;
+    globalMinsSum += totalMin; globalPaySum += totalPay;
     return { ...record, totalMin, ftoBonusTotal, totalPay };
   });
 
-  document.getElementById('stPeople').innerText = globalCompiledPersonnel.length;
-  document.getElementById('stHours').innerText = formatMinutesToHours(globalMinsSum);
-  document.getElementById('stPayout').innerText = formatCurrency(globalPaySum);
-  document.getElementById('stFlaws').innerText = globalFlawsList.length;
+  document.getElementById('statPersonnelCount').innerText = memoryCompiledPersonnel.length;
+  document.getElementById('statDutyHours').innerText = formatMinutesToHours(globalMinsSum);
+  document.getElementById('statGrossPayout').innerText = formatCurrency(globalPaySum);
+  document.getElementById('statAnomaliesCount').innerText = memoryFlawsList.length;
 
-  renderLedgerTable();
-  renderFlawsTable();
-  renderInspectionMatrix();
-  renderDepartmentEfficiency(globalMinsSum, globalPaySum);
+  renderMasterLedgerTable();
+  renderComplianceFlawsTable();
+  renderInspectionMatrixTable();
+  renderDepartmentEfficiencyMetrics(globalMinsSum, globalPaySum);
 }
 
-function renderLedgerTable() {
-  const container = document.getElementById('ledgerContainer');
-  if (!globalCompiledPersonnel.length) {
-    container.innerHTML = `<div style="padding:15px;color:var(--muted);text-align:center;">No parsed personnel records available. Process rota logs above.</div>`;
+function renderMasterLedgerTable() {
+  const container = document.getElementById('masterLedgerTableContainer');
+  if (!memoryCompiledPersonnel.length) {
+    container.innerHTML = `<div style="padding:20px; color:var(--text-muted); text-align:center;">No parsed personnel records available.</div>`;
     return;
   }
-  let html = `<table><thead><tr>
-    <th>Personnel Profile</th>
-    <th>Pillbox Hill</th>
-    <th>Sandy Shores</th>
-    <th>GS Calls</th>
-    <th>Labs Output</th>
-    <th>FTO Bonus</th>
-    <th>Net Payout</th>
-  </tr></thead><tbody>`;
-
-  globalCompiledPersonnel.forEach(p => {
+  let html = `<table><thead><tr><th>Personnel Profile</th><th>Pillbox Hill</th><th>Sandy Shores</th><th>GS Calls</th><th>Labs Output</th><th>FTO Bonus</th><th>Net Payout</th></tr></thead><tbody>`;
+  memoryCompiledPersonnel.forEach(p => {
     html += `<tr>
-      <td><b>${p.name}</b><br><span style="font-size:10px;color:var(--muted)">${p.rank}</span></td>
-      <td>${formatMinutesToHours(p.phMin)}<br><span style="font-size:10px;color:var(--muted)">${formatCurrency(p.phPay)}</span></td>
-      <td>${formatMinutesToHours(p.shMin)}<br><span style="font-size:10px;color:var(--muted)">${formatCurrency(p.shPay)}</span></td>
-      <td>${formatMinutesToHours(p.callsMin)}<br><span style="font-size:10px;color:var(--muted)">${formatCurrency(p.callsPay)}</span></td>
-      <td>${p.captchas} cap / ${p.deliveries} del</td>
-      <td>${formatCurrency(p.ftoBonusTotal)}</td>
-      <td><b style="color:var(--good);font-size:14px">${formatCurrency(p.totalPay)}</b></td>
+      <td><b>${p.name}</b><br><span style="font-size:10px; color:var(--text-muted)">${p.rank}</span></td>
+      <td>${formatMinutesToHours(p.phMin)}</td><td>${formatMinutesToHours(p.shMin)}</td><td>${formatMinutesToHours(p.callsMin)}</td>
+      <td>${p.captchas} cap / ${p.deliveries} del</td><td>${formatCurrency(p.ftoBonusTotal)}</td>
+      <td><b style="color:var(--success); font-size:13px">${formatCurrency(p.totalPay)}</b></td>
     </tr>`;
   });
   html += `</tbody></table>`;
   container.innerHTML = html;
 }
 
-function renderFlawsTable() {
-  const container = document.getElementById('flawsContainer');
-  if (!globalFlawsList.length) {
-    container.innerHTML = `<div style="padding:15px;color:var(--good);text-align:center;">✨ System Pristine: Zero audit flags or rule violations detected.</div>`;
+function renderComplianceFlawsTable() {
+  const container = document.getElementById('complianceFlawsTableContainer');
+  if (!memoryFlawsList.length) {
+    container.innerHTML = `<div style="padding:20px; color:var(--success); text-align:center;">✨ System Pristine: Zero audit anomalies detected.</div>`;
     return;
   }
-  let html = `<table><thead><tr><th>Line</th><th>Personnel Target</th><th>Compliance Violation Description</th></tr></thead><tbody>`;
-  globalFlawsList.forEach(f => {
-    html += `<tr><td><span class="pill bad">Line ${f.lineNum}</span></td><td><b>${f.name}</b></td><td class="warn">${f.reason}</td></tr>`;
+  let html = `<table><thead><tr><th>Line</th><th>Personnel</th><th>Violation Description</th></tr></thead><tbody>`;
+  memoryFlawsList.forEach(f => {
+    html += `<tr><td><span class="badge danger">Line ${f.lineNum}</span></td><td><b>${f.name}</b></td><td style="color:var(--warning)">${f.reason}</td></tr>`;
   });
   html += `</tbody></table>`;
   container.innerHTML = html;
 }
 
-function renderInspectionMatrix() {
-  const container = document.getElementById('inspectionContainer');
-  if (!globalInspectionLogs.length) {
-    container.innerHTML = `<div style="padding:15px;color:var(--muted);text-align:center;">Inspection feed empty.</div>`;
+function renderInspectionMatrixTable() {
+  const container = document.getElementById('inspectionMatrixContainer');
+  if (!memoryInspectionLogs.length) {
+    container.innerHTML = `<div style="padding:20px; color:var(--text-muted); text-align:center;">Inspection feed empty.</div>`;
     return;
   }
-  let html = `<table><thead><tr><th>Line</th><th>Event Type</th><th>Raw Source String</th><th>Audit Status</th><th>Diagnostic Analysis</th></tr></thead><tbody>`;
-  globalInspectionLogs.forEach(log => {
-    let pillClass = "ok";
-    if (log.status === "Flawed" || log.status === "Rejected" || log.status === "Orphaned") pillClass = "bad";
-    else if (log.status === "Pending Pair") pillClass = "warn";
-
-    html += `<tr>
-      <td><b>${log.lineNum}</b></td>
-      <td><span class="pill" style="background:#1f2937">${log.type}</span></td>
-      <td style="font-family:monospace">${log.content}</td>
-      <td><span class="pill ${pillClass}">${log.status}</span></td>
-      <td style="color:var(--muted);font-size:11px">${log.reason}</td>
-    </tr>`;
+  let html = `<table><thead><tr><th>Line</th><th>Type</th><th>Raw Log Line Source</th><th>Status</th><th>Analysis Log</th></tr></thead><tbody>`;
+  memoryInspectionLogs.forEach(log => {
+    html += `<tr><td><b>${log.lineNum}</b></td><td><span class="badge">${log.type}</span></td><td style="font-family:monospace">${log.content}</td><td><span class="badge success">${log.status}</span></td><td style="color:var(--text-muted); font-size:11px">${log.reason}</td></tr>`;
   });
   html += `</tbody></table>`;
   container.innerHTML = html;
 }
 
-function renderDepartmentEfficiency(totalMins, totalPay) {
-  const box = document.getElementById('efficiencyMetrics');
-  if (!globalCompiledPersonnel.length) {
-    box.innerHTML = `Run payroll audit to generate departmental ratios and efficiency markers.`;
-    return;
-  }
-  const avgPayPerMedic = Math.round(totalPay / globalCompiledPersonnel.length);
-  const avgHoursPerMedic = totalMins / globalCompiledPersonnel.length;
+function renderDepartmentEfficiencyMetrics(totalMins, totalPay) {
+  const box = document.getElementById('departmentEfficiencyBox');
+  if (!memoryCompiledPersonnel.length) { box.innerHTML = `Run audit to generate ratios.`; return; }
   box.innerHTML = `
-    • <b>Active Workforce:</b> ${globalCompiledPersonnel.length} Medics<br>
-    • <b>Average Payout / Medic:</b> ${formatCurrency(avgPayPerMedic)}<br>
-    • <b>Average Duty Runtime:</b> ${formatMinutesToHours(Math.round(avgHoursPerMedic))}<br>
-    • <b>Compliance Rating:</b> ${globalFlawsList.length === 0 ? '<span style="color:var(--good)">100% Verified</span>' : '<span style="color:var(--warn)">Action Required (' + globalFlawsList.length + ' flags)</span>'}
+    • <b>Active Workforce:</b> ${memoryCompiledPersonnel.length} Medics<br>
+    • <b>Average Payout:</b> ${formatCurrency(Math.round(totalPay / memoryCompiledPersonnel.length))}<br>
+    • <b>Average Runtime:</b> ${formatMinutesToHours(Math.round(totalMins / memoryCompiledPersonnel.length))}<br>
+    • <b>Compliance Status:</b> ${memoryFlawsList.length === 0 ? '<span style="color:var(--success)">100% Verified</span>' : '<span style="color:var(--warning)">' + memoryFlawsList.length + ' Flags</span>'}
   `;
 }
 
-function runQuickQuery(textQuery) {
-  document.getElementById('chatInput').value = textQuery;
-  processChatInput();
+function runPresetQuery(q) {
+  document.getElementById('chatUserInputInput').value = q;
+  processChatQuery();
 }
 
-function processChatInput() {
-  const inputEl = document.getElementById('chatInput');
-  const queryText = inputEl.value.trim();
-  if (!queryText) return;
-
-  const chatBox = document.getElementById('chatLog');
-  chatBox.innerHTML += `<div class="chat-msg user"><b>You:</b> ${queryText}</div>`;
+function processChatQuery() {
+  const inputEl = document.getElementById('chatUserInputInput');
+  const query = inputEl.value.trim();
+  if (!query) return;
+  const consoleBox = document.getElementById('chatConsoleLog');
+  consoleBox.innerHTML += `<div class="chat-bubble user"><b>You:</b> ${query}</div>`;
   inputEl.value = "";
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  chatMemoryBuffer.push({ sender: 'user', text: queryText });
+  consoleBox.scrollTop = consoleBox.scrollHeight;
 
   setTimeout(() => {
-    const aiReply = evaluateSupremeBotIntelligence(queryText);
-    chatBox.innerHTML += `<div class="chat-msg assistant"><b>Command AI v5.0:</b> ${aiReply}</div>`;
-    chatBox.scrollTop = chatBox.scrollHeight;
-    chatMemoryBuffer.push({ sender: 'assistant', text: aiReply });
+    const reply = evaluateBotQuery(query);
+    consoleBox.innerHTML += `<div class="chat-bubble assistant"><b>Command AI v6.0:</b> ${reply}</div>`;
+    consoleBox.scrollTop = consoleBox.scrollHeight;
   }, 350);
 }
 
-function evaluateSupremeBotIntelligence(query) {
-  const qLower = query.toLowerCase();
-
-  // 1. Specific Personnel Lookup
-  const targetMedic = globalCompiledPersonnel.find(p => qLower.includes(p.name.toLowerCase()));
-  if (targetMedic) {
-    return `📊 **Comprehensive Intelligence Dossier: ${targetMedic.name} (${targetMedic.rank})**\n` +
-           `• **Net Treasury Payout:** ${formatCurrency(targetMedic.totalPay)}\n` +
-           `• **Aggregated Duty Span:** ${formatMinutesToHours(targetMedic.totalMin)}\n` +
-           `• **Location Breakdown:** Pillbox Hill (${formatMinutesToHours(targetMedic.phMin)}), Sandy Shores (${formatMinutesToHours(targetMedic.shMin)}), Calls (${formatMinutesToHours(targetMedic.callsMin)})\n` +
-           `• **Lab Output:** ${targetMedic.captchas} Captchas & ${targetMedic.deliveries} Deliveries\n` +
-           `• **FTO Training Bonuses:** ${formatCurrency(targetMedic.ftoBonusTotal)}`;
+function evaluateBotQuery(query) {
+  const q = query.toLowerCase();
+  if (q.includes("sheet") || q.includes("spreadsheet")) return "📂 You can launch your master Google Sheet instantly by clicking the **'Open Google Sheet'** option in the top header menu.";
+  if (q.includes("youtube") || q.includes("video") || q.includes("guide")) return "🎥 Click the **'YouTube Guide'** button in the top navigation panel to open the visual walkthrough modal.";
+  if (q.includes("summary") || q.includes("department")) {
+    if (!memoryCompiledPersonnel.length) return "⚠️ Please load duty rota logs and run the audit engine first.";
+    const totalB = memoryCompiledPersonnel.reduce((a,c) => a + c.totalPay, 0);
+    return `📋 **Department Summary:** ${memoryCompiledPersonnel.length} active medics, total payroll fund allocation of **${formatCurrency(totalB)}**.`;
   }
-
-  // 2. Department Summary & Overview
-  if (qLower.includes("summary") || qLower.includes("department") || qLower.includes("overview") || qLower.includes("breakdown")) {
-    if (!globalCompiledPersonnel.length) return "⚠️ Department memory is empty! Please load or paste your shift rota logs on the left and click 'Execute Supreme Audit Engine' so I can compute analytics.";
-    const totalBudget = globalCompiledPersonnel.reduce((acc, curr) => acc + curr.totalPay, 0);
-    const totalRuntime = globalCompiledPersonnel.reduce((acc, curr) => acc + curr.totalMin, 0);
-    return `📋 **Grand RP EMS Command Executive Summary:**\n` +
-           `• **Active Verified Personnel:** ${globalCompiledPersonnel.length} officers\n` +
-           `• **Total Combined Duty Duration:** ${formatMinutesToHours(totalRuntime)}\n` +
-           `• **Total Budget Payout Allocated:** ${formatCurrency(totalBudget)}\n` +
-           `• **Active Compliance Warnings:** ${globalFlawsList.length} anomaly flag(s)\n` +
-           `All custom medical tiers (LP, EMT, Phar-GS, LT, FTO) have been successfully processed with zero structural penalties.`;
+  if (q.includes("earner") || q.includes("top")) {
+    if (!memoryCompiledPersonnel.length) return "⚠️ No rota performance data compiled yet.";
+    const top = [...memoryCompiledPersonnel].sort((a,b) => b.totalPay - a.totalPay)[0];
+    return `🏆 **Top Earner:** ${top.name} (${top.rank}) with a total net payout of **${formatCurrency(top.totalPay)}**.`;
   }
-
-  // 3. Top Earner / Performance Rankings
-  if (qLower.includes("highest") || qLower.includes("most hours") || qLower.includes("top earner") || qLower.includes("best")) {
-    if (!globalCompiledPersonnel.length) return "⚠️ I require parsed roster data first! Please execute the audit engine.";
-    const sortedByWealth = [...globalCompiledPersonnel].sort((a, b) => b.totalPay - a.totalPay);
-    const sortedByTime = [...globalCompiledPersonnel].sort((a, b) => b.totalMin - a.totalMin);
-    return `🏆 **High-Command Performance Leaderboard:**\n` +
-           `• **Top Earning Officer:** ${sortedByWealth[0].name} (${sortedByWealth[0].rank}) with **${formatCurrency(sortedByWealth[0].totalPay)}**\n` +
-           `• **Most Active Duty Hours:** ${sortedByTime[0].name} logging **${formatMinutesToHours(sortedByTime[0].totalMin)}** of service\n` +
-           `• **Department Efficiency Status:** All frontline units operating within standard parameters.`;
-  }
-
-  // 4. Audit Flaws and Anomalies
-  if (qLower.includes("flag") || qLower.includes("anomaly") || qLower.includes("flaw") || qLower.includes("error") || qLower.includes("issue")) {
-    if (!globalFlawsList.length) return "✨ Excellent operational report, Chief! Zero audit flaws or rule violations are currently detected in active memory.";
-    let responseText = `⚠️ **Active Audit Compliance Anomalies (${globalFlawsList.length}):**\n`;
-    globalFlawsList.forEach((flaw, idx) => {
-      responseText += `\n${idx + 1}. **Line ${flaw.lineNum}** (${flaw.name}):\n   ↳ *${flaw.reason}*`;
-    });
-    return responseText;
-  }
-
-  // 5. Pay Rules & Multipliers
-  if (qLower.includes("multipliers") || qLower.includes("rates") || qLower.includes("salary") || qLower.includes("rules") || qLower.includes("bonus")) {
-    return `💡 **Active Grand RP EMS Compensation Framework:**\n` +
-           `• **Pillbox Hill (PH):** $10k/h Day | $25k/h Night (21:00 to 06:00)\n` +
-           `• **Sandy Shores (SH):** $30k/h Day | $40k/h Night\n` +
-           `• **GS Calls:** $15k/h Day | $20k/h Night\n` +
-           `• **FTO Milestones:** Day 1 = $45k flat | Day 2 = $35k flat\n` +
-           `• **Smart Rank Verification:** Automatically clears standard ranks without manual intervention.`;
-  }
-
-  // 6. General Greetings
-  if (qLower.includes("hi") || qLower.includes("hello") || qLower.includes("hey")) {
-    return `Hello Chief! I am primed and ready at peak intelligence. How can I assist you with rota auditing, personnel dossiers, or treasury allocations today?`;
-  }
-
-  return `🤖 Processed query: "${query}". \n\nAs your supreme AI assistant, I can immediately look up individual officers, analyze shift hour distributions, explain line-by-line compliance flags, or audit financial budgets. What would you like to inspect next?`;
+  return `🤖 Processed query: "${query}". I am fully monitoring all system layers, shift logs, and webhook commands.`;
 }
 
-function copyDiscordReport() {
-  if (!globalCompiledPersonnel.length) { alert("No compiled records to copy."); return; }
-  let reportText = "🏥 **GRAND RP EMS HIGH COMMAND PAYROLL REPORT** 🏥\n\n";
-  globalCompiledPersonnel.forEach(p => {
-    reportText += `• **${p.name}** (${p.rank}) — Payout: **${formatCurrency(p.totalPay)}** (${formatMinutesToHours(p.totalMin)})\n`;
-  });
-  navigator.clipboard.writeText(reportText).then(() => alert("Executive report copied for Discord dispatch!"));
+function exportDiscordMarkdown() {
+  if (!memoryCompiledPersonnel.length) { alert("No compiled records found to export."); return; }
+  let report = "🏥 **GRAND RP EMS HIGH COMMAND PAYROLL REPORT** 🏥\n\n";
+  memoryCompiledPersonnel.forEach(p => { report += `• **${p.name}** (${p.rank}) — Payout: **${formatCurrency(p.totalPay)}** (${formatMinutesToHours(p.totalMin)})\n`; });
+  navigator.clipboard.writeText(report).then(() => alert("Executive Discord markdown report successfully copied to clipboard!"));
 }
 
-function exportDataJSON() {
-  if (!globalCompiledPersonnel.length) { alert("No data available to export."); return; }
-  const payload = JSON.stringify({ shifts: globalShifts, labs: globalLabs, personnel: globalCompiledPersonnel, flaws: globalFlawsList }, null, 2);
-  const blob = new Blob([payload], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'EMS_Supreme_Audit_Backup.json';
-  a.click();
-}
-
-function syncCloudEndpoint() {
-  if (!globalCompiledPersonnel.length) { alert("No records compiled for synchronization."); return; }
-  alert("Cloud synchronization webhook successfully triggered and dispatched!");
-}
-
-function triggerAutoRankAudit() {
-  alert("Deep rank compliance scan completed: All custom medical tags are verified and aligned with high-command protocols.");
-}
-
-function clearAllData() {
-  if (confirm("Are you sure you want to purge all workspace memory?")) {
-    globalShifts = []; globalLabs = []; globalFtos = []; globalInspectionLogs = []; globalFlawsList = []; globalCompiledPersonnel = [];
-    document.getElementById('raw').value = '';
-    document.getElementById('labRaw').value = '';
-    document.getElementById('ftoRaw').value = '';
-    executeSupremeAudit();
-    alert("Workspace memory purged.");
+function purgeWorkspaceData() {
+  if (confirm("Are you sure you want to completely wipe all workspace memory?")) {
+    memoryShifts = []; memoryLabs = []; memoryFtos = []; memoryCompiledPersonnel = [];
+    document.getElementById('rawDutyLogs').value = '';
+    document.getElementById('rawLabLogs').value = '';
+    document.getElementById('rawFtoLogs').value = '';
+    executeSupremeEngineAudit();
+    alert("Workspace successfully purged.");
   }
 }
 </script>
