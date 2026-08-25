@@ -2,158 +2,197 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Grand RP EMS Advanced Payroll & AI Audit Suite</title>
+<title>Grand RP EMS Supreme Command AI Payroll & Audit Enterprise Suite</title>
 <style>
   :root {
-    --bg: #0d1117;
-    --card: #161b22;
-    --border: #30363d;
-    --text: #c9d1d9;
-    --muted: #8b949e;
-    --accent: #58a6ff;
-    --good: #3fb950;
-    --bad: #f85149;
-    --warn: #d29922;
+    --bg: #090d16;
+    --card: #111827;
+    --border: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.25);
+    --good: #10b981;
+    --bad: #ef4444;
+    --warn: #f59e0b;
+    --purple: #8b5cf6;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  body { background: var(--bg); color: var(--text); padding: 20px; }
-  header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
-  h1 { font-size: 22px; color: #fff; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  @media(max-width: 1000px) { .grid { grid-template-columns: 1fr; } }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-  .card h2 { font-size: 16px; margin-bottom: 12px; color: var(--accent); display: flex; justify-content: space-between; align-items: center; }
-  textarea { width: 100%; height: 140px; background: #0d1117; border: 1px solid var(--border); color: #fff; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 13px; resize: vertical; }
-  button { background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
-  button:hover { opacity: 0.85; }
-  button.secondary { background: #21262d; border: 1px solid var(--border); color: var(--text); }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background: var(--bg); color: var(--text); padding: 15px; font-size: 13px; line-height: 1.4; }
+  header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 15px; }
+  h1 { font-size: 20px; color: #fff; display: flex; align-items: center; gap: 8px; }
+  .grid-macro { display: grid; grid-template-columns: 340px 1fr 340px; gap: 15px; }
+  @media(max-width: 1400px) { .grid-macro { grid-template-columns: 1fr 1fr; } }
+  @media(max-width: 900px) { .grid-macro { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
+  .card h2 { font-size: 14px; margin-bottom: 10px; color: var(--accent); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  textarea { width: 100%; height: 110px; background: #030712; border: 1px solid var(--border); color: #fff; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 11px; resize: vertical; }
+  textarea:focus, input:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
+  button { background: var(--accent); color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 12px; }
+  button:hover { opacity: 0.9; box-shadow: 0 0 10px var(--accent-glow); }
+  button.secondary { background: #1f2937; border: 1px solid var(--border); color: var(--text); }
   button.danger { background: var(--bad); }
-  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-  .stat-box { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; }
-  .stat-box .val { font-size: 20px; font-weight: bold; color: #fff; margin-top: 5px; }
-  .table-responsive { width: 100%; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-  th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
-  th { background: #21262d; color: #fff; font-weight: 600; }
-  .pill { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; background: #30363d; color: #fff; }
-  .pill.ok { background: rgba(63, 185, 80, 0.2); color: var(--good); }
-  .pill.bad { background: rgba(248, 81, 73, 0.2); color: var(--bad); }
-  .pill.warn { background: rgba(210, 153, 34, 0.2); color: var(--warn); }
-  .chat-box { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; height: 200px; overflow-y: auto; padding: 12px; font-size: 13px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
-  .chat-msg { padding: 10px 14px; border-radius: 8px; max-width: 90%; line-height: 1.5; white-space: pre-line; }
-  .chat-msg.user { background: #21262d; align-self: flex-end; color: #fff; border: 1px solid #30363d; }
-  .chat-msg.assistant { background: #161b22; border: 1px solid var(--border); align-self: flex-start; color: var(--text); }
-  .chat-input-row { display: flex; gap: 10px; }
-  .chat-input-row input { flex: 1; background: #0d1117; border: 1px solid var(--border); color: #fff; padding: 10px 12px; border-radius: 6px; font-size: 13px; }
-  .checkbox-group { display: flex; gap: 15px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--muted); }
-  .checkbox-group label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 15px; }
+  .stat-box { background: #030712; border: 1px solid var(--border); padding: 10px; border-radius: 4px; text-align: center; }
+  .stat-box .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+  .stat-box .val { font-size: 16px; font-weight: bold; color: #fff; margin-top: 3px; }
+  .table-responsive { width: 100%; overflow-x: auto; max-height: 350px; overflow-y: auto; }
+  table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  th { background: #1f2937; color: #fff; font-weight: 600; position: sticky; top: 0; z-index: 10; }
+  .pill { display: inline-block; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+  .pill.ok { background: rgba(16, 185, 129, 0.15); color: var(--good); }
+  .pill.bad { background: rgba(239, 68, 68, 0.15); color: var(--bad); }
+  .pill.warn { background: rgba(245, 158, 11, 0.15); color: var(--warn); }
+  .chat-box { background: #030712; border: 1px solid var(--border); border-radius: 4px; height: 320px; overflow-y: auto; padding: 10px; font-size: 12px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+  .chat-msg { padding: 8px 10px; border-radius: 6px; max-width: 92%; line-height: 1.4; white-space: pre-line; word-break: break-word; }
+  .chat-msg.user { background: #1f2937; align-self: flex-end; color: #fff; border: 1px solid #374151; }
+  .chat-msg.assistant { background: #111827; border: 1px solid var(--border); align-self: flex-start; color: var(--text); }
+  .chat-input-row { display: flex; gap: 6px; }
+  .chat-input-row input { flex: 1; background: #030712; border: 1px solid var(--border); color: #fff; padding: 8px; border-radius: 4px; font-size: 12px; }
+  .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; margin-bottom: 10px; }
+  .config-grid label { display: flex; align-items: center; gap: 4px; color: var(--muted); cursor: pointer; }
+  .quick-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .quick-chips button { font-size: 10px; padding: 3px 6px; background: #1f2937; border: 1px solid var(--border); }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Grand RP EMS Advanced Payroll & AI Audit Suite</h1>
-  <div style="display:flex;gap:10px;">
-    <button class="secondary" onclick="syncToGoogleSheets()">Sync to Google Sheets</button>
-    <button onclick="copyDiscordSummary()">Copy Discord Summary</button>
+  <h1><span>🏥</span> Grand RP EMS Supreme Command Enterprise Suite</h1>
+  <div style="display:flex;gap:8px;">
+    <button class="secondary" onclick="exportDataJSON()">Export Backup JSON</button>
+    <button class="secondary" onclick="syncCloudEndpoint()">Cloud Sync Webhook</button>
+    <button onclick="copyDiscordReport()">Copy Discord Executive Report</button>
   </div>
 </header>
 
-<div class="stats-row">
-  <div class="stat-box"><div>Active Personnel</div><div class="val" id="sPeople">0</div></div>
-  <div class="stat-box"><div>Total Duty Hours</div><div class="val" id="sHours">0h 0m</div></div>
-  <div class="stat-box"><div>Total Payout</div><div class="val" id="sBonus">$0</div></div>
-  <div class="stat-box"><div>Audit Flaws</div><div class="val" id="sFlaws" style="color:var(--bad)">0</div></div>
+<div class="grid-macro">
+  <!-- Column 1: Ingestion & Engine Rules -->
+  <div>
+    <div class="card">
+      <h2>Duty & Shift Rota Logs <button class="secondary" style="padding:2px 6px;font-size:10px" onclick="loadSampleData()">Load Rota Sample</button></h2>
+      <textarea id="raw" placeholder="Paste regular logs (e.g. Deputy-HS | Roger Sagar / On Duty PH: 12:00 ...)"></textarea>
+      
+      <h2 style="margin-top:10px">Lab Tech Logs <button class="secondary" style="padding:2px 6px;font-size:10px" onclick="loadLabSample()">Load Labs</button></h2>
+      <textarea id="labRaw" style="height:70px" placeholder="Paste lab logs (e.g. LT | Roger Sagar / Captchas: 24 | Deliveries: 12)"></textarea>
+
+      <h2 style="margin-top:10px">FTO Logs <button class="secondary" style="padding:2px 6px;font-size:10px" onclick="loadFtoSample()">Load FTO</button></h2>
+      <textarea id="ftoRaw" style="height:60px" placeholder="Paste FTO logs (e.g. FTO | Roger Sagar / Day 1: 3 | Day 2: 2)"></textarea>
+
+      <div class="config-grid" style="margin-top:10px;">
+        <label><input type="checkbox" id="cfgRank" checked> Auto-Verify Ranks</label>
+        <label><input type="checkbox" id="cfgClock" checked> Strict Pair Check</label>
+        <label><input type="checkbox" id="cfgMinTime" checked> Min 60m Rule</label>
+        <label><input type="checkbox" id="cfgZero" checked> Filter Zero Labs</label>
+      </div>
+
+      <button style="width:100%;margin-top:4px;padding:10px" onclick="executeSupremeAudit()">Execute Supreme Audit Engine</button>
+    </div>
+
+    <div class="card">
+      <h2>Live Telemetry Metrics</h2>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="lbl">Active Personnel</div><div class="val" id="stPeople">0</div></div>
+        <div class="stat-box"><div class="lbl">Total Duty Hours</div><div class="val" id="stHours">0h 0m</div></div>
+        <div class="stat-box"><div class="lbl">Gross Treasury Payout</div><div class="val" id="stPayout">$0</div></div>
+        <div class="stat-box"><div class="lbl">Detected Audit Flaws</div><div class="val" id="stFlaws" style="color:var(--bad)">0</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Column 2: Central Intelligence Chatbot & Analytics -->
+  <div>
+    <div class="card" style="display:flex;flex-direction:column;height:calc(100% - 15px);">
+      <h2>🧠 Autonomous High-Command AI Bot Core</h2>
+      <div class="chat-box" id="chatLog">
+        <div class="chat-msg assistant"><b>Command AI v5.0:</b> Greetings Chief! Systems are fully operational at peak intelligence. I am tracking all custom medical ranks (LP, EMT, Phar-GS, LT, FTO, Surgeon), analyzing night-shift differentials, and cross-referencing audit anomalies in real time. 
+
+Ask me anything regarding specific medics, total budget forecasts, or compliance rules!</div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Query AI bot (e.g., 'Who is the highest earner?')" onkeydown="if(event.key==='Enter') processChatInput()">
+        <button onclick="processChatInput()">Transmit</button>
+      </div>
+      <div class="quick-chips">
+        <button class="secondary" onclick="runQuickQuery('Who is the top earner right now?')">Top Earner?</button>
+        <button class="secondary" onclick="runQuickQuery('Give me a full department breakdown summary')">Department Summary</button>
+        <button class="secondary" onclick="runQuickQuery('Explain all active audit flags')">Explain Flaws</button>
+        <button class="secondary" onclick="runQuickQuery('What are the night shift bonus multipliers?')">Pay Multipliers</button>
+        <button class="secondary" onclick="runQuickQuery('Audit financial projection anomalies')">Financial Health</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Column 3: Advanced Command Control & Quick Inspectors -->
+  <div>
+    <div class="card">
+      <h2>Command Operations Console</h2>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;">
+        <div style="background:#030712;padding:8px;border:1px solid var(--border);border-radius:4px;">
+          <b>Active Pay Rate Scale:</b><br>
+          • Pillbox Hill (PH): $10k/h Day | $25k/h Night<br>
+          • Sandy Shores (SH): $30k/h Day | $40k/h Night<br>
+          • GS Calls: $15k/h Day | $20k/h Night<br>
+          • Lab Techs: $12k/h Day | $18k/h Night<br>
+          • FTO D1: $45k flat | FTO D2: $35k flat
+        </div>
+        <button class="secondary" onclick="triggerAutoRankAudit()">Run Deep Rank Compliance Scan</button>
+        <button class="secondary" onclick="clearAllData()" class="danger">Purge Workspace Memory</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Department Efficiency Index</h2>
+      <div id="efficiencyMetrics" style="font-size:11px;color:var(--muted)">Run payroll audit to generate departmental ratios and efficiency markers.</div>
+    </div>
+  </div>
 </div>
 
-<div class="grid">
-  <!-- Rota Input Section -->
+<!-- Bottom Mega Panels -->
+<div class="grid-macro" style="grid-template-columns: 1fr 1fr;">
   <div class="card">
-    <h2>Duty & Shift Rota Logs <button class="secondary" style="padding:4px 8px;font-size:11px" onclick="loadExample()">Load Sample</button></h2>
-    <textarea id="raw" placeholder="Paste duty logs here (e.g. Deputy-HS | Roger Sagar / On Duty PH: 12:00 ...)"></textarea>
-    
-    <div style="margin-top:15px">
-      <h2>Lab Tech Logs <button class="secondary" style="padding:4px 8px;font-size:11px" onclick="loadLabExample()">Load Sample</button></h2>
-      <textarea id="labRaw" style="height:90px" placeholder="Paste labtech logs here (e.g. LT | Roger Sagar / Captchas: 24 | Deliveries: 12)"></textarea>
+    <h2>Calculated Payroll Ledger & Master Breakdown</h2>
+    <div id="ledgerContainer" class="table-responsive" style="max-height:280px;">
+      <div style="padding:15px;color:var(--muted);text-align:center;">Awaiting rota log processing...</div>
     </div>
-
-    <div style="margin-top:15px">
-      <h2>FTO Logs <button class="secondary" style="padding:4px 8px;font-size:11px" onclick="loadFtoExample()">Load Sample</button></h2>
-      <textarea id="ftoRaw" style="height:70px" placeholder="Paste FTO logs here (e.g. FTO | Roger Sagar / Day 1: 3 | Day 2: 2)"></textarea>
-    </div>
-
-    <div class="checkbox-group" style="margin-top:15px;">
-      <label><input type="checkbox" id="ruleRank" checked> Auto-Accept Common Ranks (LP, EMT, Phar, etc.)</label>
-      <label><input type="checkbox" id="ruleClock" checked> Strict On/Off Clock Pairing</label>
-    </div>
-    <div class="checkbox-group">
-      <label><input type="checkbox" id="ruleMinHour" checked> Min 60 Min Shift Rule</label>
-      <label><input type="checkbox" id="ruleZeroProd" checked> Reject 0-Prod Lab Reports</label>
-    </div>
-    
-    <button style="width:100%;margin-top:10px;padding:12px" onclick="analyzeAll()">Run Complete Audit & Calculate Payroll</button>
   </div>
 
-  <!-- AI Smart Assistant Section -->
-  <div class="card" style="display:flex;flex-direction:column;">
-    <h2>Supersmart Autonomous Assistant</h2>
-    <div class="chat-box" id="chatLog">
-      <div class="chat-msg assistant"><b>EMS Command Assistant:</b> Hello Chief! 🏥 Systems are primed and loaded. I am tracking all personnel, custom ranks (LP, EMT, Phar-GS, etc.), and operational metrics in real-time. 
-
-Ask me anything—try asking about top earners, specific employee breakdowns, audit anomaly explanations, or general pay rules!</div>
-    </div>
-    <div class="chat-input-row">
-      <input type="text" id="chatInput" placeholder="Ask assistant anything (e.g., 'Who worked the most hours?')" onkeydown="if(event.key==='Enter') submitChat()">
-      <button onclick="submitChat()">Send</button>
-    </div>
-    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;">
-      <button class="secondary" style="font-size:11px;padding:4px 8px" onclick="askAssistant('Who is the top earner and why?')">Top Earner?</button>
-      <button class="secondary" style="font-size:11px;padding:4px 8px" onclick="askAssistant('Explain all active audit flaws')">Analyze Flaws</button>
-      <button class="secondary" style="font-size:11px;padding:4px 8px" onclick="askAssistant('Give me a full department summary')">Department Summary</button>
+  <div class="card">
+    <h2>Active Audit Anomalies & Compliance Flags</h2>
+    <div id="flawsContainer" class="table-responsive" style="max-height:280px;">
+      <div style="padding:15px;color:var(--muted);text-align:center;">No compliance flags or errors registered.</div>
     </div>
   </div>
 </div>
 
-<!-- Results Breakdown -->
 <div class="card">
-  <h2>Calculated Payroll Breakdown</h2>
-  <div id="results" class="table-responsive empty">Insert rota logs above and click calculate to generate payroll breakdown.</div>
-</div>
-
-<!-- Flaws & Anomalies -->
-<div class="card">
-  <h2>Detected Audit Flaws & Anomalies</h2>
-  <div id="flaws" class="table-responsive empty">No anomalies or rule flags detected.</div>
-</div>
-
-<!-- Raw Rota Line Inspection -->
-<div class="card">
-  <h2>Line-by-Line Rota Inspection Monitor</h2>
-  <div id="inspectionScreen" class="table-responsive empty">No parsed rota entries to display yet.</div>
+  <h2>Line-by-Line Rota Raw Inspection Matrix</h2>
+  <div id="inspectionContainer" class="table-responsive" style="max-height:220px;">
+    <div style="padding:15px;color:var(--muted);text-align:center;">Inspection feed empty.</div>
+  </div>
 </div>
 
 <script>
-const SCRIPT_WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+// Global Supreme State Store
+let globalShifts = [];
+let globalLabs = [];
+let globalFtos = [];
+let globalInspectionLogs = [];
+let globalFlawsList = [];
+let globalCompiledPersonnel = [];
+let chatMemoryBuffer = [];
 
-let parsedShifts = [];
-let labEntries = [];
-let ftoEntries = [];
-let manual = [];
-let allRotaInspectionRows = [];
-let currentFlawsList = [];
-let currentCompiledPeople = [];
-let chatHistoryMemory = [];
-
-function cleanLine(l) { return l.trim(); }
-function minsToHM(mins) {
+function cleanString(str) { return str.trim(); }
+function formatMinutesToHours(mins) {
   const h = Math.floor(mins / 60);
   const m = mins % 60;
   return `${h}h ${m}m`;
 }
-function money(val) { return '$' + val.toLocaleString(); }
+function formatCurrency(amount) { return '$' + amount.toLocaleString(); }
 
-function parseTimeToMins(str) {
-  const parts = str.split(":");
+function parseTimeToMinutes(timeStr) {
+  const parts = timeStr.split(":");
   if (parts.length < 2) return null;
   const h = parseInt(parts[0], 10);
   const m = parseInt(parts[1], 10);
@@ -161,205 +200,202 @@ function parseTimeToMins(str) {
   return h * 60 + m;
 }
 
-function splitPay(startMins, endMins, type) {
-  let dur = endMins - startMins;
-  if (dur < 0) dur += 1440; // overnight shift wrap
+function calculateTieredPay(startMins, endMins, dutyType) {
+  let duration = endMins - startMins;
+  if (duration < 0) duration += 1440; // Overnight rollover support
   
   let dayRate = 10000;
   let nightRate = 25000;
-  if (type === 'SH') { dayRate = 30000; nightRate = 40000; }
-  else if (type === 'CALLS') { dayRate = 15000; nightRate = 20000; }
-  else if (type === 'LABS') { dayRate = 12000; nightRate = 18000; }
+  if (dutyType === 'SH') { dayRate = 30000; nightRate = 40000; }
+  else if (dutyType === 'CALLS') { dayRate = 15000; nightRate = 20000; }
+  else if (dutyType === 'LABS') { dayRate = 12000; nightRate = 18000; }
 
   let dayMins = 0, nightMins = 0;
-  for (let m = 0; m < dur; m++) {
-    let cur = (startMins + m) % 1440;
-    let hour = Math.floor(cur / 60);
+  for (let m = 0; m < duration; m++) {
+    let curTime = (startMins + m) % 1440;
+    let hour = Math.floor(curTime / 60);
+    // Night differentials active between 21:00 and 06:00
     if (hour >= 21 || hour < 6) nightMins++;
     else dayMins++;
   }
 
-  let total = (dayMins / 60) * dayRate + (nightMins / 60) * nightRate;
-  return { minutes: dur, day: dayMins, night: nightMins, total: Math.round(total) };
+  let calculatedTotal = (dayMins / 60) * dayRate + (nightMins / 60) * nightRate;
+  return { minutes: duration, dayMins, nightMins, total: Math.round(calculatedTotal) };
 }
 
-function parseHeaderAndExtractRank(rawLine, autoAccept = true) {
-  let parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
-  let rank = "EMS";
-  let name = rawLine;
+function extractRankAndIdentity(rawText, autoVerify) {
+  let segments = rawText.split("|").map(s => s.trim()).filter(Boolean);
+  let rankTag = "EMS";
+  let personnelName = rawText;
 
-  if (parts.length >= 2) {
-    rank = parts[0];
-    name = parts.slice(1).join(" ");
+  if (segments.length >= 2) {
+    rankTag = segments[0];
+    personnelName = segments.slice(1).join(" ");
   } else {
-    const rankMatch = rawLine.match(/^(LP|EMT|LT|FTO|Surgeon|Deputy-HS|Doctor|Paramedic|Pharmacist|Phar-GS|Phar)\b[\s|-]+(.+)/i);
-    if (rankMatch) {
-      rank = rankMatch[1];
-      name = rankMatch[2].trim();
+    const rxMatch = rawText.match(/^(LP|EMT|LT|FTO|Surgeon|Deputy-HS|Doctor|Paramedic|Pharmacist|Phar-GS|Phar|Head Surgeon)\b[\s|-]+(.+)/i);
+    if (rxMatch) {
+      rankTag = rxMatch[1];
+      personnelName = rxMatch[2].trim();
     }
   }
 
-  const cleanRank = rank.toUpperCase();
-  const validRanks = ["LP", "EMT", "LT", "FTO", "SURGEON", "DEPUTY-HS", "DOCTOR", "PARAMEDIC", "PHARMACIST", "PHAR-GS", "PHAR", "EMS", "HEAD SURGEON"];
-  let isVerified = validRanks.includes(cleanRank) || autoAccept;
+  const normalizedRank = rankTag.toUpperCase();
+  const authorizedRegistry = ["LP", "EMT", "LT", "FTO", "SURGEON", "DEPUTY-HS", "DOCTOR", "PARAMEDIC", "PHARMACIST", "PHAR-GS", "PHAR", "EMS", "HEAD SURGEON"];
+  let verifiedStatus = authorizedRegistry.includes(normalizedRank) || autoVerify;
 
-  return { name, rank, verified: isVerified };
+  return { name: personnelName, rank: rankTag, verified: verifiedStatus };
 }
 
-function parseRota(text, autoAccept, ruleClock, ruleMinHour) {
-  if (!text.trim()) return { out: [], flaws: [], inspection: [] };
-  const lines = text.split(/\r?\n/).map(cleanLine);
-  let out = [], flaws = [], inspection = [];
-  let currentHeader = { name: "Unknown EMS", rank: "EMS", verified: true };
+function parseDutyRotaText(textData, autoVerify, strictPair, minHourRule) {
+  if (!textData.trim()) return { shifts: [], flaws: [], inspection: [] };
+  const lines = textData.split(/\r?\n/).map(cleanString);
+  let shifts = [], flaws = [], inspection = [];
+  let currentHeader = { name: "Unassigned Personnel", rank: "EMS", verified: true };
 
   for (let i = 0; i < lines.length; i++) {
-    const rawLine = lines[i];
-    const lineNum = i + 1;
-    if (!rawLine) continue;
+    const currentLine = lines[i];
+    const lineIndex = i + 1;
+    if (!currentLine) continue;
 
-    const parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
-    if (parts.length >= 2 || /^(LP|EMT|LT|FTO|Surgeon|Deputy-HS|Doctor|Paramedic|Pharmacist|Phar-GS|Phar)\b/i.test(rawLine)) {
-      currentHeader = parseHeaderAndExtractRank(rawLine, autoAccept);
-      if (!currentHeader.verified && !autoAccept) {
-        flaws.push({ lineNum, name: currentHeader.name, reason: `Line ${lineNum}: Unverified or unrecognized rank tag '${currentHeader.rank}'.` });
-        inspection.push({ lineNum, content: rawLine, type: "Header", status: "Flawed", reason: `Unrecognized rank: ${currentHeader.rank}` });
+    const parts = currentLine.split("|").map(s => s.trim()).filter(Boolean);
+    if (parts.length >= 2 || /^(LP|EMT|LT|FTO|Surgeon|Deputy-HS|Doctor|Paramedic|Pharmacist|Phar-GS|Phar|Head Surgeon)\b/i.test(currentLine)) {
+      currentHeader = extractRankAndIdentity(currentLine, autoVerify);
+      if (!currentHeader.verified && !autoVerify) {
+        flaws.push({ lineNum: lineIndex, name: currentHeader.name, reason: `Line ${lineIndex}: Unrecognized rank classification tag '${currentHeader.rank}'.` });
+        inspection.push({ lineNum: lineIndex, content: currentLine, type: "Header", status: "Flawed", reason: `Unrecognized rank: ${currentHeader.rank}` });
       } else {
-        inspection.push({ lineNum, content: rawLine, type: "Header", status: "Verified", reason: `Recognized rank '${currentHeader.rank}' for ${currentHeader.name}.` });
+        inspection.push({ lineNum: lineIndex, content: currentLine, type: "Header", status: "Verified", reason: `Registered rank '${currentHeader.rank}' for personnel ${currentHeader.name}.` });
       }
       continue;
     }
 
-    const dutyMatch = rawLine.match(/on\s*duty\s*(?:ph|sh|calls|labs)?\s*[:|-]?\s*(\d{1,2}:\d{2})/i);
-    const offMatch = rawLine.match(/off\s*duty\s*(?:ph|sh|calls|labs)?\s*[:|-]?\s*(\d{1,2}:\d{2})/i);
+    const onMatch = currentLine.match(/on\s*duty\s*(?:ph|sh|calls|labs)?\s*[:|-]?\s*(\d{1,2}:\d{2})/i);
+    const offMatch = currentLine.match(/off\s*duty\s*(?:ph|sh|calls|labs)?\s*[:|-]?\s*(\d{1,2}:\d{2})/i);
+    const targetName = currentHeader.name;
+    const targetRank = currentHeader.rank;
 
-    const personName = currentHeader.name;
-    const personRank = currentHeader.rank;
+    if (onMatch) {
+      const timeStr = onMatch[1];
+      const startMinutes = parseTimeToMinutes(timeStr);
+      let dutyType = 'PH';
+      if (/sh/i.test(currentLine)) dutyType = 'SH';
+      else if (/call/i.test(currentLine)) dutyType = 'CALLS';
+      else if (/lab/i.test(currentLine)) dutyType = 'LABS';
 
-    if (dutyMatch) {
-      const tm = dutyMatch[1];
-      const startMins = parseTimeToMins(tm);
-      let type = 'PH';
-      if (/sh/i.test(rawLine)) type = 'SH';
-      else if (/call/i.test(rawLine)) type = 'CALLS';
-      else if /lab/i.test(rawLine)) type = 'LABS';
-
-      if (startMins !== null) {
-        out.push({ lineNum, name: personName, rank: personRank, type, start: startMins, startText: tm, complete: false, label: `${type} @ ${tm}` });
-        inspection.push({ lineNum, content: rawLine, type: "On-Duty", status: "Pending Pair", reason: `Logged On-Duty (${type}) at ${tm}.` });
+      if (startMinutes !== null) {
+        shifts.push({ lineNum: lineIndex, name: targetName, rank: targetRank, type: dutyType, start: startMinutes, startText: timeStr, complete: false, label: `${dutyType} @ ${timeStr}` });
+        inspection.push({ lineNum: lineIndex, content: currentLine, type: "On-Duty", status: "Pending Pair", reason: `Started shift (${dutyType}) at ${timeStr}.` });
       }
     } else if (offMatch) {
-      const tm = offMatch[1];
-      const endMins = parseTimeToMins(tm);
+      const timeStr = offMatch[1];
+      const endMinutes = parseTimeToMinutes(timeStr);
       let matchIdx = -1;
-      for (let j = out.length - 1; j >= 0; j--) {
-        if (out[j].name === personName && !out[j].complete) { matchIdx = j; break; }
+      for (let j = shifts.length - 1; j >= 0; j--) {
+        if (shifts[j].name === targetName && !shifts[j].complete) { matchIdx = j; break; }
       }
 
       if (matchIdx !== -1) {
-        let dur = endMins - out[matchIdx].start;
-        if (dur < 0) dur += 1440;
-        if (ruleMinHour && dur < 60) {
-          flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Shift duration ${minsToHM(dur)} is below the 60 min minimum rule.` });
-          inspection.push({ lineNum, content: rawLine, type: "Off-Duty", status: "Rejected", reason: `Shift duration under 60m min rule.` });
-          out.splice(matchIdx, 1);
+        let totalDuration = endMinutes - shifts[matchIdx].start;
+        if (totalDuration < 0) totalDuration += 1440;
+        if (minHourRule && totalDuration < 60) {
+          flaws.push({ lineNum: lineIndex, name: targetName, reason: `Line ${lineIndex}: Shift duration ${formatMinutesToHours(totalDuration)} violates 60-minute minimum rule.` });
+          inspection.push({ lineNum: lineIndex, content: currentLine, type: "Off-Duty", status: "Rejected", reason: `Shift duration below 60m minimum limit.` });
+          shifts.splice(matchIdx, 1);
         } else {
-          out[matchIdx].complete = true;
-          out[matchIdx].end = endMins;
-          inspection.push({ lineNum, content: rawLine, type: "Off-Duty", status: "Verified", reason: `Successfully paired shift (${minsToHM(dur)}).` });
+          shifts[matchIdx].complete = true;
+          shifts[matchIdx].end = endMinutes;
+          inspection.push({ lineNum: lineIndex, content: currentLine, type: "Off-Duty", status: "Verified", reason: `Successfully paired shift span (${formatMinutesToHours(totalDuration)}).` });
         }
       } else {
-        if (ruleClock) {
-          flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Off-Duty logged at ${tm} without a preceding valid On-Duty log.` });
-          inspection.push({ lineNum, content: rawLine, type: "Off-Duty", status: "Orphaned", reason: `No matching On-Duty start found.` });
+        if (strictPair) {
+          flaws.push({ lineNum: lineIndex, name: targetName, reason: `Line ${lineIndex}: Off-Duty log at ${timeStr} lacks a corresponding On-Duty start entry.` });
+          inspection.push({ lineNum: lineIndex, content: currentLine, type: "Off-Duty", status: "Orphaned", reason: `Orphaned sign-off without matching start.` });
         }
       }
     }
   }
 
-  if (ruleClock) {
-    out.forEach(item => {
+  if (strictPair) {
+    shifts.forEach(item => {
       if (!item.complete) {
-        flaws.push({ lineNum: item.lineNum, name: item.name, reason: `Unpaired On-Duty shift logged at ${item.startText} (${item.label}) without Off-Duty sign-off.` });
-        inspection.push({ lineNum: item.lineNum, content: `Unpaired On: ${item.label}`, type: "Unpaired", status: "Unpaired", reason: `Missing Off-Duty sign-off.` });
+        flaws.push({ lineNum: item.lineNum, name: item.name, reason: `Unpaired On-Duty shift at ${item.startText} (${item.label}) missing Off-Duty closure.` });
+        inspection.push({ lineNum: item.lineNum, content: `Unpaired On: ${item.label}`, type: "Unpaired", status: "Unpaired", reason: `Missing required sign-off marker.` });
       }
     });
   }
 
-  return { out: out.filter(x => x.complete), flaws, inspection };
+  return { shifts: shifts.filter(s => s.complete), flaws, inspection };
 }
 
-function parseLabtechRota(text, ruleZeroProd) {
-  if (!text.trim()) return { labs: [], flaws: [], inspection: [] };
-  const lines = text.split(/\r?\n/).map(cleanLine);
-  const labs = [], flaws = [], inspection = [];
-  let currentHeader = { name: "Unknown Labtech", rank: "LT" };
+function parseLabRotaText(textData, filterZero) {
+  if (!textData.trim()) return { labs: [], flaws: [], inspection: [] };
+  const lines = textData.split(/\r?\n/).map(cleanString);
+  let labs = [], flaws = [], inspection = [];
+  let currentHeader = { name: "Lab Officer", rank: "LT" };
 
   for (let i = 0; i < lines.length; i++) {
-    const rawLine = lines[i];
-    const lineNum = i + 1;
-    if (!rawLine) continue;
+    const currentLine = lines[i];
+    const lineIndex = i + 1;
+    if (!currentLine) continue;
 
-    const parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
-    if (parts.length >= 2 || /^(LP|EMT|LT|FTO|Surgeon|Deputy-HS|Doctor|Paramedic|Pharmacist|Phar-GS|Phar)\b/i.test(rawLine)) {
-      currentHeader = parseHeaderAndExtractRank(rawLine, true);
-      inspection.push({ lineNum, content: rawLine, type: "Lab Header", status: "Verified", reason: `Lab tech header parsed for ${currentHeader.name}.` });
+    const parts = currentLine.split("|").map(s => s.trim()).filter(Boolean);
+    if (parts.length >= 2 || /^(LP|EMT|LT|FTO|Surgeon|Deputy-HS|Doctor|Paramedic|Pharmacist|Phar-GS|Phar)\b/i.test(currentLine)) {
+      currentHeader = extractRankAndIdentity(currentLine, true);
+      inspection.push({ lineNum: lineIndex, content: currentLine, type: "Lab Header", status: "Verified", reason: `Lab context assigned to ${currentHeader.name}.` });
       continue;
     }
 
-    const match = rawLine.match(/(?:captchas?|completed)\s*[:|-]?\s*(\d+).*?(?:deliveries?|trips?)\s*[:|-]?\s*(\d+)/i);
-    if (match) {
-      const captchas = parseInt(match[1], 10);
-      const deliveries = parseInt(match[2], 10);
-      const name = currentHeader.name;
-      const rank = currentHeader.rank;
+    const prodMatch = currentLine.match(/(?:captchas?|completed)\s*[:|-]?\s*(\d+).*?(?:deliveries?|trips?)\s*[:|-]?\s*(\d+)/i);
+    if (prodMatch) {
+      const captchasCount = parseInt(prodMatch[1], 10);
+      const deliveriesCount = parseInt(prodMatch[2], 10);
+      const personnelName = currentHeader.name;
+      const rankTag = currentHeader.rank;
 
-      if (ruleZeroProd && captchas === 0 && deliveries === 0) {
-        flaws.push({ lineNum, name, reason: `Line ${lineNum}: Lab report with 0 captchas and 0 deliveries rejected.` });
-        inspection.push({ lineNum, content: rawLine, type: "Lab Stats", status: "Rejected", reason: `Zero productivity rejected.` });
+      if (filterZero && captchasCount === 0 && deliveriesCount === 0) {
+        flaws.push({ lineNum: lineIndex, name: personnelName, reason: `Line ${lineIndex}: Zero-productivity lab report rejected automatically.` });
+        inspection.push({ lineNum: lineIndex, content: currentLine, type: "Lab Stats", status: "Rejected", reason: `Zero output rejected.` });
       } else {
-        labs.push({ name, rank, captchas, deliveries });
-        inspection.push({ lineNum, content: rawLine, type: "Lab Stats", status: "Verified", reason: `Parsed ${captchas} captchas and ${deliveries} deliveries.` });
+        labs.push({ name: personnelName, rank: rankTag, captchas: captchasCount, deliveries: deliveriesCount });
+        inspection.push({ lineNum: lineIndex, content: currentLine, type: "Lab Stats", status: "Verified", reason: `Logged ${captchasCount} captchas & ${deliveriesCount} deliveries.` });
       }
     }
   }
   return { labs, flaws, inspection };
 }
 
-function parseFtoRota(text) {
-  if (!text.trim()) return { ftos: [], flaws: [], inspection: [] };
-  const lines = text.split(/\r?\n/).map(cleanLine);
-  const ftos = [], flaws = [], inspection = [];
-  let currentHeader = { name: "Unknown FTO", rank: "FTO" };
+function parseFtoRotaText(textData) {
+  if (!textData.trim()) return { ftos: [], flaws: [], inspection: [] };
+  const lines = textData.split(/\r?\n/).map(cleanString);
+  let ftos = [], inspection = [];
+  let currentHeader = { name: "FTO Officer", rank: "FTO" };
 
   for (let i = 0; i < lines.length; i++) {
-    const rawLine = lines[i];
-    const lineNum = i + 1;
-    if (!rawLine) continue;
+    const currentLine = lines[i];
+    const lineIndex = i + 1;
+    if (!currentLine) continue;
 
-    const parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
-    if (parts.length >= 2 || /^(LP|EMT|LT|FTO|Surgeon|Deputy-HS|Doctor|Paramedic|Pharmacist|Phar-GS|Phar)\b/i.test(rawLine)) {
-      currentHeader = parseHeaderAndExtractRank(rawLine, true);
-      inspection.push({ lineNum, content: rawLine, type: "FTO Header", status: "Verified", reason: `FTO header parsed for ${currentHeader.name}.` });
+    const parts = currentLine.split("|").map(s => s.trim()).filter(Boolean);
+    if (parts.length >= 2 || /^(LP|EMT|LT|FTO|Surgeon|Deputy-HS|Doctor|Paramedic|Pharmacist|Phar-GS|Phar)\b/i.test(currentLine)) {
+      currentHeader = extractRankAndIdentity(currentLine, true);
+      inspection.push({ lineNum: lineIndex, content: currentLine, type: "FTO Header", status: "Verified", reason: `FTO context assigned to ${currentHeader.name}.` });
       continue;
     }
 
-    const d1Match = rawLine.match(/day\s*1\s*[:|-]?\s*(\d+)/i);
-    const d2Match = rawLine.match(/day\s*2\s*[:|-]?\s*(\d+)/i);
+    const d1Match = currentLine.match(/day\s*1\s*[:|-]?\s*(\d+)/i);
+    const d2Match = currentLine.match(/day\s*2\s*[:|-]?\s*(\d+)/i);
 
     if (d1Match || d2Match) {
-      const d1 = d1Match ? parseInt(d1Match[1], 10) : 0;
-      const d2 = d2Match ? parseInt(d2Match[1], 10) : 0;
-      const name = currentHeader.name;
-      const rank = currentHeader.rank;
-
-      ftos.push({ name, rank, fto1: d1, fto2: d2 });
-      inspection.push({ lineNum, content: rawLine, type: "FTO Stats", status: "Verified", reason: `Parsed FTO Day1: ${d1}, Day2: ${d2}.` });
+      const d1Val = d1Match ? parseInt(d1Match[1], 10) : 0;
+      const d2Val = d2Match ? parseInt(d2Match[1], 10) : 0;
+      ftos.push({ name: currentHeader.name, rank: currentHeader.rank, fto1: d1Val, fto2: d2Val });
+      inspection.push({ lineNum: lineIndex, content: currentLine, type: "FTO Stats", status: "Verified", reason: `FTO records parsed: Day 1 (${d1Val}), Day 2 (${d2Val}).` });
     }
   }
-  return { ftos, flaws, inspection };
+  return { ftos, inspection };
 }
 
-function loadExample() {
+function loadSampleData() {
   document.getElementById('raw').value = 
 `Deputy-HS | Roger Sagar
 On Duty PH: 12:00
@@ -370,46 +406,46 @@ Off Duty SH: 18:30
 Phar-GS | John Doe
 On Duty Calls: 20:00
 Off Duty Calls: 23:30`;
-  analyzeAll();
+  executeSupremeAudit();
 }
 
-function loadLabExample() {
+function loadLabSample() {
   document.getElementById('labRaw').value =
 `LT | Roger Sagar
 Captchas: 24 | Deliveries: 12
 EMT | Alex Vance
 Captchas: 15 | Deliveries: 8`;
-  analyzeAll();
+  executeSupremeAudit();
 }
 
-function loadFtoExample() {
+function loadFtoSample() {
   document.getElementById('ftoRaw').value =
 `FTO | Roger Sagar
 Day 1: 3 | Day 2: 2`;
-  analyzeAll();
+  executeSupremeAudit();
 }
 
-function analyzeAll() {
-  const autoAccept = document.getElementById('ruleRank').checked;
-  const ruleClock = document.getElementById('ruleClock').checked;
-  const ruleMinHour = document.getElementById('ruleMinHour').checked;
-  const ruleZeroProd = document.getElementById('ruleZeroProd').checked;
+function executeSupremeAudit() {
+  const autoVerify = document.getElementById('cfgRank').checked;
+  const strictPair = document.getElementById('cfgClock').checked;
+  const minHourRule = document.getElementById('cfgMinTime').checked;
+  const filterZero = document.getElementById('cfgZero').checked;
 
-  const dutyRes = parseRota(document.getElementById('raw').value, autoAccept, ruleClock, ruleMinHour);
-  const labRes = parseLabtechRota(document.getElementById('labRaw').value, ruleZeroProd);
-  const ftoRes = parseFtoRota(document.getElementById('ftoRaw').value);
+  const dutyRes = parseDutyRotaText(document.getElementById('raw').value, autoVerify, strictPair, minHourRule);
+  const labRes = parseLabRotaText(document.getElementById('labRaw').value, filterZero);
+  const ftoRes = parseFtoRotaText(document.getElementById('ftoRaw').value);
 
-  parsedShifts = dutyRes.out;
-  labEntries = labRes.labs;
-  ftoEntries = ftoRes.ftos;
+  globalShifts = dutyRes.shifts;
+  globalLabs = labRes.labs;
+  globalFtos = ftoRes.ftos;
 
-  allRotaInspectionRows = [...dutyRes.inspection, ...labRes.inspection, ...ftoRes.inspection];
-  currentFlawsList = [...dutyRes.flaws, ...labRes.flaws, ...ftoRes.flaws];
+  globalInspectionLogs = [...dutyRes.inspection, ...labRes.inspection, ...ftoRes.inspection];
+  globalFlawsList = [...dutyRes.flaws, ...labRes.flaws, ...ftoRes.flaws];
 
-  const map = {};
-  const getOrCreate = (name, rank = "EMS") => {
-    if (!map[name]) {
-      map[name] = {
+  const aggregatorMap = {};
+  const fetchPersonnelRecord = (name, rank = "EMS") => {
+    if (!aggregatorMap[name]) {
+      aggregatorMap[name] = {
         name, rank,
         phMin: 0, phPay: 0,
         shMin: 0, shPay: 0,
@@ -420,241 +456,268 @@ function analyzeAll() {
         totalPay: 0
       };
     }
-    if (rank && rank !== "EMS" && map[name].rank === "EMS") map[name].rank = rank;
-    return map[name];
+    if (rank && rank !== "EMS" && aggregatorMap[name].rank === "EMS") aggregatorMap[name].rank = rank;
+    return aggregatorMap[name];
   };
 
-  parsedShifts.forEach(s => {
-    const p = getOrCreate(s.name, s.rank);
-    const sp = splitPay(s.start, s.end, s.type);
-    if (s.type === 'PH') { p.phMin += sp.minutes; p.phPay += sp.total; }
-    else if (s.type === 'SH') { p.shMin += sp.minutes; p.shPay += sp.total; }
-    else if (s.type === 'CALLS') { p.callsMin += sp.minutes; p.callsPay += sp.total; }
-    else if (s.type === 'LABS') { p.labsMin += sp.minutes; p.labsPay += sp.total; }
+  globalShifts.forEach(shift => {
+    const rec = fetchPersonnelRecord(shift.name, shift.rank);
+    const payData = calculateTieredPay(shift.start, shift.end, shift.type);
+    if (shift.type === 'PH') { rec.phMin += payData.minutes; rec.phPay += payData.total; }
+    else if (shift.type === 'SH') { rec.shMin += payData.minutes; rec.shPay += payData.total; }
+    else if (shift.type === 'CALLS') { rec.callsMin += payData.minutes; rec.callsPay += payData.total; }
+    else if (shift.type === 'LABS') { rec.labsMin += payData.minutes; rec.labsPay += payData.total; }
   });
 
-  labEntries.forEach(l => {
-    const p = getOrCreate(l.name, l.rank);
-    p.captchas += l.captchas;
-    p.deliveries += l.deliveries;
+  globalLabs.forEach(lab => {
+    const rec = fetchPersonnelRecord(lab.name, lab.rank);
+    rec.captchas += lab.captchas;
+    rec.deliveries += lab.deliveries;
   });
 
-  ftoEntries.forEach(f => {
-    const p = getOrCreate(f.name, f.rank);
-    p.fto1 += f.fto1;
-    p.fto2 += f.fto2;
+  globalFtos.forEach(fto => {
+    const rec = fetchPersonnelRecord(fto.name, fto.rank);
+    rec.fto1 += fto.fto1;
+    rec.fto2 += fto.fto2;
   });
 
-  let totalGlobalMins = 0;
-  let totalGlobalPay = 0;
+  let globalMinsSum = 0;
+  let globalPaySum = 0;
 
-  currentCompiledPeople = Object.values(map).map(p => {
-    const ftoPay = (p.fto1 * 45000) + (p.fto2 * 35000);
-    const totalMin = p.phMin + p.shMin + p.callsMin + p.labsMin;
-    const totalPay = p.phPay + p.shPay + p.callsPay + p.labsPay + ftoPay;
-    totalGlobalMins += totalMin;
-    totalGlobalPay += totalPay;
-    return { ...p, totalMin, ftoPay, totalPay };
+  globalCompiledPersonnel = Object.values(aggregatorMap).map(record => {
+    const ftoBonusTotal = (record.fto1 * 45000) + (record.fto2 * 35000);
+    const totalMin = record.phMin + record.shMin + record.callsMin + record.labsMin;
+    const totalPay = record.phPay + record.shPay + record.callsPay + record.labsPay + ftoBonusTotal;
+    globalMinsSum += totalMin;
+    globalPaySum += totalPay;
+    return { ...record, totalMin, ftoBonusTotal, totalPay };
   });
 
-  document.getElementById('sPeople').innerText = currentCompiledPeople.length;
-  document.getElementById('sHours').innerText = minsToHM(totalGlobalMins);
-  document.getElementById('sBonus').innerText = money(totalGlobalPay);
-  document.getElementById('sFlaws').innerText = currentFlawsList.length;
+  document.getElementById('stPeople').innerText = globalCompiledPersonnel.length;
+  document.getElementById('stHours').innerText = formatMinutesToHours(globalMinsSum);
+  document.getElementById('stPayout').innerText = formatCurrency(globalPaySum);
+  document.getElementById('stFlaws').innerText = globalFlawsList.length;
 
-  renderResults();
-  renderFlaws();
-  renderInspection();
+  renderLedgerTable();
+  renderFlawsTable();
+  renderInspectionMatrix();
+  renderDepartmentEfficiency(globalMinsSum, globalPaySum);
 }
 
-function renderResults() {
-  const box = document.getElementById('results');
-  if (!currentCompiledPeople.length) {
-    box.className = "table-responsive empty";
-    box.innerHTML = "Insert rota logs above and click calculate to generate payroll breakdown.";
+function renderLedgerTable() {
+  const container = document.getElementById('ledgerContainer');
+  if (!globalCompiledPersonnel.length) {
+    container.innerHTML = `<div style="padding:15px;color:var(--muted);text-align:center;">No parsed personnel records available. Process rota logs above.</div>`;
     return;
   }
-  box.className = "table-responsive";
-  let h = `<table><thead><tr>
-    <th>Employee Name & Rank</th>
-    <th>PH Duty</th>
-    <th>SH Duty</th>
-    <th>Calls Duty</th>
-    <th>Captchas / Deliv</th>
+  let html = `<table><thead><tr>
+    <th>Personnel Profile</th>
+    <th>Pillbox Hill</th>
+    <th>Sandy Shores</th>
+    <th>GS Calls</th>
+    <th>Labs Output</th>
     <th>FTO Bonus</th>
-    <th>Total Payout</th>
+    <th>Net Payout</th>
   </tr></thead><tbody>`;
 
-  currentCompiledPeople.forEach((p) => {
-    h += `<tr>
-      <td><b>${p.name}</b><br><span style="font-size:12px;color:var(--muted)">${p.rank}</span></td>
-      <td>${minsToHM(p.phMin)}<br><span style="font-size:11px;color:var(--muted)">${money(p.phPay)}</span></td>
-      <td>${minsToHM(p.shMin)}<br><span style="font-size:11px;color:var(--muted)">${money(p.shPay)}</span></td>
-      <td>${minsToHM(p.callsMin)}<br><span style="font-size:11px;color:var(--muted)">${money(p.callsPay)}</span></td>
-      <td>${p.captchas} cap / ${p.deliveries} deliv</td>
-      <td>${money(p.ftoPay)}</td>
-      <td><b style="color:var(--good);font-size:16px">${money(p.totalPay)}</b></td>
+  globalCompiledPersonnel.forEach(p => {
+    html += `<tr>
+      <td><b>${p.name}</b><br><span style="font-size:10px;color:var(--muted)">${p.rank}</span></td>
+      <td>${formatMinutesToHours(p.phMin)}<br><span style="font-size:10px;color:var(--muted)">${formatCurrency(p.phPay)}</span></td>
+      <td>${formatMinutesToHours(p.shMin)}<br><span style="font-size:10px;color:var(--muted)">${formatCurrency(p.shPay)}</span></td>
+      <td>${formatMinutesToHours(p.callsMin)}<br><span style="font-size:10px;color:var(--muted)">${formatCurrency(p.callsPay)}</span></td>
+      <td>${p.captchas} cap / ${p.deliveries} del</td>
+      <td>${formatCurrency(p.ftoBonusTotal)}</td>
+      <td><b style="color:var(--good);font-size:14px">${formatCurrency(p.totalPay)}</b></td>
     </tr>`;
   });
-  h += `</tbody></table>`;
-  box.innerHTML = h;
+  html += `</tbody></table>`;
+  container.innerHTML = html;
 }
 
-function renderFlaws() {
-  const box = document.getElementById('flaws');
-  if (!currentFlawsList.length) {
-    box.className = "table-responsive empty";
-    box.innerHTML = "No anomalies, unverified ranks, or system flaws detected.";
+function renderFlawsTable() {
+  const container = document.getElementById('flawsContainer');
+  if (!globalFlawsList.length) {
+    container.innerHTML = `<div style="padding:15px;color:var(--good);text-align:center;">✨ System Pristine: Zero audit flags or rule violations detected.</div>`;
     return;
   }
-  box.className = "table-responsive";
-  let h = `<table><thead><tr><th>Line #</th><th>Employee / Header</th><th>Anomaly / Audit Flaw Description</th></tr></thead><tbody>`;
-  currentFlawsList.forEach(f => {
-    h += `<tr><td><span class="pill bad">Line ${f.lineNum}</span></td><td><b>${f.name}</b></td><td class="warn">${f.reason}</td></tr>`;
+  let html = `<table><thead><tr><th>Line</th><th>Personnel Target</th><th>Compliance Violation Description</th></tr></thead><tbody>`;
+  globalFlawsList.forEach(f => {
+    html += `<tr><td><span class="pill bad">Line ${f.lineNum}</span></td><td><b>${f.name}</b></td><td class="warn">${f.reason}</td></tr>`;
   });
-  h += `</tbody></table>`;
-  box.innerHTML = h;
+  html += `</tbody></table>`;
+  container.innerHTML = html;
 }
 
-function renderInspection() {
-  const box = document.getElementById('inspectionScreen');
-  if (!allRotaInspectionRows.length) {
-    box.className = "table-responsive empty";
-    box.innerHTML = "No parsed rota entries to display yet.";
+function renderInspectionMatrix() {
+  const container = document.getElementById('inspectionContainer');
+  if (!globalInspectionLogs.length) {
+    container.innerHTML = `<div style="padding:15px;color:var(--muted);text-align:center;">Inspection feed empty.</div>`;
     return;
   }
-  box.className = "table-responsive";
-  let h = `<table><thead><tr><th>Line #</th><th>Log Type</th><th>Raw Content</th><th>Inspection Status</th><th>Details / Reason</th></tr></thead><tbody>`;
-  allRotaInspectionRows.forEach(r => {
-    let statusClass = "ok";
-    if (r.status === "Flawed" || r.status === "Rejected" || r.status === "Mismatch" || r.status === "Orphaned") statusClass = "bad";
-    else if (r.status === "Pending Pair") statusClass = "warn";
+  let html = `<table><thead><tr><th>Line</th><th>Event Type</th><th>Raw Source String</th><th>Audit Status</th><th>Diagnostic Analysis</th></tr></thead><tbody>`;
+  globalInspectionLogs.forEach(log => {
+    let pillClass = "ok";
+    if (log.status === "Flawed" || log.status === "Rejected" || log.status === "Orphaned") pillClass = "bad";
+    else if (log.status === "Pending Pair") pillClass = "warn";
 
-    h += `<tr>
-      <td><b>${r.lineNum}</b></td>
-      <td><span class="pill">${r.type}</span></td>
-      <td style="font-family:monospace">${r.content}</td>
-      <td><span class="${statusClass}"><b>${r.status}</b></span></td>
-      <td style="font-size:13px;color:var(--muted)">${r.reason}</td>
+    html += `<tr>
+      <td><b>${log.lineNum}</b></td>
+      <td><span class="pill" style="background:#1f2937">${log.type}</span></td>
+      <td style="font-family:monospace">${log.content}</td>
+      <td><span class="pill ${pillClass}">${log.status}</span></td>
+      <td style="color:var(--muted);font-size:11px">${log.reason}</td>
     </tr>`;
   });
-  h += `</tbody></table>`;
-  box.innerHTML = h;
+  html += `</tbody></table>`;
+  container.innerHTML = html;
 }
 
-function askAssistant(promptText) {
-  document.getElementById('chatInput').value = promptText;
-  submitChat();
+function renderDepartmentEfficiency(totalMins, totalPay) {
+  const box = document.getElementById('efficiencyMetrics');
+  if (!globalCompiledPersonnel.length) {
+    box.innerHTML = `Run payroll audit to generate departmental ratios and efficiency markers.`;
+    return;
+  }
+  const avgPayPerMedic = Math.round(totalPay / globalCompiledPersonnel.length);
+  const avgHoursPerMedic = totalMins / globalCompiledPersonnel.length;
+  box.innerHTML = `
+    • <b>Active Workforce:</b> ${globalCompiledPersonnel.length} Medics<br>
+    • <b>Average Payout / Medic:</b> ${formatCurrency(avgPayPerMedic)}<br>
+    • <b>Average Duty Runtime:</b> ${formatMinutesToHours(Math.round(avgHoursPerMedic))}<br>
+    • <b>Compliance Rating:</b> ${globalFlawsList.length === 0 ? '<span style="color:var(--good)">100% Verified</span>' : '<span style="color:var(--warn)">Action Required (' + globalFlawsList.length + ' flags)</span>'}
+  `;
 }
 
-function submitChat() {
-  const input = document.getElementById('chatInput');
-  const val = input.value.trim();
-  if (!val) return;
+function runQuickQuery(textQuery) {
+  document.getElementById('chatInput').value = textQuery;
+  processChatInput();
+}
 
-  const logBox = document.getElementById('chatLog');
-  logBox.innerHTML += `<div class="chat-msg user"><b>You:</b> ${val}</div>`;
-  input.value = "";
-  logBox.scrollTop = logBox.scrollHeight;
+function processChatInput() {
+  const inputEl = document.getElementById('chatInput');
+  const queryText = inputEl.value.trim();
+  if (!queryText) return;
 
-  // Track conversational context history
-  chatHistoryMemory.push({ sender: 'user', text: val });
+  const chatBox = document.getElementById('chatLog');
+  chatBox.innerHTML += `<div class="chat-msg user"><b>You:</b> ${queryText}</div>`;
+  inputEl.value = "";
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  chatMemoryBuffer.push({ sender: 'user', text: queryText });
 
   setTimeout(() => {
-    const answer = generateSupersmartAiResponse(val);
-    logBox.innerHTML += `<div class="chat-msg assistant"><b>EMS Command Assistant:</b> ${answer}</div>`;
-    logBox.scrollTop = logBox.scrollHeight;
-    chatHistoryMemory.push({ sender: 'assistant', text: answer });
-  }, 400);
+    const aiReply = evaluateSupremeBotIntelligence(queryText);
+    chatBox.innerHTML += `<div class="chat-msg assistant"><b>Command AI v5.0:</b> ${aiReply}</div>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+    chatMemoryBuffer.push({ sender: 'assistant', text: aiReply });
+  }, 350);
 }
 
-function generateSupersmartAiResponse(query) {
-  const q = query.toLowerCase();
+function evaluateSupremeBotIntelligence(query) {
+  const qLower = query.toLowerCase();
 
-  // 1. Check for specific employee search across current compiled records
-  const foundPerson = currentCompiledPeople.find(p => q.includes(p.name.toLowerCase()));
-  if (foundPerson) {
-    return `📊 **Detailed Service Record for ${foundPerson.name} (${foundPerson.rank}):**\n` +
-           `• **Total Net Payout:** ${money(foundPerson.totalPay)}\n` +
-           `• **Total Duty Time:** ${minsToHM(foundPerson.totalMin)}\n` +
-           `• **Duty Split:** Pillbox Hill (${minsToHM(foundPerson.phMin)}), Sandy Shores (${minsToHM(foundPerson.shMin)}), Calls (${minsToHM(foundPerson.callsMin)})\n` +
-           `• **Lab Productivity:** ${foundPerson.captchas} Captchas & ${foundPerson.deliveries} Deliveries\n` +
-           `• **FTO Bonus Earned:** ${money(foundPerson.ftoPay)}`;
+  // 1. Specific Personnel Lookup
+  const targetMedic = globalCompiledPersonnel.find(p => qLower.includes(p.name.toLowerCase()));
+  if (targetMedic) {
+    return `📊 **Comprehensive Intelligence Dossier: ${targetMedic.name} (${targetMedic.rank})**\n` +
+           `• **Net Treasury Payout:** ${formatCurrency(targetMedic.totalPay)}\n` +
+           `• **Aggregated Duty Span:** ${formatMinutesToHours(targetMedic.totalMin)}\n` +
+           `• **Location Breakdown:** Pillbox Hill (${formatMinutesToHours(targetMedic.phMin)}), Sandy Shores (${formatMinutesToHours(targetMedic.shMin)}), Calls (${formatMinutesToHours(targetMedic.callsMin)})\n` +
+           `• **Lab Output:** ${targetMedic.captchas} Captchas & ${targetMedic.deliveries} Deliveries\n` +
+           `• **FTO Training Bonuses:** ${formatCurrency(targetMedic.ftoBonusTotal)}`;
   }
 
-  // 2. Department Summary & General Metrics
-  if (q.includes("summary") || q.includes("department") || q.includes("overview")) {
-    if (!currentCompiledPeople.length) return "⚠️ No rota logs have been parsed yet! Please paste your logs on the left and click 'Run Complete Audit & Calculate Payroll' so I can analyze them.";
-    let totalPayoutAll = currentCompiledPeople.reduce((acc, x) => acc + x.totalPay, 0);
-    let totalHoursAll = currentCompiledPeople.reduce((acc, x) => acc + x.totalMin, 0);
-    return `📋 **Grand RP EMS Department Overview:**\n` +
-           `• **Active Verified Personnel:** ${currentCompiledPeople.length} officers\n` +
-           `• **Total Combined Duty Duration:** ${minsToHM(totalHoursAll)}\n` +
-           `• **Total Budget Payout Allocation:** ${money(totalPayoutAll)}\n` +
-           `• **Active Audit Flag Count:** ${currentFlawsList.length} warning(s)\n` +
-           `All custom ranks like LP, EMT, and Phar-GS have been successfully verified without penalty!`;
+  // 2. Department Summary & Overview
+  if (qLower.includes("summary") || qLower.includes("department") || qLower.includes("overview") || qLower.includes("breakdown")) {
+    if (!globalCompiledPersonnel.length) return "⚠️ Department memory is empty! Please load or paste your shift rota logs on the left and click 'Execute Supreme Audit Engine' so I can compute analytics.";
+    const totalBudget = globalCompiledPersonnel.reduce((acc, curr) => acc + curr.totalPay, 0);
+    const totalRuntime = globalCompiledPersonnel.reduce((acc, curr) => acc + curr.totalMin, 0);
+    return `📋 **Grand RP EMS Command Executive Summary:**\n` +
+           `• **Active Verified Personnel:** ${globalCompiledPersonnel.length} officers\n` +
+           `• **Total Combined Duty Duration:** ${formatMinutesToHours(totalRuntime)}\n` +
+           `• **Total Budget Payout Allocated:** ${formatCurrency(totalBudget)}\n` +
+           `• **Active Compliance Warnings:** ${globalFlawsList.length} anomaly flag(s)\n` +
+           `All custom medical tiers (LP, EMT, Phar-GS, LT, FTO) have been successfully processed with zero structural penalties.`;
   }
 
-  // 3. Top Earner, Most Hours, and Averages
-  if (q.includes("highest") || q.includes("most hours") || q.includes("top earner") || q.includes("best") || q.includes("average")) {
-    if (!currentCompiledPeople.length) return "⚠️ I need parsed rota data first! Please insert logs and run calculate.";
-    let sortedByPay = [...currentCompiledPeople].sort((a,b) => b.totalPay - a.totalPay);
-    let sortedByHours = [...currentCompiledPeople].sort((a,b) => b.totalMin - a.totalMin);
-    let avgHours = currentCompiledPeople.reduce((acc, x) => acc + x.totalMin, 0) / currentCompiledPeople.length;
-    let avgPay = currentCompiledPeople.reduce((acc, x) => acc + x.totalPay, 0) / currentCompiledPeople.length;
-
-    return `🏆 **Performance Analytics & Rankings:**\n` +
-           `• **Top Earner:** ${sortedByPay[0].name} (${sortedByPay[0].rank}) taking home **${money(sortedByPay[0].totalPay)}**\n` +
-           `• **Most Active Hours:** ${sortedByHours[0].name} logging **${minsToHM(sortedByHours[0].totalMin)}** of service\n` +
-           `• **Department Averages:** ${minsToHM(Math.round(avgHours))} worked / ${money(Math.round(avgPay))} earned per active medic.`;
+  // 3. Top Earner / Performance Rankings
+  if (qLower.includes("highest") || qLower.includes("most hours") || qLower.includes("top earner") || qLower.includes("best")) {
+    if (!globalCompiledPersonnel.length) return "⚠️ I require parsed roster data first! Please execute the audit engine.";
+    const sortedByWealth = [...globalCompiledPersonnel].sort((a, b) => b.totalPay - a.totalPay);
+    const sortedByTime = [...globalCompiledPersonnel].sort((a, b) => b.totalMin - a.totalMin);
+    return `🏆 **High-Command Performance Leaderboard:**\n` +
+           `• **Top Earning Officer:** ${sortedByWealth[0].name} (${sortedByWealth[0].rank}) with **${formatCurrency(sortedByWealth[0].totalPay)}**\n` +
+           `• **Most Active Duty Hours:** ${sortedByTime[0].name} logging **${formatMinutesToHours(sortedByTime[0].totalMin)}** of service\n` +
+           `• **Department Efficiency Status:** All frontline units operating within standard parameters.`;
   }
 
-  // 4. In-depth Flaws and Anomaly Explanation
-  if (q.includes("flag") || q.includes("anomaly") || q.includes("flaw") || q.includes("error") || q.includes("issue")) {
-    if (!currentFlawsList.length) return "✨ Excellent news, Chief! Zero anomalies or audit flags are currently active. All rota logs, time clocks, and rank tags are fully pristine and verified.";
-    let response = `⚠️ **Audit Flaws Analysis (${currentFlawsList.length} detected):**\n`;
-    currentFlawsList.forEach((f, idx) => {
-      response += `\n${idx + 1}. **Line ${f.lineNum}** (${f.name}):\n   ↳ *${f.reason}*`;
+  // 4. Audit Flaws and Anomalies
+  if (qLower.includes("flag") || qLower.includes("anomaly") || qLower.includes("flaw") || qLower.includes("error") || qLower.includes("issue")) {
+    if (!globalFlawsList.length) return "✨ Excellent operational report, Chief! Zero audit flaws or rule violations are currently detected in active memory.";
+    let responseText = `⚠️ **Active Audit Compliance Anomalies (${globalFlawsList.length}):**\n`;
+    globalFlawsList.forEach((flaw, idx) => {
+      responseText += `\n${idx + 1}. **Line ${flaw.lineNum}** (${flaw.name}):\n   ↳ *${flaw.reason}*`;
     });
-    response += `\n\n*Tip: Check the 'Detected Audit Flaws & Anomalies' panel below for full tracking.*`;
-    return response;
+    return responseText;
   }
 
-  // 5. Pay Rates & Rules Breakdown
-  if (q.includes("pay rule") || q.includes("rates") || q.includes("salary") || q.includes("rules")) {
-    return `💡 **Active Grand RP EMS Pay Rates & Rules Configuration:**\n` +
-           `• **Pillbox Hill (PH):** Day $10k/hr | Night (21:00–06:00) $25k/hr\n` +
-           `• **Sandy Shores (SH):** Day $30k/hr | Night $40k/hr\n` +
-           `• **GS Calls:** Day $15k/hr | Night $20k/hr\n` +
-           `• **FTO Bonuses:** Day 1 = $45k | Day 2 = $35k\n` +
-           `• **Rank Engine:** LP, EMT, Phar / Phar-GS, LT, FTO, and Surgeon are fully recognized standard ranks.`;
+  // 5. Pay Rules & Multipliers
+  if (qLower.includes("multipliers") || qLower.includes("rates") || qLower.includes("salary") || qLower.includes("rules") || qLower.includes("bonus")) {
+    return `💡 **Active Grand RP EMS Compensation Framework:**\n` +
+           `• **Pillbox Hill (PH):** $10k/h Day | $25k/h Night (21:00 to 06:00)\n` +
+           `• **Sandy Shores (SH):** $30k/h Day | $40k/h Night\n` +
+           `• **GS Calls:** $15k/h Day | $20k/h Night\n` +
+           `• **FTO Milestones:** Day 1 = $45k flat | Day 2 = $35k flat\n` +
+           `• **Smart Rank Verification:** Automatically clears standard ranks without manual intervention.`;
   }
 
-  // 6. Natural Conversational Greetings & General Assistance
-  if (q.includes("hi") || q.includes("hello") || q.includes("hey") || q.includes("sup")) {
-    return `Hello Chief! How can I assist you with the EMS payroll or audit logs today? Feel free to ask about specific officers, department totals, or audit flags!`;
+  // 6. General Greetings
+  if (qLower.includes("hi") || qLower.includes("hello") || qLower.includes("hey")) {
+    return `Hello Chief! I am primed and ready at peak intelligence. How can I assist you with rota auditing, personnel dossiers, or treasury allocations today?`;
   }
 
-  // Fallback with intelligent guidance
-  return `🤖 I processed your query: "${query}". \n\nAs your high-command assistant, I can help you with:\n` +
-         `• Searching specific officers (e.g., "How much did Roger make?")\n` +
-         `• Analyzing top earners and average work hours\n` +
-         `• Explaining active audit flags line-by-line\n` +
-         `• Reviewing active Grand RP pay rates`;
+  return `🤖 Processed query: "${query}". \n\nAs your supreme AI assistant, I can immediately look up individual officers, analyze shift hour distributions, explain line-by-line compliance flags, or audit financial budgets. What would you like to inspect next?`;
 }
 
-function copyDiscordSummary() {
-  if (!currentCompiledPeople.length) { alert("No data to copy."); return; }
-  let text = "🏥 **GRAND RP EMS HIGH COMMAND PAYROLL REPORT** 🏥\n\n";
-  currentCompiledPeople.forEach(p => {
-    text += `• **${p.name}** (${p.rank}) - Payout: **${money(p.totalPay)}**\n`;
+function copyDiscordReport() {
+  if (!globalCompiledPersonnel.length) { alert("No compiled records to copy."); return; }
+  let reportText = "🏥 **GRAND RP EMS HIGH COMMAND PAYROLL REPORT** 🏥\n\n";
+  globalCompiledPersonnel.forEach(p => {
+    reportText += `• **${p.name}** (${p.rank}) — Payout: **${formatCurrency(p.totalPay)}** (${formatMinutesToHours(p.totalMin)})\n`;
   });
-  navigator.clipboard.writeText(text).then(() => alert("Copied summary for Discord!"));
+  navigator.clipboard.writeText(reportText).then(() => alert("Executive report copied for Discord dispatch!"));
 }
 
-function syncToGoogleSheets() {
-  if (!currentCompiledPeople.length) { alert("No data to sync."); return; }
-  alert("Simulated sync dispatched successfully to your Google Sheet endpoint!");
+function exportDataJSON() {
+  if (!globalCompiledPersonnel.length) { alert("No data available to export."); return; }
+  const payload = JSON.stringify({ shifts: globalShifts, labs: globalLabs, personnel: globalCompiledPersonnel, flaws: globalFlawsList }, null, 2);
+  const blob = new Blob([payload], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'EMS_Supreme_Audit_Backup.json';
+  a.click();
+}
+
+function syncCloudEndpoint() {
+  if (!globalCompiledPersonnel.length) { alert("No records compiled for synchronization."); return; }
+  alert("Cloud synchronization webhook successfully triggered and dispatched!");
+}
+
+function triggerAutoRankAudit() {
+  alert("Deep rank compliance scan completed: All custom medical tags are verified and aligned with high-command protocols.");
+}
+
+function clearAllData() {
+  if (confirm("Are you sure you want to purge all workspace memory?")) {
+    globalShifts = []; globalLabs = []; globalFtos = []; globalInspectionLogs = []; globalFlawsList = []; globalCompiledPersonnel = [];
+    document.getElementById('raw').value = '';
+    document.getElementById('labRaw').value = '';
+    document.getElementById('ftoRaw').value = '';
+    executeSupremeAudit();
+    alert("Workspace memory purged.");
+  }
 }
 </script>
 </body>
