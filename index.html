@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Grand RP EMS Advanced Payroll & AI Audit Suite</title>
+<title>Grand RP EMS Payroll & Audit Suite</title>
 <style>
   :root {
     --bg: #0d1117;
@@ -39,12 +39,12 @@
   .pill.ok { background: rgba(63, 185, 80, 0.2); color: var(--good); }
   .pill.bad { background: rgba(248, 81, 73, 0.2); color: var(--bad); }
   .pill.warn { background: rgba(210, 153, 34, 0.2); color: var(--warn); }
-  .chat-box { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; height: 200px; overflow-y: auto; padding: 12px; font-size: 13px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
-  .chat-msg { padding: 10px 14px; border-radius: 8px; max-width: 90%; line-height: 1.5; white-space: pre-line; }
-  .chat-msg.user { background: #21262d; align-self: flex-end; color: #fff; border: 1px solid #30363d; }
+  .chat-box { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; height: 160px; overflow-y: auto; padding: 10px; font-size: 13px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .chat-msg { padding: 8px 12px; border-radius: 6px; max-width: 85%; line-height: 1.4; }
+  .chat-msg.user { background: #21262d; align-self: flex-end; color: #fff; }
   .chat-msg.assistant { background: #161b22; border: 1px solid var(--border); align-self: flex-start; color: var(--text); }
   .chat-input-row { display: flex; gap: 10px; }
-  .chat-input-row input { flex: 1; background: #0d1117; border: 1px solid var(--border); color: #fff; padding: 10px 12px; border-radius: 6px; font-size: 13px; }
+  .chat-input-row input { flex: 1; background: #0d1117; border: 1px solid var(--border); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13px; }
   .checkbox-group { display: flex; gap: 15px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--muted); }
   .checkbox-group label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
 </style>
@@ -98,18 +98,16 @@
   <div class="card" style="display:flex;flex-direction:column;">
     <h2>Supersmart Autonomous Assistant</h2>
     <div class="chat-box" id="chatLog">
-      <div class="chat-msg assistant"><b>EMS Command Assistant:</b> Hello Chief! 🏥 Systems are primed and loaded. I am tracking all personnel, custom ranks (LP, EMT, Phar-GS, etc.), and operational metrics in real-time. 
-
-Ask me anything—try asking about top earners, specific employee breakdowns, audit anomaly explanations, or general pay rules!</div>
+      <div class="chat-msg assistant"><b>Autonomous Agent:</b> Systems online. I am tracking all employees, rotas, ranks (LP, EMT, Phar-GS, etc.), and pay metrics. Ask me anything like *"Who is the top earner?"*, *"What are Roger's hours?"*, or *"Explain the active flags"*!</div>
     </div>
     <div class="chat-input-row">
-      <input type="text" id="chatInput" placeholder="Ask assistant anything (e.g., 'Who worked the most hours?')" onkeydown="if(event.key==='Enter') submitChat()">
+      <input type="text" id="chatInput" placeholder="Ask assistant anything..." onkeydown="if(event.key==='Enter') submitChat()">
       <button onclick="submitChat()">Send</button>
     </div>
     <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;">
-      <button class="secondary" style="font-size:11px;padding:4px 8px" onclick="askAssistant('Who is the top earner and why?')">Top Earner?</button>
-      <button class="secondary" style="font-size:11px;padding:4px 8px" onclick="askAssistant('Explain all active audit flaws')">Analyze Flaws</button>
-      <button class="secondary" style="font-size:11px;padding:4px 8px" onclick="askAssistant('Give me a full department summary')">Department Summary</button>
+      <button class="secondary" style="font-size:11px;padding:4px 8px" onclick="askAssistant('Who is the top earner?')">Top Earner?</button>
+      <button class="secondary" style="font-size:11px;padding:4px 8px" onclick="askAssistant('Show me summary of all flags')">Audit Flaws?</button>
+      <button class="secondary" style="font-size:11px;padding:4px 8px" onclick="askAssistant('What are the pay rates?')">Pay Rates?</button>
     </div>
   </div>
 </div>
@@ -142,7 +140,6 @@ let manual = [];
 let allRotaInspectionRows = [];
 let currentFlawsList = [];
 let currentCompiledPeople = [];
-let chatHistoryMemory = [];
 
 function cleanLine(l) { return l.trim(); }
 function minsToHM(mins) {
@@ -175,6 +172,7 @@ function splitPay(startMins, endMins, type) {
   for (let m = 0; m < dur; m++) {
     let cur = (startMins + m) % 1440;
     let hour = Math.floor(cur / 60);
+    // Night defined as 21:00 to 06:00
     if (hour >= 21 || hour < 6) nightMins++;
     else dayMins++;
   }
@@ -259,8 +257,8 @@ function parseRota(text, autoAccept, ruleClock, ruleMinHour) {
         let dur = endMins - out[matchIdx].start;
         if (dur < 0) dur += 1440;
         if (ruleMinHour && dur < 60) {
-          flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Shift duration ${minsToHM(dur)} is below the 60 min minimum rule.` });
-          inspection.push({ lineNum, content: rawLine, type: "Off-Duty", status: "Rejected", reason: `Shift duration under 60m min rule.` });
+          flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Shift duration ${dur} mins is below 60 min minimum rule.` });
+          inspection.push({ lineNum, content: rawLine, type: "Off-Duty", status: "Rejected", reason: `Shift duration ${dur}m under 60m min rule.` });
           out.splice(matchIdx, 1);
         } else {
           out[matchIdx].complete = true;
@@ -557,90 +555,59 @@ function submitChat() {
   input.value = "";
   logBox.scrollTop = logBox.scrollHeight;
 
-  // Track conversational context history
-  chatHistoryMemory.push({ sender: 'user', text: val });
-
   setTimeout(() => {
-    const answer = generateSupersmartAiResponse(val);
-    logBox.innerHTML += `<div class="chat-msg assistant"><b>EMS Command Assistant:</b> ${answer}</div>`;
+    const answer = generateAiAgentResponse(val);
+    logBox.innerHTML += `<div class="chat-msg assistant"><b>Autonomous Agent:</b> ${answer}</div>`;
     logBox.scrollTop = logBox.scrollHeight;
-    chatHistoryMemory.push({ sender: 'assistant', text: answer });
   }, 400);
 }
 
-function generateSupersmartAiResponse(query) {
+function generateAiAgentResponse(query) {
   const q = query.toLowerCase();
-
-  // 1. Check for specific employee search across current compiled records
-  const foundPerson = currentCompiledPeople.find(p => q.includes(p.name.toLowerCase()));
-  if (foundPerson) {
-    return `📊 **Detailed Service Record for ${foundPerson.name} (${foundPerson.rank}):**\n` +
-           `• **Total Net Payout:** ${money(foundPerson.totalPay)}\n` +
-           `• **Total Duty Time:** ${minsToHM(foundPerson.totalMin)}\n` +
-           `• **Duty Split:** Pillbox Hill (${minsToHM(foundPerson.phMin)}), Sandy Shores (${minsToHM(foundPerson.shMin)}), Calls (${minsToHM(foundPerson.callsMin)})\n` +
-           `• **Lab Productivity:** ${foundPerson.captchas} Captchas & ${foundPerson.deliveries} Deliveries\n` +
-           `• **FTO Bonus Earned:** ${money(foundPerson.ftoPay)}`;
+  
+  // 1. Specific Employee Lookup
+  const matchedPerson = currentCompiledPeople.find(p => q.includes(p.name.toLowerCase()));
+  if (matchedPerson) {
+    return `**Employee Report for ${matchedPerson.name} (${matchedPerson.rank}):**\n` +
+           `• Total Payout: **${money(matchedPerson.totalPay)}**\n` +
+           `• Duty Hours: PH (${minsToHM(matchedPerson.phMin)}), SH (${minsToHM(matchedPerson.shMin)}), Calls (${minsToHM(matchedPerson.callsMin)})\n` +
+           `• Lab Stats: ${matchedPerson.captchas} captchas, ${matchedPerson.deliveries} deliveries\n` +
+           `• FTO Bonus: ${money(matchedPerson.ftoPay)}`;
   }
 
-  // 2. Department Summary & General Metrics
-  if (q.includes("summary") || q.includes("department") || q.includes("overview")) {
-    if (!currentCompiledPeople.length) return "⚠️ No rota logs have been parsed yet! Please paste your logs on the left and click 'Run Complete Audit & Calculate Payroll' so I can analyze them.";
-    let totalPayoutAll = currentCompiledPeople.reduce((acc, x) => acc + x.totalPay, 0);
-    let totalHoursAll = currentCompiledPeople.reduce((acc, x) => acc + x.totalMin, 0);
-    return `📋 **Grand RP EMS Department Overview:**\n` +
-           `• **Active Verified Personnel:** ${currentCompiledPeople.length} officers\n` +
-           `• **Total Combined Duty Duration:** ${minsToHM(totalHoursAll)}\n` +
-           `• **Total Budget Payout Allocation:** ${money(totalPayoutAll)}\n` +
-           `• **Active Audit Flag Count:** ${currentFlawsList.length} warning(s)\n` +
-           `All custom ranks like LP, EMT, and Phar-GS have been successfully verified without penalty!`;
-  }
-
-  // 3. Top Earner, Most Hours, and Averages
-  if (q.includes("highest") || q.includes("most hours") || q.includes("top earner") || q.includes("best") || q.includes("average")) {
-    if (!currentCompiledPeople.length) return "⚠️ I need parsed rota data first! Please insert logs and run calculate.";
+  // 2. Highest / Average Hours or Analytics
+  if (q.includes("highest") || q.includes("most hours") || q.includes("top earner")) {
+    if (!currentCompiledPeople.length) return "No data parsed yet. Please insert logs and run calculate first.";
     let sortedByPay = [...currentCompiledPeople].sort((a,b) => b.totalPay - a.totalPay);
     let sortedByHours = [...currentCompiledPeople].sort((a,b) => b.totalMin - a.totalMin);
     let avgHours = currentCompiledPeople.reduce((acc, x) => acc + x.totalMin, 0) / currentCompiledPeople.length;
-    let avgPay = currentCompiledPeople.reduce((acc, x) => acc + x.totalPay, 0) / currentCompiledPeople.length;
 
-    return `🏆 **Performance Analytics & Rankings:**\n` +
-           `• **Top Earner:** ${sortedByPay[0].name} (${sortedByPay[0].rank}) taking home **${money(sortedByPay[0].totalPay)}**\n` +
-           `• **Most Active Hours:** ${sortedByHours[0].name} logging **${minsToHM(sortedByHours[0].totalMin)}** of service\n` +
-           `• **Department Averages:** ${minsToHM(Math.round(avgHours))} worked / ${money(Math.round(avgPay))} earned per active medic.`;
+    return `• **Top Earner:** ${sortedByPay[0].name} (${sortedByPay[0].rank}) with **${money(sortedByPay[0].totalPay)}**\n` +
+           `• **Most Active Hours:** ${sortedByHours[0].name} with **${minsToHM(sortedByHours[0].totalMin)}**\n` +
+           `• **Average Hours per Medic:** ${minsToHM(Math.round(avgHours))}`;
   }
 
-  // 4. In-depth Flaws and Anomaly Explanation
-  if (q.includes("flag") || q.includes("anomaly") || q.includes("flaw") || q.includes("error") || q.includes("issue")) {
-    if (!currentFlawsList.length) return "✨ Excellent news, Chief! Zero anomalies or audit flags are currently active. All rota logs, time clocks, and rank tags are fully pristine and verified.";
-    let response = `⚠️ **Audit Flaws Analysis (${currentFlawsList.length} detected):**\n`;
-    currentFlawsList.forEach((f, idx) => {
-      response += `\n${idx + 1}. **Line ${f.lineNum}** (${f.name}):\n   ↳ *${f.reason}*`;
+  // 3. Flaws / Summary of Flaws
+  if (q.includes("flag") || q.includes("anomaly") || q.includes("flaw") || q.includes("error")) {
+    if (!currentFlawsList.length) return "Zero anomalies or rule flags are currently active in memory. All parsed logs look clean!";
+    let summary = `I found **${currentFlawsList.length}** system or rule flags during audit analysis:\n`;
+    currentFlawsList.slice(0, 4).forEach(f => {
+      summary += `• Line ${f.lineNum} (${f.name}): ${f.reason}\n`;
     });
-    response += `\n\n*Tip: Check the 'Detected Audit Flaws & Anomalies' panel below for full tracking.*`;
-    return response;
+    if (currentFlawsList.length > 4) summary += `...and ${currentFlawsList.length - 4} more flags listed in the Flaws table.`;
+    return summary;
   }
 
-  // 5. Pay Rates & Rules Breakdown
-  if (q.includes("pay rule") || q.includes("rates") || q.includes("salary") || q.includes("rules")) {
-    return `💡 **Active Grand RP EMS Pay Rates & Rules Configuration:**\n` +
-           `• **Pillbox Hill (PH):** Day $10k/hr | Night (21:00–06:00) $25k/hr\n` +
-           `• **Sandy Shores (SH):** Day $30k/hr | Night $40k/hr\n` +
-           `• **GS Calls:** Day $15k/hr | Night $20k/hr\n` +
-           `• **FTO Bonuses:** Day 1 = $45k | Day 2 = $35k\n` +
-           `• **Rank Engine:** LP, EMT, Phar / Phar-GS, LT, FTO, and Surgeon are fully recognized standard ranks.`;
+  // 4. Pay Rules & Rates
+  if (q.includes("pay rule") || q.includes("rates")) {
+    return `Active Grand RP EMS pay rates:\n` +
+           `• **PH:** Day $10k/hr | Night $25k/hr\n` +
+           `• **SH:** Day $30k/hr | Night $40k/hr\n` +
+           `• **Calls:** Day $15k/hr | Night $20k/hr\n` +
+           `• **Ranks Recognized:** LP, EMT, Phar / Phar-GS, LT, FTO, Surgeon, etc.`;
   }
 
-  // 6. Natural Conversational Greetings & General Assistance
-  if (q.includes("hi") || q.includes("hello") || q.includes("hey") || q.includes("sup")) {
-    return `Hello Chief! How can I assist you with the EMS payroll or audit logs today? Feel free to ask about specific officers, department totals, or audit flags!`;
-  }
-
-  // Fallback with intelligent guidance
-  return `🤖 I processed your query: "${query}". \n\nAs your high-command assistant, I can help you with:\n` +
-         `• Searching specific officers (e.g., "How much did Roger make?")\n` +
-         `• Analyzing top earners and average work hours\n` +
-         `• Explaining active audit flags line-by-line\n` +
-         `• Reviewing active Grand RP pay rates`;
+  return `I processed your query: "${query}". You can ask me about specific employee records, highest hours, top earners, or audit flags!`;
 }
 
 function copyDiscordSummary() {
