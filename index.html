@@ -46,7 +46,7 @@
 
   .hero{
     display:flex;
-    justify-space:space-between;
+    justify-content:space-between;
     gap:24px;
     align-items:center;
     margin-bottom:28px;
@@ -122,7 +122,7 @@
 
   .guide-header {
     display:flex;
-    justify-space:space-between;
+    justify-content:space-between;
     align-items:center;
     flex-wrap:wrap;
     gap:16px;
@@ -661,7 +661,7 @@
 
 <script>
 const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx2Oll1NoHpkTodLDEYVbYwf8V6EwpOYeYhtw8_uZ6cMBwufIW0DBzIX993pcA66aZSbQ/exec";
-const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1WoJm1_bMVqwUeP8rd_86O933sfIkdWf6VrqM4ZqOFaQ/edit?usp=sharing";
+const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1WoJm1_bMVqwUeP8rd_86O933sfIkdWf6VrqM4ZqOFaQ/edit?gid=0#gid=0";
 
 function loadLocalImage(event) {
   const file = event.target.files[0];
@@ -1074,7 +1074,7 @@ async function syncToGoogleSheets() {
     return;
   }
 
-  // Opens the Google Sheet in a new browser tab immediately upon button click
+  // Opens your specific Google Sheet instantly in a new tab
   window.open(GOOGLE_SHEET_URL, '_blank');
 
   const payload = currentCompiledPeople.map(p => ({
@@ -1130,7 +1130,7 @@ function copyDiscordSummary() {
   
   const formattedText = textLines.join("\n");
   navigator.clipboard.writeText(formattedText);
-  alert(`📋 Copied summary for ${selectedBoxes.length} selected employee(s) to clipboard!\nCharacter character count: ${formattedText.length}`);
+  alert(`📋 Copied summary for ${selectedBoxes.length} selected employee(s) to clipboard!\nCharacter count: ${formattedText.length}`);
 }
 
 function addManual() {
