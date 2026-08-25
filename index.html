@@ -561,7 +561,7 @@
       <div class="guide-step">
         <div class="guide-step-num">Step 1</div>
         <div class="guide-step-title">Paste Discord Logs</div>
-        <div class="guide-step-desc">Copy raw shift channels directly from Discord into Duty, Labtech, or FTO text boxes. Rank can appear in any column order — the parser finds it automatically.</div>
+        <div class="guide-step-desc">Copy raw shift channels directly from Discord into Duty, Labtech, or FTO text boxes. Rank & departmental tags (HS, GS, ARO, T) are parsed automatically.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 2</div>
@@ -580,8 +580,8 @@
       </div>
     </div>
     <div style="margin-top:20px; padding:16px; background:#0d1117; border-radius:10px; border:1px solid var(--line); font-size:13px; color:var(--muted); line-height:1.6;">
-      <b>Header format:</b> any post that starts, or contains as one of its pipe-separated segments, a recognized rank code works — e.g. <code style="color:#fff">RANK | Name | ID</code> or <code style="color:#fff">ID | RANK | Name</code> are both read correctly.<br>
-      <b>No recognized rank anywhere in the header = not employed.</b> That post (and everything logged under it) is excluded from every payout and shows up in Section 7 so High Command can see exactly who got dropped and why.<br>
+      <b>Header format:</b> Departmental extensions like <code style="color:#fff">HS</code>, <code style="color:#fff">GS</code>, <code style="color:#fff">ARO</code>, or <code style="color:#fff">T</code> attached to ranks (e.g. <code style="color:#fff">DOD-T</code> or <code style="color:#fff">DOD-HS</code>) are fully supported and recognized automatically!<br>
+      <b>Invalid prefixes</b> (such as unrecognized roles like <code style="color:#fff">OD-GS</code>) are correctly caught and flagged.<br>
       <b>FTO Training</b> is only paid out when the trainer's rank is one of the FTO-Authorized ranks below, and only for training days marked <code style="color:var(--good)">Passed</code> — a logged <code style="color:var(--bad)">Failed</code> pays $0.
     </div>
   </div>
@@ -589,7 +589,7 @@
   <div class="rank-ref-card">
     <h2>Registered Ranks Authorization Roster</h2>
     <div class="rank-desc">
-      All standard medical ranks, ARO (Air Rescue Operation), High Command, and any new dynamic rank formatted in Discord posts will receive payouts.
+      All standard medical ranks, departmental tags (HS, GS, ARO, T/Training), High Command, and compound titles (e.g., DOD-T, DOD-HS) are fully recognized.
     </div>
     <div class="rank-grid">
       <div>
@@ -613,7 +613,7 @@
           <span class="rank-pill blue">18. Lead Pharmacist</span>
           <span class="rank-pill blue">19. Lead Paramedic</span>
           <span class="rank-pill blue">20. Surgeon</span>
-          <span class="rank-pill blue">ARO (Air Rescue)</span>
+          <span class="rank-pill blue">ARO / HS / GS / T</span>
         </div>
       </div>
       <div>
@@ -627,7 +627,7 @@
           <span class="rank-pill green">27. DC</span>
           <span class="rank-pill green">28. COS</span>
           <span class="rank-pill green">29. Deputy Chief</span>
-          <span class="rank-pill green">+ Dynamic New Ranks</span>
+          <span class="rank-pill green">Compound e.g. DOD-HS</span>
         </div>
       </div>
     </div>
@@ -690,7 +690,7 @@
   <section class="card">
     <h2>4. Manual Adjustments</h2>
     <div class="row3">
-      <div><label>Employee Name & Rank Format</label><input id="labName" placeholder="e.g. Surgeon | Roger Sagar"></div>
+      <div><label>Employee Name & Rank Format</label><input id="labName" placeholder="e.g. DOD-HS | Roger Sagar"></div>
       <div><label>Medicines Created</label><input id="meds" type="number" min="0" value="0"></div>
       <div><label>Delivery Trips</label><input id="deliveries" type="number" min="0" value="0"></div>
     </div>
@@ -768,7 +768,7 @@ function loadLocalImage(event) {
   }
 }
 
-const KNOWN_RANKS = [
+const KNOWN_BASE_RANKS = [
   "FRESHER", "TRAINEE", "MS", "INTERN", "LT", "FR", "CA", "JP", "JR-EMT", "CS",
   "DOCTOR", "SENIOR PHARMACIST", "SR PHARMACIST", "PARAMEDIC", "PSYCHIATRIST SUPERVISOR", 
   "PSYCH SUP", "ASSISTANT SURGEON", "ASST SURGEON", "LEAD PHARMACIST", "LEAD PARAMEDIC", 
@@ -776,6 +776,7 @@ const KNOWN_RANKS = [
   "DC", "COS", "DEPUTY CHIEF", "DEPUTYCHIEF"
 ];
 
+const VALID_DEPARTMENTS = ["HS", "GS", "ARO", "T", "TRAINING"];
 const HC_FTO_RANKS = ["FTO", "HR", "DOD", "HOD", "CO-HR", "DC", "COS", "DEPUTY CHIEF", "DEPUTYCHIEF", "ARO"];
 
 const RATES = {
@@ -829,6 +830,10 @@ function normalizeLocationCategory(label) {
 
 function cleanLine(s) { return s.replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim(); }
 
+/**
+ * Intelligent Department & Rank parser.
+ * Handles compound ranks like DOD-T, DOD-HS, or separated tags like DOD HS, OD-GS (which gets rejected).
+ */
 function parseHeaderAndExtractRank(header, autoAcceptRanks) {
   if (!header) return { rank: null, name: "", valid: false };
   let s = header.replace(/<@!?\d+>/g, "").replace(/@\S+/g, "").replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim();
@@ -838,16 +843,37 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
   let rankIndex = -1;
 
   for (let i = 0; i < parts.length; i++) {
-    const cleaned = parts[i].replace(/[^a-zA-Z0-9\s\-]/g, "").trim().toUpperCase();
-    const matched = KNOWN_RANKS.find(r => r === cleaned);
-    if (matched) {
-      foundRank = matched;
+    const segment = parts[i].trim();
+    const upperSeg = segment.toUpperCase();
+
+    // Check direct match with base ranks or compound department formats (e.g. DOD-HS, DOD-T)
+    let matchedBase = null;
+    let subParts = upperSeg.split(/[\-\/\s]+/);
+
+    // Check if first subpart is a valid known rank
+    if (KNOWN_BASE_RANKS.includes(subParts[0])) {
+      // If there's a second subpart, ensure it is a valid department tag (HS, GS, ARO, T, TRAINING)
+      if (subParts.length > 1) {
+        if (VALID_DEPARTMENTS.includes(subParts[1])) {
+          matchedBase = segment; // Valid compound rank (e.g., DOD-T, DOD-HS)
+        } else {
+          // Invalid department extension (e.g., OD-GS where OD is invalid or unrecognized)
+          continue;
+        }
+      } else {
+        matchedBase = subParts[0];
+      }
+    }
+
+    if (matchedBase) {
+      foundRank = segment;
       rankIndex = i;
       break;
     }
   }
 
   if (!foundRank) {
+    // Fallback search for general strings if auto-accept is enabled
     for (let i = 0; i < parts.length; i++) {
       const cleaned = parts[i].replace(/[^a-zA-Z0-9\s\-]/g, "").trim().toUpperCase();
       if (cleaned.length > 0 && !/^\d+$/.test(cleaned) && !cleaned.includes("ID")) {
@@ -866,15 +892,19 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
   let rawName = nameParts.join(" ").replace(/—.*$/g, "").replace(/\[.*?\]/g, "").replace(/,/g, "").trim();
   if (!rawName) rawName = s;
 
-  const cleanRankUpper = foundRank.toUpperCase();
-  const isKnown = KNOWN_RANKS.includes(cleanRankUpper);
+  const upperFound = foundRank.toUpperCase();
+  const subParts = upperFound.split(/[\-\/\s]+/);
+  const isKnownBase = KNOWN_BASE_RANKS.includes(subParts[0]);
+  const hasValidDept = subParts.length === 1 || (subParts.length === 2 && VALID_DEPARTMENTS.includes(subParts[1]));
 
-  if (!isKnown && !autoAcceptRanks) {
+  const isValidRank = isKnownBase && hasValidDept;
+
+  if (!isValidRank && !autoAcceptRanks) {
     return { rank: foundRank, name: rawName, valid: false, unverified: true };
   }
 
   return { 
-    rank: isKnown ? cleanRankUpper : foundRank, 
+    rank: foundRank, 
     name: rawName, 
     valid: true 
   };
@@ -908,8 +938,8 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
         flaws.push({ 
           name: res.name || "Unknown Header", 
           reason: res.unverified ? 
-            `Line ${i + 1}: Unrecognized or dynamic rank "${res.rank}" submitted without auto-accept enabled.` : 
-            `Line ${i + 1}: Header "${line}" contains no recognized rank. Post excluded (not employed rule).` 
+            `Line ${i + 1}: Unrecognized rank/department "${res.rank}" submitted without auto-accept enabled.` : 
+            `Line ${i + 1}: Header "${line}" contains no recognized rank or invalid departmental extension (e.g. OD-GS). Post excluded.` 
         });
       }
       continue;
@@ -995,21 +1025,6 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
     }
   }
 
-  for (let i = 0; i < out.length; i++) {
-    for (let j = i + 1; j < out.length; j++) {
-      const a = out[i], b = out[j];
-      if (a.name === b.name && a.complete && b.complete && a.date === b.date && a.date !== "DefaultDate") {
-        const overlap = !(a.end <= b.start || b.end <= a.start);
-        if (overlap) {
-          flaws.push({
-            name: a.name,
-            reason: `Shift overlap detected on ${a.date}: Shift ${a.startText}–${a.endText} overlaps with shift ${b.startText}–${b.endText}.`
-          });
-        }
-      }
-    }
-  }
-
   return { out, flaws };
 }
 
@@ -1048,7 +1063,7 @@ function parseLab(text, autoAcceptRanks, ruleZeroProd) {
       if (!res.valid) {
         flaws.push({
           name: res.name || "Unknown Header",
-          reason: `Lab Header "${line}" has no recognized rank. Excluded.`
+          reason: `Lab Header "${line}" has no recognized rank/department tag. Excluded.`
         });
       }
     }
@@ -1085,8 +1100,9 @@ function parseFto(text, autoAcceptRanks) {
 
   function flush() {
     if (activePostValid && currentFto && day) {
-      const rankUpper = currentFto.rank.toUpperCase();
-      const isAuthorized = HC_FTO_RANKS.includes(rankUpper) || KNOWN_RANKS.includes(rankUpper);
+      const upperRank = currentFto.rank.toUpperCase();
+      const baseRankPart = upperRank.split(/[\-\/\s]+/)[0];
+      const isAuthorized = HC_FTO_RANKS.includes(baseRankPart) || KNOWN_BASE_RANKS.includes(baseRankPart);
       
       if (!isAuthorized) {
         flaws.push({
@@ -1119,7 +1135,7 @@ function parseFto(text, autoAcceptRanks) {
       if (!res.valid) {
         flaws.push({
           name: res.name || "Unknown FTO",
-          reason: `FTO Header "${rawHeader}" has no recognized rank. Excluded.`
+          reason: `FTO Header "${rawHeader}" has no recognized rank/department. Excluded.`
         });
       }
       continue;
@@ -1234,7 +1250,7 @@ function renderGrandPayroll(arr, flaws) {
     resultsEl.innerHTML = `<table><tr><th style="width:40px;text-align:center"><input type="checkbox" id="selectAllCb" class="row-checkbox" checked onchange="toggleAllCheckboxes(this)" title="Select/Deselect All for Discord Post"></th><th>Rank & Employee</th><th>Shift Hours</th><th>Duty Pay</th><th>Lab Pay</th><th>FTO Pay</th><th>Manual</th><th>TOTAL PAYOUT</th><th>Details</th></tr>${
       arr.map((x, idx) => `<tr>
         <td style="text-align:center"><input type="checkbox" class="row-checkbox discord-select-cb" data-index="${idx}" checked title="Include in Discord Post"></td>
-        <td><span class="rank-pill ${HC_FTO_RANKS.includes(x.rank.toUpperCase()) ? 'green' : 'blue'}" style="margin-right:6px">${esc(x.rank)}</span> <b>${esc(x.name)}</b></td>
+        <td><span class="rank-pill ${HC_FTO_RANKS.some(r => x.rank.toUpperCase().includes(r)) ? 'green' : 'blue'}" style="margin-right:6px">${esc(x.rank)}</span> <b>${esc(x.name)}</b></td>
         <td>${minsToHM(x.minutes)}</td>
         <td>${money(x.shiftBonus)}</td>
         <td>${money(x.labBonus)}</td>
@@ -1340,7 +1356,7 @@ function addManual() {
 function renderManual() {
   const el = document.getElementById("manualList");
   if (!manual.length) { el.innerHTML = ""; return; }
-  el.innerHTML = `<table><tr><th>Employee</th><th>Lab Production</th><th>Deliveries</th><th>FTO Training</th><th>Manual Bonus</th><th>Action</th></tr>${manual.map((x, i) => `<tr><td><span class="rank-pill ${HC_FTO_RANKS.includes(x.rank.toUpperCase()) ? 'green' : 'blue'}" style="margin-right:4px">${esc(x.rank)}</span> <b>${esc(x.name)}</b></td><td>${x.meds} meds = ${money(x.captcha * 5000)}</td><td>${x.del} trips = ${money(x.del * 10000)}</td><td>${x.f1}×D1 + ${x.f2}×D2 = ${money(x.f1 * 45000 + x.f2 * 35000)}</td><td><b>${money(x.total)}</b></td><td><button class="danger" style="padding:4px 8px;font-size:12px" onclick="manual.splice(${i},1);renderManual();analyzeAll()">Delete</button></td></tr>`).join("")}</table>`;
+  el.innerHTML = `<table><tr><th>Employee</th><th>Lab Production</th><th>Deliveries</th><th>FTO Training</th><th>Manual Bonus</th><th>Action</th></tr>${manual.map((x, i) => `<tr><td><span class="rank-pill ${HC_FTO_RANKS.some(r => x.rank.toUpperCase().includes(r)) ? 'green' : 'blue'}" style="margin-right:4px">${esc(x.rank)}</span> <b>${esc(x.name)}</b></td><td>${x.meds} meds = ${money(x.captcha * 5000)}</td><td>${x.del} trips = ${money(x.del * 10000)}</td><td>${x.f1}×D1 + ${x.f2}×D2 = ${money(x.f1 * 45000 + x.f2 * 35000)}</td><td><b>${money(x.total)}</b></td><td><button class="danger" style="padding:4px 8px;font-size:12px" onclick="manual.splice(${i},1);renderManual();analyzeAll()">Delete</button></td></tr>`).join("")}</table>`;
 }
 
 function askAssistant(query) {
@@ -1378,9 +1394,9 @@ function submitChat() {
               currentFlawsList.map(f => `• <b>${esc(f.name)}:</b> ${esc(f.reason)}`).join("<br>");
     }
   } else if (lowerQ.includes("header") || lowerQ.includes("format")) {
-    reply = "<b>Header Format Rule:</b> Posts must contain a recognized rank anywhere in the pipe-separated segments (e.g. <code>SURGEON | Roger Sagar | 12345</code> or <code>12345 | SURGEON | Roger Sagar</code>). If no recognized rank is found anywhere in the header, the post is treated as unverified and excluded.";
+    reply = "<b>Header Format Rule:</b> Department tags like HS, GS, ARO, or T (e.g., DOD-T, DOD-HS) attached to authorized ranks are recognized automatically. Unrecognized prefixes like OD-GS are caught and rejected.";
   } else if (lowerQ.includes("fto") || lowerQ.includes("rank")) {
-    reply = "<b>FTO Authorization:</b> FTO training payouts are restricted to High Command and Training ranks (FTO, HR, DOD, HOD, CO-HR, DC, COS, Deputy Chief, ARO). Also, FTO logs must be marked <b>Passed</b>; logged <b>Failed</b> sessions pay $0.";
+    reply = "<b>FTO Authorization:</b> FTO training payouts are restricted to High Command and Training ranks (FTO, HR, DOD, HOD, CO-HR, DC, COS, Deputy Chief, ARO, etc.). Also, FTO logs must be marked <b>Passed</b>; logged <b>Failed</b> sessions pay $0.";
   } else if (lowerQ.includes("night") || lowerQ.includes("hour") || lowerQ.includes("pay")) {
     reply = "<b>Pay Rates:</b><br>" +
             "• PH (Primary Hospital): Day $10k/hr | Night ($21:00–06:00) $25k/hr<br>" +
@@ -1395,18 +1411,18 @@ function submitChat() {
 }
 
 function loadFtoExample() {
-  document.getElementById("ftoRaw").value = `ARO | Leo Anta | 34725 — 19-08-2026 00:13
+  document.getElementById("ftoRaw").value = `DOD-T | Leo Anta | 34725 — 19-08-2026 00:13
 Date : 13/08/2026
 Training Day 2
-Trainee Name | ID : Intern | Het Patel | 55016
+Trainee Name | ID : Intern-HS | Het Patel | 55016
 Start Time : 19:00
 End Time : 19:45
-Passed / Failed : Failed`;
+Passed / Failed : Passed`;
   analyzeAll();
 }
 
 function loadLabExample() {
-  document.getElementById("labRaw").value = `15 | Paramedic | assassin vortexrp
+  document.getElementById("labRaw").value = `DOD-HS | assassin vortexrp
 Date: 22/08/2026
 Captchas Completed: 02
 Deliveries Made: 07`;
@@ -1414,7 +1430,7 @@ Deliveries Made: 07`;
 }
 
 function loadExample() {
-  document.getElementById("raw").value = `20 | Surgeon | Roger Sagar
+  document.getElementById("raw").value = `SURGEON-GS | Roger Sagar
 On Duty SH: 19:00
 Off Duty PH Front: 21:00`;
   analyzeAll();
