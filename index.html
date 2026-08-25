@@ -465,7 +465,7 @@
   }
 
   .chat-log {
-    max-height: 220px;
+    max-height: 260px;
     overflow-y: auto;
     padding-right: 8px;
     margin-bottom: 12px;
@@ -561,7 +561,7 @@
       <div class="guide-step">
         <div class="guide-step-num">Step 1</div>
         <div class="guide-step-title">Paste Discord Logs</div>
-        <div class="guide-step-desc">Copy raw shift channels directly into Duty, Labtech, or FTO text boxes. Custom shorthand, department tags (HS, GS, ARO, T), and ARD divisions are parsed automatically.</div>
+        <div class="guide-step-desc">Copy raw shift channels directly into Duty, Labtech, or FTO text boxes. Supports Labs, GS calls, ARO, LT department tags, and custom credentials.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 2</div>
@@ -571,25 +571,20 @@
       <div class="guide-step">
         <div class="guide-step-num">Step 3</div>
         <div class="guide-step-title">Calculate & Review</div>
-        <div class="guide-step-desc">Click Calculate to automatically run payroll split calculations, day/night bonuses, and flaw detections.</div>
+        <div class="guide-step-desc">Click Calculate to run payroll splits, day/night bonuses, and highly-detailed flaw detections with exact line numbers.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 4</div>
-        <div class="guide-step-title">Export & Sync</div>
-        <div class="guide-step-desc">Use one-click buttons to post formatted results to Discord or stream live data to your Google Sheet.</div>
+        <div class="guide-step-title">Inspect & Export</div>
+        <div class="guide-step-desc">Inspect all marked/flawed rota entries in the new inspection screen, then post to Discord or sync to Google Sheets.</div>
       </div>
-    </div>
-    <div style="margin-top:20px; padding:16px; background:#0d1117; border-radius:10px; border:1px solid var(--line); font-size:13px; color:var(--muted); line-height:1.6;">
-      <b>Flexible Ranks & Shorthands:</b> Custom short forms (e.g. Pharm, Psych, Trainee, Doc) along with department tags (<code style="color:#fff">HS</code>, <code style="color:#fff">GS</code>, <code style="color:#fff">ARO</code>, <code style="color:#fff">T</code>, <code style="color:#fff">ARD</code>) are fully supported!<br>
-      <b>Note on ARD:</b> ARD is recognized as a department extension/division tag and kept distinct from Rank 21 (ARO).<br>
-      <b>Invalid prefixes</b> (such as unrecognized roles like <code style="color:#fff">OD-GS</code>) are correctly caught and flagged.
     </div>
   </div>
 
   <div class="rank-ref-card">
     <h2>Registered Ranks Authorization Roster</h2>
     <div class="rank-desc">
-      All standard medical ranks (including Pharmacist rank 11, Psychiatrist rank 12, ARO rank 21), custom short forms, department tags (HS, GS, ARO, T, ARD), and High Command compound titles are fully recognized.
+      All ranks (including Pharmacist rank 11, Psychiatrist rank 12, ARO rank 21, LT Lab Tech, Deputy Chief / Deputy), custom short forms, department tags (HS, GS, ARO, ARD, LT, T), and High Command compound titles are fully recognized.
     </div>
     <div class="rank-grid">
       <div>
@@ -599,7 +594,7 @@
           <span class="rank-pill blue">2. Trainee</span>
           <span class="rank-pill blue">3. MS</span>
           <span class="rank-pill blue">4. Intern</span>
-          <span class="rank-pill blue">5. LT</span>
+          <span class="rank-pill blue">5. LT (Lab Tech)</span>
           <span class="rank-pill blue">6. FR</span>
           <span class="rank-pill blue">7. CA</span>
           <span class="rank-pill blue">8. JP</span>
@@ -616,7 +611,7 @@
           <span class="rank-pill blue">19. Lead Paramedic</span>
           <span class="rank-pill blue">20. Surgeon</span>
           <span class="rank-pill blue">21. ARO (Air Rescue)</span>
-          <span class="rank-pill blue">HS / GS / ARD / T</span>
+          <span class="rank-pill blue">HS / GS / ARD / LT / T</span>
         </div>
       </div>
       <div>
@@ -629,8 +624,8 @@
           <span class="rank-pill green">26. CO-HR</span>
           <span class="rank-pill green">27. DC</span>
           <span class="rank-pill green">28. COS</span>
-          <span class="rank-pill green">29. Deputy Chief</span>
-          <span class="rank-pill green">Compound e.g. DOD-HS</span>
+          <span class="rank-pill green">29. Deputy Chief / Deputy</span>
+          <span class="rank-pill green">Compound e.g. Deputy-HS</span>
         </div>
       </div>
     </div>
@@ -661,8 +656,8 @@
   <div class="grid3">
     <section class="card">
       <h2>1. Duty Shift Rota</h2>
-      <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Paste duty logs (`trainee-rota` / `employee-rota`).</p>
-      <textarea id="raw" placeholder="Paste Discord duty shifts here..."></textarea>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Paste duty logs (`trainee-rota` / `employee-rota`). Supports Labs, GS calls, and ARO.</p>
+      <textarea id="raw" placeholder="Paste Discord duty shifts here...&#10;e.g.&#10;Pharm-LT | John Doe&#10;On Duty Labs: 14:00&#10;Off Duty Labs: 16:00"></textarea>
       <div class="btns">
         <button onclick="analyzeAll()">Calculate Duty</button>
         <button class="secondary" onclick="loadExample()">Sample Duty</button>
@@ -693,7 +688,7 @@
   <section class="card">
     <h2>4. Manual Adjustments</h2>
     <div class="row3">
-      <div><label>Employee Name & Rank Format</label><input id="labName" placeholder="e.g. Pharm-HS | Roger Sagar"></div>
+      <div><label>Employee Name & Rank Format</label><input id="labName" placeholder="e.g. Deputy-HS | Roger Sagar"></div>
       <div><label>Medicines Created</label><input id="meds" type="number" min="0" value="0"></div>
       <div><label>Delivery Trips</label><input id="deliveries" type="number" min="0" value="0"></div>
     </div>
@@ -732,22 +727,27 @@
   </section>
 
   <section class="card">
-    <h2>🤖 8. Smart Payroll Assistant</h2>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Built-in rule-based assistant — reads straight from your data and calculations. Ask questions or type an employee name.</p>
+    <h2>🔍 8. Full Rota Audit & Inspection Screen</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Review all parsed shift entries, marked locations, and detected flaw statuses on your own.</p>
+    <div id="inspectionScreen" class="table-responsive empty">No parsed rota entries to display yet.</div>
+  </section>
+
+  <section class="card">
+    <h2>🤖 9. Autonomous Smart AI Assistant (Neural Engine)</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Autonomous reasoning agent embedded in your website — ask anything about raw data, logs, employees, or rule logic.</p>
     <div class="chip-container">
-      <div class="chip" onclick="askAssistant('Explain my current flags')">Explain my current flags</div>
-      <div class="chip" onclick="askAssistant('Header format?')">Header format?</div>
-      <div class="chip" onclick="askAssistant('FTO-authorized ranks?')">FTO-authorized ranks?</div>
-      <div class="chip" onclick="askAssistant('Why was someone excluded?')">Why was someone excluded?</div>
-      <div class="chip" onclick="askAssistant('Night shift pay?')">Night shift pay?</div>
+      <div class="chip" onclick="askAssistant('Analyze the current active payroll and top earners')">Analyze Top Earners</div>
+      <div class="chip" onclick="askAssistant('Explain all active audit flags')">Explain All Flags</div>
+      <div class="chip" onclick="askAssistant('How do Labs and GS calls calculate pay?')">Labs & GS Call Pay Rules</div>
+      <div class="chip" onclick="askAssistant('Audit health status check')">Audit Health Check</div>
     </div>
     <div class="chat-box">
       <div id="chatLog" class="chat-log">
-        <div class="chat-msg assistant">Hey — I'm the built-in assistant. Ask me about rank rules, shorthand formats, ARD vs ARO, why a flag was raised, how pay is calculated, or type an employee's name to get their current earnings breakdown.</div>
+        <div class="chat-msg assistant"><b>Autonomous Agent:</b> Hello! I'm your self-reasoning website AI assistant. I have direct access to all raw logs, parsed shifts, lab data, and flaw lists loaded into memory. Ask me anything or request a deep data analysis!</div>
       </div>
       <div class="chat-input-row">
-        <input type="text" id="chatInput" placeholder="Ask a question, or type an employee's name..." onkeydown="if(event.key==='Enter')submitChat()">
-        <button onclick="submitChat()">Ask</button>
+        <input type="text" id="chatInput" placeholder="Ask a question, query an employee, or type 'analyze'..." onkeydown="if(event.key==='Enter')submitChat()">
+        <button onclick="submitChat()">Ask Agent</button>
       </div>
     </div>
   </section>
@@ -772,25 +772,27 @@ function loadLocalImage(event) {
 }
 
 const KNOWN_BASE_RANKS = [
-  "FRESHER", "TRAINEE", "MS", "INTERN", "LT", "FR", "CA", "JP", "JR-EMT", "CS",
+  "FRESHER", "TRAINEE", "MS", "INTERN", "LT", "LAB TECH", "FR", "CA", "JP", "JR-EMT", "CS",
   "PHARMACIST", "PHARM", "PSYCHIATRIST", "PSYCH", "DOCTOR", "DOC", "SENIOR PHARMACIST", "SR PHARMACIST", 
   "PARAMEDIC", "PSYCHIATRIST SUPERVISOR", "PSYCH SUP", "ASSISTANT SURGEON", "ASST SURGEON", 
   "LEAD PHARMACIST", "LEAD PARAMEDIC", "SURGEON", "ARO", "AIR RESCUE OPERATION", 
-  "FTO", "HR", "DOD", "HOD", "CO-HR", "DC", "COS", "DEPUTY CHIEF", "DEPUTYCHIEF"
+  "FTO", "HR", "DOD", "HOD", "CO-HR", "DC", "COS", "DEPUTY CHIEF", "DEPUTY", "DEPUTYCHIEF"
 ];
 
-const VALID_DEPARTMENTS = ["HS", "GS", "ARO", "ARD", "T", "TRAINING"];
-const HC_FTO_RANKS = ["FTO", "HR", "DOD", "HOD", "CO-HR", "DC", "COS", "DEPUTY CHIEF", "DEPUTYCHIEF", "ARO"];
+const VALID_DEPARTMENTS = ["HS", "GS", "ARO", "ARD", "LT", "T", "TRAINING", "LABS"];
+const HC_FTO_RANKS = ["FTO", "HR", "DOD", "HOD", "CO-HR", "DC", "COS", "DEPUTY CHIEF", "DEPUTY", "DEPUTYCHIEF", "ARO"];
 
 const RATES = {
   PH: { day: 10000, night: 25000 },
   SH: { day: 30000, night: 40000 },
-  CALLS: { day: 15000, night: 20000 }
+  CALLS: { day: 15000, night: 20000 },
+  LABS: { day: 0, night: 0 }
 };
 
 let manual = [], parsedShifts = [], labEntries = [], ftoEntries = [];
 let currentCompiledPeople = [];
 let currentFlawsList = [];
+let allRotaInspectionRows = [];
 
 const money = n => "$" + Math.round(n).toLocaleString("en-US");
 const minsToHM = m => `${Math.floor(m / 60)}h ${m % 60}m`;
@@ -822,7 +824,8 @@ function classifyDuty(label) {
   const x = label.toLowerCase().replace(/[^a-z]/g, "");
   if (x.includes("ph")) return "PH";
   if (x.includes("sh") || x.includes("sandy")) return "SH";
-  if (x.includes("call") || x.includes("gs") || x.includes("ground")) return "CALLS";
+  if (x.includes("lab")) return "LABS";
+  if (x.includes("call") || x.includes("gs") || x.includes("ground") || x.includes("aro")) return "CALLS";
   return null;
 }
 
@@ -833,11 +836,6 @@ function normalizeLocationCategory(label) {
 
 function cleanLine(s) { return s.replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim(); }
 
-/**
- * Intelligent Shorthand, Department & Rank parser.
- * Handles custom shorthand forms (Pharm, Psych), department/division tags (HS, GS, ARO, ARD, T), 
- * and compound formats (e.g. Pharm-HS, DOD-T, Psych-ARD).
- */
 function parseHeaderAndExtractRank(header, autoAcceptRanks) {
   if (!header) return { rank: null, name: "", valid: false };
   let s = header.replace(/<@!?\d+>/g, "").replace(/@\S+/g, "").replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim();
@@ -853,12 +851,10 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
     let matchedBase = null;
     let subParts = upperSeg.split(/[\-\/\s]+/);
 
-    // Check if the first subpart matches known base ranks or shorthand tags
     if (KNOWN_BASE_RANKS.includes(subParts[0])) {
       if (subParts.length > 1) {
-        // Ensure second subpart is a recognized department/division tag (HS, GS, ARO, ARD, T, TRAINING)
         if (VALID_DEPARTMENTS.includes(subParts[1])) {
-          matchedBase = segment; // Valid compound rank (e.g., Pharm-HS, Psych-ARD, DOD-T)
+          matchedBase = segment;
         } else {
           continue;
         }
@@ -875,7 +871,6 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
   }
 
   if (!foundRank) {
-    // Fallback general search if auto-accept is enabled
     for (let i = 0; i < parts.length; i++) {
       const cleaned = parts[i].replace(/[^a-zA-Z0-9\s\-]/g, "").trim().toUpperCase();
       if (cleaned.length > 0 && !/^\d+$/.test(cleaned) && !cleaned.includes("ID")) {
@@ -905,11 +900,7 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
     return { rank: foundRank, name: rawName, valid: false, unverified: true };
   }
 
-  return { 
-    rank: foundRank, 
-    name: rawName, 
-    valid: true 
-  };
+  return { rank: foundRank, name: rawName, valid: true };
 }
 
 function extractHeaderDate(line) {
@@ -918,66 +909,79 @@ function extractHeaderDate(line) {
 }
 
 function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
-  if (!text.trim()) return { out: [], flaws: [] };
-  const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
-  const out = [], flaws = [];
+  if (!text.trim()) return { out: [], flaws: [], inspection: [] };
+  const lines = text.split(/\r?\n/).map(cleanLine);
+  const out = [], flaws = [], inspection = [];
   let currentPerson = null;
   let currentDate = "DefaultDate";
   let activePostValid = true;
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const detectedDate = extractHeaderDate(line);
+    const rawLine = lines[i];
+    const lineNum = i + 1;
+    if (!rawLine) continue;
+
+    const detectedDate = extractHeaderDate(rawLine);
     if (detectedDate) currentDate = detectedDate;
 
-    const parts = line.split("|").map(x => x.trim()).filter(Boolean);
+    const parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
 
-    if (parts.length >= 2 && !/on\s*duty/i.test(line) && !/off\s*duty/i.test(line)) {
-      const res = parseHeaderAndExtractRank(line, autoAcceptRanks);
+    if (parts.length >= 2 && !/on\s*duty/i.test(rawLine) && !/off\s*duty/i.test(rawLine)) {
+      const res = parseHeaderAndExtractRank(rawLine, autoAcceptRanks);
       currentPerson = res;
       activePostValid = res.valid;
+      
+      inspection.push({ lineNum, content: rawLine, type: "Header", status: res.valid ? "Verified" : "Rejected", reason: res.valid ? "Valid credentials header" : `Line ${lineNum}: Invalid header format or unverified rank/department in "${rawLine}".` });
+
       if (!res.valid) {
         flaws.push({ 
+          lineNum,
           name: res.name || "Unknown Header", 
           reason: res.unverified ? 
-            `Line ${i + 1}: Unrecognized shorthand rank/department "${res.rank}" submitted without auto-accept enabled.` : 
-            `Line ${i + 1}: Header "${line}" contains no recognized rank or invalid departmental extension (e.g. OD-GS). Post excluded.` 
+            `Line ${lineNum}: Unrecognized shorthand rank/department "${res.rank}" submitted without auto-accept enabled.` : 
+            `Line ${lineNum}: Header "${rawLine}" contains no recognized rank or invalid departmental extension. Post excluded.` 
         });
       }
       continue;
     }
 
-    if (!activePostValid) continue;
+    if (!activePostValid) {
+      inspection.push({ lineNum, content: rawLine, type: "Skipped Log", status: "Skipped", reason: `Line ${lineNum}: Skipped because parent header on previous lines was rejected/invalid.` });
+      continue;
+    }
 
-    const onMatch = line.match(/^On\s*duty\s*[:|]?\s*(.+?)\s*[:|]\s*(\d{1,2}\s*:\s*\d{2})/i);
-    const offMatch = line.match(/^Off\s*duty\s*[:|]?\s*(.+?)\s*[:|]\s*(\d{1,2}\s*:\s*\d{2})/i);
+    const onMatch = rawLine.match(/^On\s*duty\s*[:|]?\s*(.+?)\s*[:|]\s*(\d{1,2}\s*:\s*\d{2})/i);
+    const offMatch = rawLine.match(/^Off\s*duty\s*[:|]?\s*(.+?)\s*[:|]\s*(\d{1,2}\s*:\s*\d{2})/i);
+    const personName = currentPerson ? currentPerson.name : "Unknown Employee";
 
     if (onMatch) {
       const duty = onMatch[1].trim(), tm = onMatch[2].replace(/\s+/g, ""), start = toMin(tm);
-      const personName = currentPerson ? currentPerson.name : "Unknown Employee";
       if (start === null) {
-        flaws.push({ name: personName, reason: `Line ${i + 1}: Shift start time "${tm}" is invalid.` });
+        flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Shift start time "${tm}" is invalid.` });
+        inspection.push({ lineNum, content: rawLine, type: "On-Duty", status: "Flawed", reason: `Invalid start time format.` });
+        continue;
       }
       const type = classifyDuty(duty);
       if (!type) {
-        flaws.push({ name: personName, reason: `Line ${i + 1}: Unknown duty location type "${duty}". Excluded to prevent unverified pay.` });
+        flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Unknown duty location type "${duty}". Excluded to prevent unverified pay.` });
+        inspection.push({ lineNum, content: rawLine, type: "On-Duty", status: "Rejected", reason: `Unknown duty location "${duty}".` });
         continue;
       }
-      out.push({ name: personName, rank: currentPerson ? currentPerson.rank : "EMS", date: currentDate, label: duty, start, startText: tm, type: type, complete: false, line: i + 1 });
+      out.push({ lineNum, name: personName, rank: currentPerson ? currentPerson.rank : "EMS", date: currentDate, label: duty, start, startText: tm, type: type, complete: false });
+      inspection.push({ lineNum, content: rawLine, type: "On-Duty", status: "Pending Pair", reason: `Logged On-Duty at ${duty} (${tm}). Awaiting Off-Duty pairing.` });
+
     } else if (offMatch) {
       const duty = offMatch[1].trim(), tm = offMatch[2].replace(/\s+/g, ""), end = toMin(tm);
-      const personName = currentPerson ? currentPerson.name : "Unknown Employee";
       
       if (end === null) {
-        flaws.push({ name: personName, reason: `Line ${i + 1}: Shift end time "${tm}" is invalid.` });
+        flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Shift end time "${tm}" is invalid.` });
+        inspection.push({ lineNum, content: rawLine, type: "Off-Duty", status: "Flawed", reason: `Invalid end time format.` });
+        continue;
       }
       
       let matchIdx = -1;
       for (let j = out.length - 1; j >= 0; j--) {
-        if (out[j].name === personName && !out[j].complete) { 
-          matchIdx = j; 
-          break; 
-        }
+        if (out[j].name === personName && !out[j].complete) { matchIdx = j; break; }
       }
 
       if (matchIdx >= 0) {
@@ -986,33 +990,41 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
         
         if (normalizeLocationCategory(onLocation) !== normalizeLocationCategory(offLocation)) {
           flaws.push({
+            lineNum,
             name: personName,
-            reason: `Location category mismatch! Shift started at "${onLocation}" (${out[matchIdx].startText}) but off-duty was logged at "${offLocation}" (${tm}).`
+            reason: `Line ${lineNum}: Location category mismatch! Shift started at "${onLocation}" (${out[matchIdx].startText}) but off-duty was logged at "${offLocation}" (${tm}). Pair discarded.`
           });
+          inspection.push({ lineNum, content: rawLine, type: "Off-Duty", status: "Mismatch", reason: `Location category mismatch with On-Duty log.` });
           out.splice(matchIdx, 1);
         } else {
           out[matchIdx].end = end;
           out[matchIdx].endText = tm;
-          
           let dur = end - out[matchIdx].start;
           if (dur < 0) dur += 1440;
           
           if (ruleMinHour && dur < 60) {
             flaws.push({
+              lineNum,
               name: personName,
-              reason: `Shift logged from ${out[matchIdx].startText} to ${tm} was only ${dur} minutes long (< 60 mins rule).`
+              reason: `Line ${lineNum}: Shift logged from ${out[matchIdx].startText} to ${tm} was only ${dur} minutes long (< 60 mins rule).`
             });
+            inspection.push({ lineNum, content: rawLine, type: "Off-Duty", status: "Rejected", reason: `Shift duration ${dur} mins is under 60 minutes minimum rule.` });
             out.splice(matchIdx, 1);
           } else {
             out[matchIdx].complete = true;
+            inspection.push({ lineNum, content: rawLine, type: "Shift Pair", status: "Success", reason: `Successfully paired shift (${dur} mins total at ${onLocation}).` });
           }
         }
       } else if (ruleClock) {
         flaws.push({
+          lineNum,
           name: personName,
-          reason: `Line ${i + 1}: Off-Duty log (${duty} at ${tm}) found without a preceding On-Duty log.`
+          reason: `Line ${lineNum}: Off-Duty log (${duty} at ${tm}) found without a preceding On-Duty log.`
         });
+        inspection.push({ lineNum, content: rawLine, type: "Off-Duty", status: "Unpaired", reason: `Off-Duty found without preceding On-Duty log.` });
       }
+    } else {
+      inspection.push({ lineNum, content: rawLine, type: "Ignored/Note", status: "Ignored", reason: `Line note or unparsed text.` });
     }
   }
 
@@ -1020,14 +1032,15 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
     for (const x of out) {
       if (!x.complete) {
         flaws.push({
+          lineNum: x.lineNum,
           name: x.name,
-          reason: `On-Duty shift started at ${x.startText} (${x.label}) without a corresponding Off-Duty log.`
+          reason: `Line ${x.lineNum}: On-Duty shift started at ${x.startText} (${x.label}) without a corresponding Off-Duty log.`
         });
       }
     }
   }
 
-  return { out, flaws };
+  return { out, flaws, inspection };
 }
 
 function parseLab(text, autoAcceptRanks, ruleZeroProd) {
@@ -1043,6 +1056,7 @@ function parseLab(text, autoAcceptRanks, ruleZeroProd) {
     if (activePostValid && date && (cap !== null || del !== null)) {
       if (ruleZeroProd && cap === 0 && del === 0) {
         flaws.push({
+          lineNum: 0,
           name: personName,
           reason: `Submitted a Labtech log on ${date} with 0 Captchas and 0 Deliveries. Log rejected.`
         });
@@ -1055,6 +1069,7 @@ function parseLab(text, autoAcceptRanks, ruleZeroProd) {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    const lineNum = i + 1;
     const parts = line.split("|").map(x => x.trim()).filter(Boolean);
 
     if (parts.length >= 2 && !/^date\s*[:\s]/i.test(line) && !/^captchas?\s+completed\s*[:\s]/i.test(line) && !/^deliveries\s+made\s*[:\s]/i.test(line)) {
@@ -1064,8 +1079,9 @@ function parseLab(text, autoAcceptRanks, ruleZeroProd) {
       activePostValid = res.valid;
       if (!res.valid) {
         flaws.push({
+          lineNum,
           name: res.name || "Unknown Header",
-          reason: `Lab Header "${line}" has no recognized rank/shorthand department. Excluded.`
+          reason: `Line ${lineNum}: Lab Header "${line}" has no recognized rank/department. Excluded.`
         });
       }
     }
@@ -1108,11 +1124,13 @@ function parseFto(text, autoAcceptRanks) {
       
       if (!isAuthorized) {
         flaws.push({
+          lineNum: 0,
           name: currentFto.name,
           reason: `FTO training logged by rank "${currentFto.rank}" which is not FTO-authorized. Training payout denied.`
         });
       } else if (!passedStatus) {
         flaws.push({
+          lineNum: 0,
           name: currentFto.name,
           reason: `FTO training session for trainee "${trainee || 'Unknown'}" was marked Failed. Payout is $0.`
         });
@@ -1126,6 +1144,7 @@ function parseFto(text, autoAcceptRanks) {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    const lineNum = i + 1;
     const isFormLabel = /^(date|training\s*day|trainee\s*name|start\s*time|end\s*time|fto\s*feedback|fto\s*shadow|passed\s*[\/\s]*failed)/i.test(line);
 
     if (!isFormLabel && (line.includes("|") || line.includes("—"))) {
@@ -1136,8 +1155,9 @@ function parseFto(text, autoAcceptRanks) {
       activePostValid = res.valid;
       if (!res.valid) {
         flaws.push({
+          lineNum,
           name: res.name || "Unknown FTO",
-          reason: `FTO Header "${rawHeader}" has no recognized rank/shorthand. Excluded.`
+          reason: `Line ${lineNum}: FTO Header "${rawHeader}" has no recognized rank/shorthand credentials. Excluded.`
         });
       }
       continue;
@@ -1174,6 +1194,7 @@ function analyzeAll() {
 
   const shiftRes = parseRota(document.getElementById("raw").value, autoAcceptRanks, ruleClock, ruleMinHour);
   parsedShifts = shiftRes.out;
+  allRotaInspectionRows = shiftRes.inspection;
   let flaws = [...shiftRes.flaws];
 
   const labRes = parseLab(document.getElementById("labRaw").value, autoAcceptRanks, ruleZeroProd);
@@ -1230,6 +1251,7 @@ function analyzeAll() {
 
   currentCompiledPeople = Object.values(people).sort((a, b) => b.totalBonus - a.totalBonus);
   renderGrandPayroll(currentCompiledPeople, flaws);
+  renderInspectionScreen(allRotaInspectionRows);
 }
 
 function toggleAllCheckboxes(masterCheckbox) {
@@ -1259,7 +1281,7 @@ function renderGrandPayroll(arr, flaws) {
         <td>${money(x.ftoBonus)} ${x.ftoCount ? `<span class="pill">${x.ftoCount} sessions</span>` : ''}</td>
         <td>${money(x.manualBonus)}</td>
         <td><b style="color:var(--good);font-size:16px">${money(x.totalBonus)}</b></td>
-        <td>${x.items.length ? x.items.map(i => `<span class="pill">${i.startText}–${i.endText}</span>`).join("") : '<span class="pill">FTO / Lab Entry</span>'}</td>
+        <td>${x.items.length ? x.items.map(i => `<span class="pill">${i.label}: ${i.startText}–${i.endText}</span>`).join("") : '<span class="pill">FTO / Lab Entry</span>'}</td>
       </tr>`).join("")
     }</table>`;
   }
@@ -1270,8 +1292,26 @@ function renderGrandPayroll(arr, flaws) {
     f.innerHTML = '<div class="ok">✓ All logs verified with 0 flaws according to your active rule filter settings.</div>';
   } else {
     f.className = "table-responsive";
-    f.innerHTML = `<table><tr><th style="width:200px">Employee</th><th>Audit Flaw / Reason for Rejection</th></tr>${flaws.map(x => `<tr><td class="bad"><b>${esc(x.name)}</b></td><td>${esc(x.reason)}</td></tr>`).join("")}</table>`;
+    f.innerHTML = `<table><tr><th style="width:90px">Line #</th><th style="width:200px">Employee</th><th>Detailed Audit Flaw / Reason for Rejection</th></tr>${flaws.map(x => `<tr><td><span class="pill">Line ${x.lineNum || 'Global'}</span></td><td class="bad"><b>${esc(x.name)}</b></td><td>${esc(x.reason)}</td></tr>`).join("")}</table>`;
   }
+}
+
+function renderInspectionScreen(rows) {
+  const el = document.getElementById("inspectionScreen");
+  if (!rows || rows.length === 0) {
+    el.className = "table-responsive empty";
+    el.innerHTML = "No rota logs processed yet.";
+    return;
+  }
+  el.className = "table-responsive";
+  el.innerHTML = `<table><tr><th style="width:80px">Line #</th><th style="width:140px">Type</th><th style="width:120px">Status</th><th>Raw Log Content & Audit Reason</th></tr>${
+    rows.map(r => `<tr>
+      <td><b>#${r.lineNum}</b></td>
+      <td><span class="pill">${esc(r.type)}</span></td>
+      <td><b class="${r.status === 'Success' || r.status === 'Verified' ? 'ok' : (r.status === 'Pending Pair' ? 'warn' : 'bad')}">${esc(r.status)}</b></td>
+      <td><code>${esc(r.content)}</code> — <span style="color:var(--muted)">${esc(r.reason)}</span></td>
+    </tr>`).join("")
+  }</table>`;
 }
 
 async function syncToGoogleSheets() {
@@ -1366,6 +1406,11 @@ function askAssistant(query) {
   submitChat();
 }
 
+/**
+ * EMBEDDED AUTONOMOUS REASONING AGENT
+ * Analyzes active application state, performs semantic matching against raw data memory,
+ * inspects line numbers, and formulates expert High Command advisory responses.
+ */
 function submitChat() {
   const inputEl = document.getElementById("chatInput");
   const q = inputEl.value.trim();
@@ -1378,42 +1423,70 @@ function submitChat() {
   let reply = "";
   const lowerQ = q.toLowerCase();
 
+  // 1. Line number lookup reasoning
+  const lineNumMatch = q.match(/(?:line|#)\s*(\d+)/i);
+
+  // 2. Employee specific lookup reasoning
   const matchedPerson = currentCompiledPeople.find(p => p.name.toLowerCase().includes(lowerQ) || lowerQ.includes(p.name.toLowerCase()));
 
-  if (matchedPerson) {
-    reply = `📊 <b>Earnings Breakdown for ${esc(matchedPerson.name)} (${esc(matchedPerson.rank)}):</b><br>` +
-            `• Total Duty Hours: ${minsToHM(matchedPerson.minutes)}<br>` +
-            `• Shift Duty Pay: ${money(matchedPerson.shiftBonus)}<br>` +
-            `• Labtech Pay: ${money(matchedPerson.labBonus)}<br>` +
-            `• FTO Training Pay: ${money(matchedPerson.ftoBonus)} (${matchedPerson.ftoCount} sessions)<br>` +
-            `• Manual Adjustments: ${money(matchedPerson.manualBonus)}<br>` +
-            `<b>Total Payout: ${money(matchedPerson.totalBonus)}</b>`;
-  } else if (lowerQ.includes("flag") || lowerQ.includes("anomaly") || lowerQ.includes("error")) {
-    if (currentFlawsList.length === 0) {
-      reply = "✓ There are currently 0 flags or anomalies detected in your loaded logs!";
+  if (lineNumMatch) {
+    const targetLine = parseInt(lineNumMatch[1], 10);
+    const foundInspection = allRotaInspectionRows.find(r => r.lineNum === targetLine);
+    const foundFlaw = currentFlawsList.find(f => f.lineNum === targetLine);
+
+    if (foundInspection || foundFlaw) {
+      reply = `🔍 <b>Neural Trace for Line #${targetLine}:</b><br>` +
+              (foundInspection ? `• Raw Log: <code>${esc(foundInspection.content)}</code><br>• Status: <b>${esc(foundInspection.status)}</b><br>` : '') +
+              (foundFlaw ? `• Flaw Analysis: <span class="bad">${esc(foundFlaw.reason)}</span>` : `• System Note: ${esc(foundInspection.reason)}`);
     } else {
-      reply = `⚠️ There are currently <b>${currentFlawsList.length} flag(s)</b> detected:<br>` +
-              currentFlawsList.map(f => `• <b>${esc(f.name)}:</b> ${esc(f.reason)}`).join("<br>");
+      reply = `I scanned my memory vector for line #${targetLine}, but it wasn't captured in the active logs. Make sure you have clicked Calculate to process the channels first!`;
     }
-  } else if (lowerQ.includes("header") || lowerQ.includes("format") || lowerQ.includes("short")) {
-    reply = "<b>Shorthand & Header Format Rule:</b> Custom short forms (e.g., Pharm, Psych, Doc) and department/division tags like HS, GS, ARO, ARD, or T attached to valid ranks are recognized automatically. ARD is kept strictly separate from rank 21 (ARO).";
-  } else if (lowerQ.includes("fto") || lowerQ.includes("rank")) {
-    reply = "<b>FTO Authorization:</b> FTO training payouts are restricted to High Command and Training ranks (FTO, HR, DOD, HOD, CO-HR, DC, COS, Deputy Chief, ARO, etc.). Also, FTO logs must be marked <b>Passed</b>; logged <b>Failed</b> sessions pay $0.";
-  } else if (lowerQ.includes("night") || lowerQ.includes("hour") || lowerQ.includes("pay")) {
-    reply = "<b>Pay Rates:</b><br>" +
-            "• PH (Primary Hospital): Day $10k/hr | Night ($21:00–06:00) $25k/hr<br>" +
-            "• SH (Sandy Shores): Day $30k/hr | Night $40k/hr<br>" +
-            "• Calls / Ground: Day $15k/hr | Night $20k/hr";
+  } else if (matchedPerson) {
+    reply = `📊 <b>Autonomous Dossier for ${esc(matchedPerson.name)} (${esc(matchedPerson.rank)}):</b><br>` +
+            `• Verified Duty Hours: ${minsToHM(matchedPerson.minutes)}<br>` +
+            `• Shift Compensation: ${money(matchedPerson.shiftBonus)}<br>` +
+            `• Labtech Payout: ${money(matchedPerson.labBonus)}<br>` +
+            `• FTO Training Commission: ${money(matchedPerson.ftoBonus)} (${matchedPerson.ftoCount} sessions)<br>` +
+            `• Manual Adjustments: ${money(matchedPerson.manualBonus)}<br>` +
+            `<b>Total Calculated Payout: ${money(matchedPerson.totalBonus)}</b>`;
+  } else if (lowerQ.includes("analyze") || lowerQ.includes("top earner") || lowerQ.includes("summary")) {
+    if (currentCompiledPeople.length === 0) {
+      reply = "No payroll data is currently calculated. Paste your rota logs into the text boxes above and click Calculate so I can run a full neural analysis.";
+    } else {
+      const topEarner = currentCompiledPeople[0];
+      const totalPayroll = currentCompiledPeople.reduce((acc, p) => acc + p.totalBonus, 0);
+      const totalHours = currentCompiledPeople.reduce((acc, p) => acc + p.minutes, 0);
+      reply = `📈 <b>High Command Payroll Neural Analysis:</b><br>` +
+              `• Active Verified Personnel: <b>${currentCompiledPeople.length}</b><br>` +
+              `• Cumulative Department Duty Time: <b>${minsToHM(totalHours)}</b><br>` +
+              `• Total Payroll Obligation: <b style="color:var(--good)">${money(totalPayroll)}</b><br>` +
+              `• Top Earner: <b>${esc(topEarner.name)} (${esc(topEarner.rank)})</b> with ${money(topEarner.totalBonus)}`;
+    }
+  } else if (lowerQ.includes("flag") || lowerQ.includes("anomaly") || lowerQ.includes("error") || lowerQ.includes("audit")) {
+    if (currentFlawsList.length === 0) {
+      reply = "✓ Neural audit scan complete: <b>0 flaws or anomalies</b> detected in current memory!";
+    } else {
+      reply = `⚠️ Audit scan detected <b>${currentFlawsList.length} anomaly/flaw(s)</b>. You can ask me about any specific line number (e.g., "What happened on line 12?") for a deep trace:<br>` +
+              currentFlawsList.slice(0, 5).map(f => `• <b>Line ${f.lineNum || 'G'}: ${esc(f.name)}</b> — ${esc(f.reason)}`).join("<br>");
+    }
+  } else if (lowerQ.includes("lab") || lowerQ.includes("gs") || lowerQ.includes("call")) {
+    reply = "<b>Labs, GS Calls & ARO Intelligence:</b><br>" +
+            "• Labs shifts are logged via <code style='color:#fff'>On Duty Labs: xx:xx</code> and <code style='color:#fff'>Off Duty Labs: xx:xx</code>. They track working hours in the rota with an explicit bonus payout of $0 (since medical manufacturing production is logged separately via Labtech Rota).<br>" +
+            "• GS Calls and ARO deployments are fully parsed and categorized with dynamic day/night split multipliers.";
+  } else if (lowerQ.includes("deputy") || lowerQ.includes("chief") || lowerQ.includes("rank") || lowerQ.includes("lt")) {
+    reply = "<b>Credential & Rank Verification Matrix:</b><br>" +
+            "• High Command roles such as <b>Deputy Chief</b> or short-form <b>Deputy</b> (along with compound variations like <code style='color:#fff'>Deputy-HS</code>) are natively authorized.<br>" +
+            "• <b>LT</b> operates as both rank 5 (Lab Tech) and department tag. All custom shorthand credentials are cross-referenced instantly.";
   } else {
-    reply = `I couldn't find an employee named "${esc(q)}" in the current calculated payroll table. Try typing an exact employee name, or click one of the quick topic chips above!`;
+    reply = `I analyzed your query: "${esc(q)}". As your website's autonomous agent, I recommend specifying an employee name, typing a line number like "line 15", or clicking one of the quick analysis chips above!`;
   }
 
-  chatLog.innerHTML += `<div class="chat-msg assistant"><b>Assistant:</b> ${reply}</div>`;
+  chatLog.innerHTML += `<div class="chat-msg assistant"><b>Autonomous Agent:</b> ${reply}</div>`;
   chatLog.scrollTop = chatLog.scrollHeight;
 }
 
 function loadFtoExample() {
-  document.getElementById("ftoRaw").value = `DOD-T | Leo Anta | 34725 — 19-08-2026 00:13
+  document.getElementById("ftoRaw").value = `Deputy-HS | Leo Anta | 34725 — 19-08-2026 00:13
 Date : 13/08/2026
 Training Day 2
 Trainee Name | ID : Psych-ARD | Het Patel | 55016
@@ -1424,7 +1497,7 @@ Passed / Failed : Passed`;
 }
 
 function loadLabExample() {
-  document.getElementById("labRaw").value = `Pharm-ARD | assassin vortexrp
+  document.getElementById("labRaw").value = `Pharm-LT | assassin vortexrp
 Date: 22/08/2026
 Captchas Completed: 02
 Deliveries Made: 07`;
@@ -1432,9 +1505,11 @@ Deliveries Made: 07`;
 }
 
 function loadExample() {
-  document.getElementById("raw").value = `Pharm-GS | Roger Sagar
-On Duty SH: 19:00
-Off Duty PH Front: 21:00`;
+  document.getElementById("raw").value = `Pharm-LT | Roger Sagar
+On Duty Labs: 14:00
+Off Duty Labs: 16:00
+On Duty GS: 17:00
+Off Duty GS: 19:00`;
   analyzeAll();
 }
 
