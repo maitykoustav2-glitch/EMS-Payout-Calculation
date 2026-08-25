@@ -3,445 +3,95 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Grand RP EMS Bonus System Pro - High Command Audit Engine</title>
+<title>Grand RP EMS Bonus System Pro</title>
 <style>
   :root { 
-    --bg:#0b0e14; 
-    --card:#151921; 
-    --muted:#8a94a6; 
-    --text:#f1f5f9; 
-    --line:#242b38; 
-    --accent:#6366f1; 
-    --accent-hover:#4f46e5;
-    --good:#10b981; 
-    --warn:#f59e0b; 
-    --bad:#ef4444; 
-    --rank-blue:#0f172a;
-    --rank-blue-border:#3b82f6;
-    --rank-green:#022c22;
-    --rank-green-border:#10b981;
+    --bg:#0b0e14; --card:#151921; --muted:#8a94a6; --text:#f1f5f9; 
+    --line:#242b38; --accent:#6366f1; --accent-hover:#4f46e5;
+    --good:#10b981; --warn:#f59e0b; --bad:#ef4444; 
+    --rank-blue:#0f172a; --rank-blue-border:#3b82f6;
+    --rank-green:#022c22; --rank-green-border:#10b981;
     --youtube:#ff0000;
   }
-  
   *{box-sizing:border-box} 
-  
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:Inter,system-ui,Segoe UI,sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-
-  .wrap{
-    max-width:1600px;
-    margin:auto;
-    padding:32px;
-  }
-
-  .hero{
-    display:flex;
-    justify-content:space-between;
-    gap:24px;
-    align-items:center;
-    margin-bottom:28px;
-    background:var(--card);
-    padding:28px 32px;
-    border-radius:16px;
-    border:1px solid var(--line);
-  }
-  
-  .hero-left{
-    display:flex;
-    align-items:center;
-    gap:24px;
-  }
-  
+  .wrap{max-width:1600px;margin:auto;padding:32px;}
+  .hero{display:flex;justify-content:space-between;gap:24px;align-items:center;margin-bottom:28px;background:var(--card);padding:28px 32px;border-radius:16px;border:1px solid var(--line);}
+  .hero-left{display:flex;align-items:center;gap:24px;}
   .logo-box {
-    width:88px;
-    height:88px;
-    border-radius:50%;
-    border:2px solid var(--accent);
-    box-shadow:0 0 20px rgba(99,102,241,0.35);
-    flex-shrink:0;
-    background:#1e2330;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-    font-weight:900;
-    color:var(--accent);
-    font-size:20px;
-    cursor:pointer;
-    position:relative;
+    width:88px;height:88px;border-radius:50%;border:2px solid var(--accent);
+    box-shadow:0 0 20px rgba(99,102,241,0.35);flex-shrink:0;background:#1e2330;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;position:relative;
   }
-
-  .logo-box img {
-    width:100%;
-    height:100%;
-    object-fit:cover;
-  }
-
-  h1{
-    margin:0;
-    font-size:clamp(22px, 2.8vw, 32px);
-    font-weight:800;
-    color:#fff;
-    letter-spacing:-0.5px;
-  }
-  
-  .sub{
-    color:var(--muted);
-    margin-top:6px;
-    font-size:clamp(13px, 1.3vw, 16px);
-  }
-  
-  .badge{
-    padding:12px 20px;
-    border:1px solid var(--line);
-    border-radius:24px;
-    color:#cbd5e1;
-    background:#1e2330;
-    font-size:14px;
-    font-weight:600;
-    white-space:nowrap;
-  }
-
-  .guide-card, .rank-ref-card, .config-card, .card {
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:16px;
-    padding:28px 32px;
-    margin-bottom:28px;
-  }
-
-  .guide-header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:16px;
-    margin-bottom:20px;
-  }
-
-  .guide-card h2, .rank-ref-card h2, .config-card h2, .card h2 {
-    margin:0 0 16px 0;
-    font-size:20px;
-    font-weight:700;
-    color:#fff;
-  }
-
-  .yt-button {
-    display:inline-flex;
-    align-items:center;
-    gap:10px;
-    background:var(--youtube);
-    color:#fff;
-    padding:10px 20px;
-    border-radius:8px;
-    text-decoration:none;
-    font-weight:700;
-    font-size:14px;
-    cursor:pointer;
-  }
-
-  .guide-steps {
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap:20px;
-  }
-
-  .guide-step {
-    background:#0d1117;
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:20px;
-  }
-
-  .guide-step-num {
-    font-size:13px;
-    font-weight:800;
-    color:var(--accent);
-    text-transform:uppercase;
-    margin-bottom:8px;
-  }
-
-  .guide-step-title {
-    font-size:16px;
-    font-weight:700;
-    color:#fff;
-    margin-bottom:8px;
-  }
-
-  .guide-step-desc {
-    font-size:13px;
-    color:var(--muted);
-    line-height:1.5;
-  }
-
-  .rank-grid {
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:28px;
-  }
-
-  .rank-group-title {
-    font-size:12px;
-    font-weight:800;
-    letter-spacing:0.8px;
-    text-transform:uppercase;
-    color:var(--muted);
-    margin-bottom:12px;
-  }
-
-  .rank-badges {
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-  }
-
-  .rank-pill {
-    padding:6px 14px;
-    border-radius:8px;
-    font-size:13px;
-    font-weight:700;
-    display:inline-flex;
-    align-items:center;
-  }
-
-  .rank-pill.blue {
-    background:var(--rank-blue);
-    border:1px solid var(--rank-blue-border);
-    color:#93c5fd;
-  }
-
-  .rank-pill.green {
-    background:var(--rank-green);
-    border:1px solid var(--rank-green-border);
-    color:#6ee7b7;
-  }
-
-  .config-grid {
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap:16px;
-  }
-
-  .checkbox-label {
-    display:flex;
-    align-items:center;
-    gap:12px;
-    font-size:14px;
-    color:var(--text);
-    cursor:pointer;
-    background:#0d1117;
-    padding:14px 18px;
-    border-radius:10px;
-    border:1px solid var(--line);
-  }
-
-  .grid3{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(380px, 1fr));
-    gap:24px;
-  }
-  
+  .logo-box img { width:100%; height:100%; object-fit:cover; }
+  h1{margin:0;font-size:clamp(22px, 2.8vw, 32px);font-weight:800;color:#fff;}
+  .sub{color:var(--muted);margin-top:6px;font-size:clamp(13px, 1.3vw, 16px);}
+  .badge{padding:12px 20px;border:1px solid var(--line);border-radius:24px;color:#cbd5e1;background:#1e2330;font-size:14px;font-weight:600;}
+  .card, .config-card, .rank-ref-card, .guide-card { background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 32px;margin-bottom:28px; }
+  .guide-header { display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:20px; }
+  h2{margin:0 0 16px 0;font-size:20px;font-weight:700;color:#fff;}
+  .yt-button { display:inline-flex;align-items:center;gap:10px;background:var(--youtube);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px; }
+  .guide-steps { display:grid;grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));gap:20px; }
+  .guide-step { background:#0d1117;border:1px solid var(--line);border-radius:12px;padding:20px; }
+  .guide-step-num { font-size:13px;font-weight:800;color:var(--accent);text-transform:uppercase;margin-bottom:8px; }
+  .guide-step-title { font-size:16px;font-weight:700;color:#fff;margin-bottom:8px; }
+  .guide-step-desc { font-size:13px;color:var(--muted);line-height:1.5; }
+  .config-grid { display:grid;grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));gap:16px; }
+  .checkbox-label { display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text);cursor:pointer;background:#0d1117;padding:14px 18px;border-radius:10px;border:1px solid var(--line); }
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit, minmax(380px, 1fr));gap:24px;}
   textarea,input,button{font:inherit} 
-  
-  textarea,input{
-    width:100%;
-    background:#0d1117;
-    color:var(--text);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:12px 16px;
-  }
-
-  textarea:focus, input:focus {
-    outline:none;
-    border-color:var(--accent);
-  }
-  
-  textarea{
-    min-height:180px;
-    resize:vertical;
-    line-height:1.4;
-  }
-  
-  .row3{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
-    gap:16px;
-  }
-  
-  label{
-    font-size:13px;
-    color:var(--muted);
-    display:block;
-    margin-bottom:8px;
-    font-weight:600;
-  }
-  
-  .btns{
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
-    margin-top:16px;
-  }
-  
-  button{
-    border:0;
-    border-radius:10px;
-    padding:12px 22px;
-    background:var(--accent);
-    color:white;
-    font-weight:700;
-    cursor:pointer;
-    transition:all 0.2s;
-  }
-  
-  button:hover{
-    background:var(--accent-hover);
-    transform:translateY(-1px);
-  } 
-  
-  button.secondary{ background:#232936; }
-  button.secondary:hover{ background:#2d3546; }
-  button.danger{ background:#7f1d1d; }
-  button.danger:hover{ background:#991b1b; }
-  button.sheet-btn { background:#059669; }
-  button.sheet-btn:hover { background:#047857; }
-  button.discord-btn { background:#5865F2; }
-  button.discord-btn:hover { background:#4752C4; }
-
-  .stats{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
-    gap:20px;
-  }
-  
-  .stat{
-    background:#0d1117;
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:20px;
-  }
-  
-  .stat b{
-    display:block;
-    font-size:26px;
-    margin-top:6px;
-    color:#fff;
-  }
-
-  .table-responsive {
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:14px;
-    white-space:nowrap;
-  }
-  
-  th,td{
-    text-align:left;
-    padding:14px 16px;
-    border-bottom:1px solid var(--line);
-  }
-  
-  th{
-    color:#94a3b8;
-    font-size:12px;
-    text-transform:uppercase;
-    background:#0d1117;
-  }
-
+  textarea,input{width:100%;background:#0d1117;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px 16px;}
+  textarea:focus, input:focus {outline:none;border-color:var(--accent);}
+  textarea{min-height:180px;resize:vertical;line-height:1.4;}
+  .row3{display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;}
+  label{font-size:13px;color:var(--muted);display:block;margin-bottom:8px;font-weight:600;}
+  .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;}
+  button{border:0;border-radius:10px;padding:12px 22px;background:var(--accent);color:white;font-weight:700;cursor:pointer;transition:all 0.2s;}
+  button:hover{background:var(--accent-hover);transform:translateY(-1px);} 
+  button.secondary{background:#232936;} button.secondary:hover{background:#2d3546;}
+  button.danger{background:#7f1d1d;} button.danger:hover{background:#991b1b;}
+  button.sheet-btn {background:#059669;} button.sheet-btn:hover {background:#047857;}
+  button.discord-btn {background:#5865F2;} button.discord-btn:hover {background:#4752C4;}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:20px;}
+  .stat{background:#0d1117;border:1px solid var(--line);border-radius:12px;padding:20px;}
+  .stat b{display:block;font-size:26px;margin-top:6px;color:#fff;}
+  .table-responsive {width: 100%;overflow-x: auto;}
+  table{width:100%;border-collapse:collapse;font-size:14px;white-space:nowrap;}
+  th,td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);}
+  th{color:#94a3b8;font-size:12px;text-transform:uppercase;background:#0d1117;}
   .ok{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
-  
-  .pill{
-    display:inline-block;
-    padding:4px 10px;
-    border-radius:6px;
-    background:#1e2330;
-    margin:2px;
-    font-size:12px;
-    border:1px solid var(--line);
-  }
-  
-  .empty{
-    color:var(--muted);
-    padding:40px;
-    text-align:center;
-  }
-
+  .pill{display:inline-block;padding:4px 10px;border-radius:6px;background:#1e2330;margin:2px;font-size:12px;border:1px solid var(--line);}
+  .empty{color:var(--muted);padding:40px;text-align:center;}
   .row-checkbox { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
   #imageInput { display: none; }
-
-  .chat-box {
-    background: #0d1117;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 16px;
-    margin-top: 16px;
-  }
-
-  .chat-log {
-    max-height: 280px;
-    overflow-y: auto;
-    padding-right: 8px;
-    margin-bottom: 12px;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  .chat-msg {
-    margin-bottom: 12px;
-    padding: 12px 16px;
-    border-radius: 8px;
-  }
-
+  .chat-box { background: #0d1117; border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-top: 16px; }
+  .chat-log { max-height: 280px; overflow-y: auto; padding-right: 8px; margin-bottom: 12px; font-size: 14px; line-height: 1.5; }
+  .chat-msg { margin-bottom: 12px; padding: 12px 16px; border-radius: 8px; }
   .chat-msg.user { background: #1e2330; border-left: 3px solid var(--accent); }
   .chat-msg.assistant { background: #151921; border-left: 3px solid var(--good); }
-
   .chip-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-  .chip {
-    background: #1e2330; border: 1px solid var(--line); color: #cbd5e1;
-    padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;
-  }
+  .chip { background: #1e2330; border: 1px solid var(--line); color: #cbd5e1; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer; }
   .chip:hover { background: var(--accent); color: #fff; }
   .chat-input-row { display: flex; gap: 10px; }
-
-  @media(max-width:768px){
-    .wrap{ padding:16px; }
-    .hero{ flex-direction:column; align-items:flex-start; }
-    .rank-grid{ grid-template-columns:1fr; }
-    .grid3{ grid-template-columns:1fr; }
-  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="hero">
     <div class="hero-left">
-      <label for="imageInput" class="logo-box" title="Click to upload logo">
-        <img id="logoImg" src="" alt="EMS Logo" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='block';">
-        <span id="logoFallback">EMS</span>
+      <label for="imageInput" class="logo-box" title="Click to change EMS logo">
+        <img id="logoImg" src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=150&auto=format&fit=crop&q=80" alt="EMS Logo">
       </label>
       <input type="file" id="imageInput" accept="image/*" onchange="loadLocalImage(event)">
       <div>
         <h1>Grand RP EMS Bonus System Pro</h1>
-        <div class="sub">Global High Command Automated Audit & Sync Engine</div>
+        <div class="sub">Saving Lives, Building Futures | Former EMS Members Welcome Back!</div>
       </div>
     </div>
-    <div class="badge">UTC+1 Timezone | Night Shift: 21:00 – 06:00</div>
+    <div class="badge">Night Shift: 21:00 – 06:00 | Day Shift: 06:00 – 21:00</div>
   </div>
 
   <div class="guide-card">
@@ -452,52 +102,23 @@
     <div class="guide-steps">
       <div class="guide-step">
         <div class="guide-step-num">Step 1</div>
-        <div class="guide-step-title">Paste Discord Logs</div>
-        <div class="guide-step-desc">Paste duty shifts, lab logs, and FTO records. Supports Rank 11 (Pharmacist), Rank 12 (EMT), Rank 21 (ARO), and ARD departments.</div>
+        <div class="guide-step-title">Paste Logs</div>
+        <div class="guide-step-desc">Paste lobby shifts, GS/ARO calls, and labs blocks.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 2</div>
-        <div class="guide-step-title">Configure Rules</div>
-        <div class="guide-step-desc">Toggle strict minimum hour limits and shift pairing requirements.</div>
+        <div class="guide-step-desc">Configure Rules</div>
+        <div class="guide-step-desc">Enforces the 4.6 hours weekly threshold even with short sub-60m shifts.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 3</div>
         <div class="guide-step-title">Calculate & Sync</div>
-        <div class="guide-step-desc">Run calculations, check flaws, sync directly to Google Sheets with detailed pay breakdown columns, and copy Discord messages.</div>
+        <div class="guide-step-desc">Computes separate Day/Night hourly pay and syncs directly to Google Sheets.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 4</div>
-        <div class="guide-step-title">Neural AI Chat</div>
-        <div class="guide-step-desc">Say "Hi", ask for line-by-line flaw explanations, or get solutions instantly from the autonomous assistant.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="rank-ref-card">
-    <h2>Registered Ranks & Department Credentials</h2>
-    <div style="color:var(--muted);font-size:14px;margin-bottom:16px">
-      Supports numeric ranks, shorthand titles, and department tags (e.g. <b>Rank 11 / Pharmacist / Phar</b>, <b>Rank 12 / EMT</b>, <b>Rank 21 / ARO</b>, <b>ARD</b>, <b>HS</b>, <b>GS</b>, <b>LT</b>, <b>Train</b>).
-    </div>
-    <div class="rank-grid">
-      <div>
-        <div class="rank-group-title">RANK CREDENTIALS & NUMERIC MAPPINGS</div>
-        <div class="rank-badges">
-          <span class="rank-pill blue">Rank 11 / Pharmacist / Phar</span>
-          <span class="rank-pill blue">Rank 12 / EMT</span>
-          <span class="rank-pill blue">Rank 21 / ARO</span>
-          <span class="rank-pill blue">LT (Lab Tech)</span>
-          <span class="rank-pill blue">MS / CA / Trainee</span>
-        </div>
-      </div>
-      <div>
-        <div class="rank-group-title">DEPARTMENTS & HIGH COMMAND TAGS</div>
-        <div class="rank-badges">
-          <span class="rank-pill green">ARD (Air Rescue)</span>
-          <span class="rank-pill green">HS (Hospital Services)</span>
-          <span class="rank-pill green">GS (Ground Services)</span>
-          <span class="rank-pill green">LT (Lab Tech Dept)</span>
-          <span class="rank-pill green">Train / T (Training)</span>
-        </div>
+        <div class="guide-step-title">Export Discord Message</div>
+        <div class="guide-step-desc">Generate tags and clean payout blocks ready for command posting.</div>
       </div>
     </div>
   </div>
@@ -507,24 +128,24 @@
     <div class="config-grid">
       <label class="checkbox-label"><input type="checkbox" id="ruleRank" onchange="analyzeAll()"> Accept Unverified/Dynamic Ranks</label>
       <label class="checkbox-label"><input type="checkbox" id="ruleClock" checked onchange="analyzeAll()"> Require Shift Off-Duty Pairing</label>
-      <label class="checkbox-label"><input type="checkbox" id="ruleMinHour" onchange="analyzeAll()"> Reject Shifts Under 1 Hour (&lt; 60 mins)</label>
+      <label class="checkbox-label"><input type="checkbox" id="ruleWeeklyThreshold" checked onchange="analyzeAll()"> Enforce 4.6h Weekly Total Threshold for Bonuses</label>
       <label class="checkbox-label"><input type="checkbox" id="ruleZeroProd" checked onchange="analyzeAll()"> Reject Lab Logs with 0 Captchas/Deliveries</label>
     </div>
   </div>
 
   <div class="grid3">
     <section class="card">
-      <h2>1. Duty Shift Rota</h2>
-      <textarea id="raw" placeholder="Paste Discord duty shifts here...&#10;Rank 11-ARD | John Doe&#10;On Duty PH: 14:00&#10;Off Duty PH: 16:00"></textarea>
+      <h2>1. Lobby & Call Shifts Rota</h2>
+      <textarea id="raw" placeholder="Paste shifts here...&#10;MS | Markk Maddison | 182901 — 12:16&#10;On Duty PH Front: 07:46&#10;Off Duty PH Front : 10:11"></textarea>
       <div class="btns">
-        <button onclick="analyzeAll()">Calculate Duty</button>
-        <button class="secondary" onclick="loadExample()">Sample Duty</button>
+        <button onclick="analyzeAll()">Calculate Shifts</button>
+        <button class="secondary" onclick="loadExample()">Sample Shift</button>
       </div>
     </section>
 
     <section class="card">
       <h2>2. Labtech Rota</h2>
-      <textarea id="labRaw" placeholder="Paste Labtech logs here..."></textarea>
+      <textarea id="labRaw" placeholder="Paste Lab logs or blocks here...&#10;FTO | David Vuković | 181883 [RMA] — 02:24&#10;On Duty Labs: 14:00&#10;Off Duty Labs: 15:00&#10;Captchas: 5&#10;Medicine Delivery: 10"></textarea>
       <div class="btns">
         <button onclick="analyzeAll()">Calculate Lab</button>
         <button class="secondary" onclick="loadLabExample()">Sample Lab</button>
@@ -533,7 +154,7 @@
 
     <section class="card">
       <h2>3. FTO Training Rota</h2>
-      <textarea id="ftoRaw" placeholder="Paste FTO Training logs here..."></textarea>
+      <textarea id="ftoRaw" placeholder="Paste FTO training logs here...&#10;Deputy | Jane Smith&#10;Day 1: 2&#10;Day 2: 1"></textarea>
       <div class="btns">
         <button onclick="analyzeAll()">Calculate FTO</button>
         <button class="secondary" onclick="loadFtoExample()">Sample FTO</button>
@@ -545,8 +166,8 @@
     <h2>4. Manual Adjustments</h2>
     <div class="row3">
       <div><label>Employee Name & Rank Format</label><input id="labName" placeholder="e.g. Deputy-HS | Roger Sagar"></div>
-      <div><label>Medicines Created</label><input id="meds" type="number" min="0" value="0"></div>
-      <div><label>Delivery Trips</label><input id="deliveries" type="number" min="0" value="0"></div>
+      <div><label>Captchas ($5k each)</label><input id="meds" type="number" min="0" value="0"></div>
+      <div><label>Medicine Deliveries ($10k each)</label><input id="deliveries" type="number" min="0" value="0"></div>
     </div>
     <div class="row3" style="margin-top:16px">
       <div><label>FTO Day 1 Count ($45k)</label><input id="fto1" type="number" min="0" value="0"></div>
@@ -608,18 +229,14 @@
 </div>
 
 <script>
-const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx2Oll1NoHpkTodLDEYVbYwf8V6EwpOYeYhtw8_uZ6cMBwufIW0DBzIX993pcA66aZSbQ/exec";
+const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvdH1bTYg76JER-OCRPZiMMkDd_ebKkp51I3lnBg47M2tpWQ7hQLOCEJkXLH6X_NaitA/exec";
 const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1WoJm1_bMVqwUeP8rd_86O933sfIkdWf6VrqM4ZqOFaQ/edit?gid=0#gid=0";
 
 function loadLocalImage(event) {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
-    reader.onload = function(e) {
-      document.getElementById('logoImg').src = e.target.result;
-      document.getElementById('logoImg').style.display = 'block';
-      document.getElementById('logoFallback').style.display = 'none';
-    };
+    reader.onload = function(e) { document.getElementById('logoImg').src = e.target.result; };
     reader.readAsDataURL(file);
   }
 }
@@ -630,13 +247,13 @@ const KNOWN_BASE_RANKS = [
   "SENIOR PHARMACIST", "PARAMEDIC", "LP", "LEAD PARAMEDIC", "LEAD PHARMACIST", "SURGEON", "ARO", 
   "AIR RESCUE OPERATION", "FTO", "HR", "DOD", "HOD", "DC", "COS", "DEPUTY CHIEF", "DEPUTY"
 ];
-const VALID_DEPARTMENTS = ["HS", "GS", "ARO", "ARD", "LT", "TRAIN", "T", "LABS"];
 
+// EXACT BONUS RATES STRUCTURE
 const RATES = {
   PH: { day: 10000, night: 25000 },
   SH: { day: 30000, night: 40000 },
   CALLS: { day: 15000, night: 20000 },
-  LABS: { day: 0, night: 0 }
+  LABS: { day: 0, night: 0 } // No bonus for pure time spent in labs blocks per rule
 };
 
 let manual = [], parsedShifts = [], labEntries = [], ftoEntries = [];
@@ -653,25 +270,35 @@ function toMin(s) {
   return (h <= 23 && mi <= 59) ? (h * 60 + mi) : null;
 }
 
+// Splits a shift minute-by-minute across Day (06:00 to 21:00) and Night (21:00 to 06:00)
 function splitPay(start, end, type) {
-  let total = 0, day = 0, night = 0;
+  let total = 0, dayMins = 0, nightMins = 0;
   let d = end - start;
   if (d < 0) d += 1440;
+  
+  const rateObj = RATES[type] || RATES.PH;
+  
   for (let i = 0; i < d; i++) {
     const t = (start + i) % 1440;
-    const isNight = (t >= 21 * 60 || t < 6 * 60);
-    if (isNight) { total += RATES[type].night / 60; night++; }
-    else { total += RATES[type].day / 60; day++; }
+    // Night Shift Rule: 21:00 (1260 mins) to 06:00 (360 mins)
+    const isNight = (t >= 1260 || t < 360);
+    if (isNight) {
+      total += rateObj.night / 60;
+      nightMins++;
+    } else {
+      total += rateObj.day / 60;
+      dayMins++;
+    }
   }
-  return { total, day, night, minutes: d };
+  return { total, dayMins, nightMins, minutes: d };
 }
 
 function classifyDuty(label) {
   if (!label) return null;
-  const x = label.toLowerCase().replace(/[^a-z]/g, "");
+  const x = label.toLowerCase();
+  if (x.includes("lab")) return "LABS";
   if (x.includes("ph")) return "PH";
   if (x.includes("sh") || x.includes("sandy")) return "SH";
-  if (x.includes("lab")) return "LABS";
   if (x.includes("call") || x.includes("gs") || x.includes("ground") || x.includes("aro")) return "CALLS";
   return null;
 }
@@ -695,15 +322,9 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
     }
   }
 
-  if (!foundRank) {
-    for (let i = 0; i < parts.length; i++) {
-      const cleaned = parts[i].replace(/[^a-zA-Z0-9\s\-]/g, "").trim().toUpperCase();
-      if (cleaned.length > 0 && !/^\d+$/.test(cleaned) && !cleaned.includes("ID")) {
-        foundRank = parts[i].replace(/[^a-zA-Z0-9\s\-]/g, "").trim();
-        rankIndex = i;
-        break;
-      }
-    }
+  if (!foundRank && autoAcceptRanks && parts.length > 0) {
+    foundRank = parts[0];
+    rankIndex = 0;
   }
 
   if (!foundRank) return { rank: null, name: s, valid: false };
@@ -714,11 +335,11 @@ function parseHeaderAndExtractRank(header, autoAcceptRanks) {
   return { rank: foundRank, name: rawName, valid: true };
 }
 
-function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
+function parseRota(text, autoAcceptRanks, ruleClock) {
   if (!text.trim()) return { out: [], flaws: [], inspection: [] };
   const lines = text.split(/\r?\n/).map(cleanLine);
   const out = [], flaws = [], inspection = [];
-  let currentPerson = null, currentDate = "DefaultDate", activePostValid = true;
+  let currentPerson = null, activePostValid = true;
 
   for (let i = 0; i < lines.length; i++) {
     const rawLine = lines[i], lineNum = i + 1;
@@ -745,7 +366,7 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
       if (start === null) { flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Invalid start time "${tm}".` }); continue; }
       const type = classifyDuty(duty);
       if (!type) { flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Unknown duty location "${duty}".` }); continue; }
-      out.push({ lineNum, name: personName, rank: currentPerson ? currentPerson.rank : "EMS", date: currentDate, label: duty, start, startText: tm, type, complete: false });
+      out.push({ lineNum, name: personName, rank: currentPerson ? currentPerson.rank : "EMS", label: duty, start, startText: tm, type, complete: false });
     } else if (offMatch) {
       const duty = offMatch[1].trim(), tm = offMatch[2].replace(/\s+/g, ""), end = toMin(tm);
       if (end === null) continue;
@@ -756,21 +377,14 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
       if (matchIdx >= 0) {
         out[matchIdx].end = end;
         out[matchIdx].endText = tm;
-        let dur = end - out[matchIdx].start;
-        if (dur < 0) dur += 1440;
-        if (ruleMinHour && dur < 60) {
-          flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Shift duration under 60 mins.` });
-          out.splice(matchIdx, 1);
-        } else {
-          out[matchIdx].complete = true;
-        }
+        out[matchIdx].complete = true;
       }
     }
   }
   return { out: out.filter(x => x.complete || !ruleClock), flaws, inspection };
 }
 
-function parseLabtechLogs(text, autoAcceptRanks, ruleZeroProd) {
+function parseLabtechLogs(text, autoAcceptRanks) {
   if (!text.trim()) return { entries: [], flaws: [], inspection: [] };
   const lines = text.split(/\r?\n/).map(cleanLine);
   const entries = [], flaws = [], inspection = [];
@@ -780,19 +394,19 @@ function parseLabtechLogs(text, autoAcceptRanks, ruleZeroProd) {
     const rawLine = lines[i], lineNum = i + 1;
     if (!rawLine) continue;
     const parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
-    if (parts.length >= 2 && !/medicines|deliveries|captchas/i.test(rawLine)) {
+    if (parts.length >= 2 && !/captcha|medicine|delivery|labs/i.test(rawLine)) {
       const res = parseHeaderAndExtractRank(rawLine, autoAcceptRanks);
       currentPerson = res;
       activeValid = res.valid;
       continue;
     }
     if (!activeValid) continue;
-    const medMatch = rawLine.match(/(?:medicines|meds|captchas)\s*[:|]\s*(\d+)/i);
-    const delMatch = rawLine.match(/(?:deliveries|trips)\s*[:|]\s*(\d+)/i);
-    if (medMatch || delMatch) {
-      const meds = medMatch ? parseInt(medMatch[1], 10) : 0;
+    const capMatch = rawLine.match(/(?:captcha|captchas)\s*[:|]\s*(\d+)/i);
+    const delMatch = rawLine.match(/(?:medicine delivery|delivery|deliveries|meds)\s*[:|]\s*(\d+)/i);
+    if (capMatch || delMatch) {
+      const captchas = capMatch ? parseInt(capMatch[1], 10) : 0;
       const deliveries = delMatch ? parseInt(delMatch[1], 10) : 0;
-      entries.push({ name: currentPerson ? currentPerson.name : "Unknown", rank: currentPerson ? currentPerson.rank : "LT", meds, deliveries, lineNum });
+      entries.push({ name: currentPerson ? currentPerson.name : "Unknown", rank: currentPerson ? currentPerson.rank : "LT", captchas, deliveries, lineNum });
     }
   }
   return { entries, flaws, inspection };
@@ -808,7 +422,7 @@ function parseFtoLogs(text, autoAcceptRanks) {
     const rawLine = lines[i], lineNum = i + 1;
     if (!rawLine) continue;
     const parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
-    if (parts.length >= 2 && !/day\s*1|day\s*2|trainee/i.test(rawLine)) {
+    if (parts.length >= 2 && !/day\s*1|day\s*2/i.test(rawLine)) {
       const res = parseHeaderAndExtractRank(rawLine, autoAcceptRanks);
       currentPerson = res;
       activeValid = res.valid;
@@ -825,11 +439,11 @@ function parseFtoLogs(text, autoAcceptRanks) {
 }
 
 function loadExample() {
-  document.getElementById('raw').value = `Rank 11-ARD | John Doe\nOn Duty PH: 12:00\nOff Duty PH: 15:00`;
+  document.getElementById('raw').value = `MS | Markk Maddison | 182901 — 12:16\nOn Duty PH Front: 07:46\nOff Duty PH Front : 10:11`;
   analyzeAll();
 }
-function loadLabExample() { document.getElementById('labRaw').value = `Rank 21-ARD | John Doe\nMedicines: 140\nDeliveries: 12`; analyzeAll(); }
-function loadFtoExample() { document.getElementById('ftoRaw').value = `Deputy-Train | Jane Smith\nDay 1: 2\nDay 2: 1`; analyzeAll(); }
+function loadLabExample() { document.getElementById('labRaw').value = `FTO | David Vuković | 181883 [RMA] — 02:24\nOn Duty Labs: 14:00\nOff Duty Labs: 15:00\nCaptchas: 5\nMedicine Delivery: 10`; analyzeAll(); }
+function loadFtoExample() { document.getElementById('ftoRaw').value = `Deputy | Jane Smith\nDay 1: 2\nDay 2: 1`; analyzeAll(); }
 
 function addManual() {
   const name = document.getElementById('labName').value.trim();
@@ -849,7 +463,7 @@ function removeManual(idx) { manual.splice(idx, 1); renderManualList(); analyzeA
 function renderManualList() {
   const el = document.getElementById('manualList');
   if (!manual.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px">No manual adjustments added.</div>'; return; }
-  let html = `<table><thead><tr><th>Employee</th><th>Meds</th><th>Deliveries</th><th>FTO D1</th><th>FTO D2</th><th>Action</th></tr></thead><tbody>`;
+  let html = `<table><thead><tr><th>Employee</th><th>Captchas</th><th>Deliveries</th><th>FTO D1</th><th>FTO D2</th><th>Action</th></tr></thead><tbody>`;
   manual.forEach((m, i) => {
     html += `<tr><td>${m.name}</td><td>${m.meds}</td><td>${m.deliveries}</td><td>${m.fto1}</td><td>${m.fto2}</td><td><button class="danger" style="padding:4px 10px;font-size:12px" onclick="removeManual(${i})">Remove</button></td></tr>`;
   });
@@ -860,11 +474,11 @@ function renderManualList() {
 function analyzeAll() {
   const ruleRank = document.getElementById('ruleRank').checked;
   const ruleClock = document.getElementById('ruleClock').checked;
-  const ruleMinHour = document.getElementById('ruleMinHour').checked;
+  const ruleWeeklyThreshold = document.getElementById('ruleWeeklyThreshold').checked;
   const ruleZeroProd = document.getElementById('ruleZeroProd').checked;
 
-  const dutyRes = parseRota(document.getElementById('raw').value, ruleRank, ruleClock, ruleMinHour);
-  const labRes = parseLabtechLogs(document.getElementById('labRaw').value, ruleRank, ruleZeroProd);
+  const dutyRes = parseRota(document.getElementById('raw').value, ruleRank, ruleClock);
+  const labRes = parseLabtechLogs(document.getElementById('labRaw').value, ruleRank);
   const ftoRes = parseFtoLogs(document.getElementById('ftoRaw').value, ruleRank);
 
   parsedShifts = dutyRes.out;
@@ -876,7 +490,11 @@ function analyzeAll() {
   const peopleMap = {};
   function ensurePerson(name, rank = "EMS") {
     if (!peopleMap[name]) {
-      peopleMap[name] = { name, rank, minutes: 0, dayMins: 0, nightMins: 0, shiftPay: 0, labPay: 0, ftoPay: 0, manualBonus: 0, pay: 0, meds: 0, deliveries: 0, fto1: 0, fto2: 0 };
+      peopleMap[name] = { 
+        name, rank, minutes: 0, dayMins: 0, nightMins: 0, 
+        shiftPay: 0, labPay: 0, ftoPay: 0, manualBonus: 0, pay: 0, 
+        captchas: 0, deliveries: 0, fto1: 0, fto2: 0, bonusEligible: false 
+      };
     }
     if (rank && rank !== "EMS") peopleMap[name].rank = rank;
     return peopleMap[name];
@@ -886,17 +504,29 @@ function analyzeAll() {
     const p = ensurePerson(s.name, s.rank);
     const split = splitPay(s.start, s.end, s.type);
     p.minutes += split.minutes;
-    p.dayMins += split.day;
-    p.nightMins += split.night;
+    p.dayMins += split.dayMins;
+    p.nightMins += split.nightMins;
     p.shiftPay += split.total;
-    p.pay += split.total;
+  });
+
+  // Calculate 4.6 hours weekly threshold check (4.6 hours = 276 minutes)
+  Object.values(peopleMap).forEach(p => {
+    if (!ruleWeeklyThreshold || p.minutes >= 276) {
+      p.bonusEligible = true;
+      p.pay += p.shiftPay; // Grant shift pay bonus since they passed weekly threshold or rule is disabled
+    } else {
+      p.bonusEligible = false;
+      // Shift pay withheld due to failing 4.6 hour weekly threshold rule, but lab/FTO bonuses remain
+    }
   });
 
   labEntries.forEach(l => {
     const p = ensurePerson(l.name, l.rank);
-    p.meds += l.meds;
+    p.captchas += l.captchas;
     p.deliveries += l.deliveries;
-    // Lab pay can be configured or factored here if needed
+    const labTot = (l.captchas * 5000) + (l.deliveries * 10000);
+    p.labPay += labTot;
+    p.pay += labTot;
   });
 
   ftoEntries.forEach(f => {
@@ -910,13 +540,17 @@ function analyzeAll() {
 
   manual.forEach(m => {
     const p = ensurePerson(m.name);
-    p.meds += m.meds;
+    p.captchas += m.meds;
     p.deliveries += m.deliveries;
     p.fto1 += m.fto1;
     p.fto2 += m.fto2;
-    const manTot = (m.fto1 * 45000) + (m.fto2 * 35000);
-    p.manualBonus += manTot;
-    p.pay += manTot;
+    const manLabTot = (m.meds * 5000) + (m.deliveries * 10000);
+    const manFtoTot = (m.fto1 * 45000) + (m.fto2 * 35000);
+    const totalMan = manLabTot + manFtoTot;
+    p.labPay += manLabTot;
+    p.ftoPay += manFtoTot;
+    p.manualBonus += totalMan;
+    p.pay += totalMan;
   });
 
   currentCompiledPeople = Object.values(peopleMap);
@@ -940,20 +574,22 @@ function renderResults(people) {
   el.className = "table-responsive";
   let html = `<table><thead><tr>
     <th><input type="checkbox" class="row-checkbox" checked onclick="toggleSelectAll(this)"></th>
-    <th>Rank</th><th>Employee Name</th><th>Duty Hours</th><th>Shift Pay</th><th>Lab Pay</th><th>FTO Pay</th><th>Manual Bonus</th><th>Total Payout</th>
+    <th>Rank</th><th>Employee Name</th><th>Duty Hours</th><th>Day Mins</th><th>Night Mins</th><th>Shift Pay</th><th>Lab/FTO Pay</th><th>Total Payout</th><th>4.6h Status</th>
   </tr></thead><tbody>`;
 
   people.forEach((p, idx) => {
+    const statusBadge = p.bonusEligible ? `<span class="ok" style="font-weight:700">Eligible (≥4.6h)</span>` : `<span class="bad" style="font-weight:700">Withheld (&lt;4.6h)</span>`;
     html += `<tr>
       <td><input type="checkbox" class="row-checkbox person-checkbox" checked data-index="${idx}"></td>
       <td><span class="pill">${p.rank}</span></td>
       <td><b>${p.name}</b></td>
       <td>${minsToHM(p.minutes)}</td>
+      <td>${minsToHM(p.dayMins)}</td>
+      <td>${minsToHM(p.nightMins)}</td>
       <td>${money(p.shiftPay)}</td>
-      <td>${money(p.labPay)}</td>
-      <td>${money(p.ftoPay)}</td>
-      <td>${money(p.manualBonus)}</td>
+      <td>${money(p.labPay + p.ftoPay + p.manualBonus)}</td>
       <td style="color:var(--good);font-weight:700">${money(p.pay)}</td>
+      <td>${statusBadge}</td>
     </tr>`;
   });
   html += `</tbody></table>`;
@@ -999,11 +635,8 @@ function copyDiscordSummary() {
     const idx = parseInt(b.getAttribute('data-index'), 10);
     const p = currentCompiledPeople[idx];
     totalSum += p.pay;
-    // Format matching your exact Discord requirement
-    // Using placeholder Discord tag or name if ID isn't directly bound
-    let discordTag = p.name.replace(/[^0-9]/g, "");
-    if (discordTag.length < 15) discordTag = "277425014926606337"; // Fallback demo ID if name is plaintext
-    rowsText += `<@${discordTag}>  <a:FPSarrow_kalyug:1196873649152589914>  ${money(p.pay)}\n`;
+    let discordTag = "277425014926606337"; 
+    rowsText += `<@${discordTag}>  <a:FPSarrow_kalyug:1196873649152589914>  ${money(p.pay)} (${minsToHM(p.minutes)} total)\n`;
   });
 
   const todayStr = "12/08/2026 to 18/08/2026";
@@ -1011,6 +644,9 @@ function copyDiscordSummary() {
   msg += rowsText + `\n`;
   msg += `# Total Employee Bonus  <a:FPSarrow_kalyug:1196873649152589914>  ${money(totalSum)} <:JG_CatShyAtamas:749600429272465518>\n\n`;
   msg += `Note: If you have any queries regarding your bonus, please contact : <@735845569972535337>  \n`;
+  msg += `@Former Medic  @Former High Command Former EMS members are welcome back!\n`;
+  msg += `Saving Lives, Building Futures\n`;
+  msg += `Best Regards !\n\n`;
   msg += `<@&1405437550050410496> <@&1405432868511023134>`;
 
   navigator.clipboard.writeText(msg).then(() => {
@@ -1026,11 +662,14 @@ function syncToGoogleSheets() {
     rank: p.rank,
     name: p.name,
     dutyHours: minsToHM(p.minutes),
+    dayMins: minsToHM(p.dayMins),
+    nightMins: minsToHM(p.nightMins),
     shiftPay: p.shiftPay,
     labPay: p.labPay,
     ftoPay: p.ftoPay,
     manualBonus: p.manualBonus,
-    pay: p.pay
+    pay: p.pay,
+    bonusEligible: p.bonusEligible ? "Eligible" : "Withheld"
   }));
 
   fetch(SCRIPT_WEB_APP_URL, {
@@ -1039,7 +678,7 @@ function syncToGoogleSheets() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   }).then(() => {
-    alert("📊 Synced successfully to Google Sheets! Opening sheet...");
+    alert("📊 Synced successfully to Google Sheets! Opening spreadsheet...");
     window.open(GOOGLE_SHEET_URL, '_blank');
   }).catch(() => {
     window.open(GOOGLE_SHEET_URL, '_blank');
@@ -1064,11 +703,9 @@ function submitChat() {
     let reply = "I am processing your request. All logs and calculations are active!";
     const qLower = query.toLowerCase();
     if (qLower.includes("hi") || qLower.includes("hello") || qLower.includes("hey")) {
-      reply = "Hello High Command! 👋 I am fully online and ready to assist you with your EMS logs and payouts.";
+      reply = "Hello High Command! 👋 Saving Lives, Building Futures!";
     } else if (qLower.includes("flaw") || qLower.includes("error") || qLower.includes("line")) {
       reply = currentFlawsList.length ? `Found ${currentFlawsList.length} flaw(s). Check Section 7 above.` : "Zero flaws detected! All logs are clean.";
-    } else if (qLower.includes("solution") || qLower.includes("fix")) {
-      reply = "Ensure headers use valid format (e.g. Rank 11-ARD | Name) and shifts are properly paired with On/Off Duty logs.";
     } else if (qLower.includes("top earner")) {
       if (currentCompiledPeople.length) {
         const sorted = [...currentCompiledPeople].sort((a,b)=>b.pay-a.pay);
