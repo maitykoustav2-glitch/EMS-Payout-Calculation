@@ -681,6 +681,7 @@ function renderResults(people) {
   el.className = "table-responsive";
   let html = `<table><thead><tr>
     <th><input type="checkbox" id="masterCheckbox" class="row-checkbox" checked onclick="toggleSelectAll(this)"></th>
+    <th><input type="checkbox" id="masterSheetCheckbox" class="row-checkbox" checked onclick="toggleSelectAllSheet(this)" title="Toggle all for Sheet Sync"> Sheet Sync</th>
     <th>Normalized Rank (AI)</th><th>Department</th><th>Employee Name</th><th>Duty Hours</th><th>Day Mins</th><th>Night Mins</th><th>Shift Pay</th><th>Lab/FTO Pay</th><th>Total Payout</th><th>4.6h Status</th>
   </tr></thead><tbody>`;
 
@@ -689,6 +690,7 @@ function renderResults(people) {
     const deptBadge = p.dept ? `<span class="pill" style="background:#065f46;color:#6ee7b7">${p.dept}</span>` : `<span class="pill" style="background:#1f2937;color:#9ca3af">General</span>`;
     html += `<tr>
       <td><input type="checkbox" class="row-checkbox person-checkbox" checked data-index="${idx}" onchange="updateDashboardStats()"></td>
+      <td style="text-align:center;"><input type="checkbox" class="row-checkbox sheet-sync-checkbox" checked data-index="${idx}"></td>
       <td><span class="pill" style="background:#1e3a8a;color:#93c5fd">${p.rank}</span></td>
       <td>${deptBadge}</td>
       <td><b>${p.name}</b></td>
@@ -728,6 +730,10 @@ function updateDashboardStats() {
 function toggleSelectAll(master) {
   document.querySelectorAll('.person-checkbox').forEach(b => b.checked = master.checked);
   updateDashboardStats();
+}
+
+function toggleSelectAllSheet(master) {
+  document.querySelectorAll('.sheet-sync-checkbox').forEach(b => b.checked = master.checked);
 }
 
 function renderFlaws(flaws) {
@@ -787,18 +793,18 @@ function copyDiscordSummary() {
 }
 
 function syncToGoogleSheets() {
-  const checkedBoxes = document.querySelectorAll('.person-checkbox:checked');
-  if (!checkedBoxes.length) { 
-    alert("No employees checked/selected to sync."); 
+  const checkedSheetBoxes = document.querySelectorAll('.sheet-sync-checkbox:checked');
+  if (!checkedSheetBoxes.length) { 
+    alert("No employees checked for Google Sheet syncing."); 
     return; 
   }
 
   // 1. Open spreadsheet tab instantly to bypass browser popup blockers
   window.open(GOOGLE_SHEET_URL, '_blank');
 
-  // 2. Build payload only for checked/active employees
+  // 2. Build payload only for checked sheet-sync employees
   const payload = [];
-  checkedBoxes.forEach(b => {
+  checkedSheetBoxes.forEach(b => {
     const idx = parseInt(b.getAttribute('data-index'), 10);
     const p = currentCompiledPeople[idx];
     if (p) {
