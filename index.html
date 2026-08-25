@@ -456,6 +456,71 @@
     display: none;
   }
 
+  .chat-box {
+    background: #0d1117;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+
+  .chat-log {
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 8px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .chat-msg {
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+  }
+
+  .chat-msg.user {
+    background: #1e2330;
+    border-left: 3px solid var(--accent);
+    color: var(--text);
+  }
+
+  .chat-msg.assistant {
+    background: #151921;
+    border-left: 3px solid var(--good);
+    color: var(--text);
+  }
+
+  .chip-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .chip {
+    background: #1e2330;
+    border: 1px solid var(--line);
+    color: #cbd5e1;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .chip:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .chat-input-row {
+    display: flex;
+    gap: 10px;
+  }
+
   @media(max-width:768px){
     .wrap{ padding:16px; }
     .hero{ flex-direction:column; align-items:flex-start; }
@@ -496,12 +561,12 @@
       <div class="guide-step">
         <div class="guide-step-num">Step 1</div>
         <div class="guide-step-title">Paste Discord Logs</div>
-        <div class="guide-step-desc">Copy raw shift channels directly from Discord into Duty, Labtech, or FTO text boxes.</div>
+        <div class="guide-step-desc">Copy raw shift channels directly from Discord into Duty, Labtech, or FTO text boxes. Rank can appear in any column order — the parser finds it automatically.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 2</div>
         <div class="guide-step-title">Set Audit Rules</div>
-        <div class="guide-step-desc">Check or uncheck strict filters such as shift time minimums (&gt;60m) or mandatory location matching.</div>
+        <div class="guide-step-desc">Check or uncheck strict filters such as shift time minimums (&gt;60m) or the unverified-rank override.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 3</div>
@@ -513,6 +578,11 @@
         <div class="guide-step-title">Export & Sync</div>
         <div class="guide-step-desc">Use one-click buttons to post formatted results to Discord or stream live data to your Google Sheet.</div>
       </div>
+    </div>
+    <div style="margin-top:20px; padding:16px; background:#0d1117; border-radius:10px; border:1px solid var(--line); font-size:13px; color:var(--muted); line-height:1.6;">
+      <b>Header format:</b> any post that starts, or contains as one of its pipe-separated segments, a recognized rank code works — e.g. <code style="color:#fff">RANK | Name | ID</code> or <code style="color:#fff">ID | RANK | Name</code> are both read correctly.<br>
+      <b>No recognized rank anywhere in the header = not employed.</b> That post (and everything logged under it) is excluded from every payout and shows up in Section 7 so High Command can see exactly who got dropped and why.<br>
+      <b>FTO Training</b> is only paid out when the trainer's rank is one of the FTO-Authorized ranks below, and only for training days marked <code style="color:var(--good)">Passed</code> — a logged <code style="color:var(--bad)">Failed</code> pays $0.
     </div>
   </div>
 
@@ -567,15 +637,15 @@
     <h2 style="margin:0;font-size:20px;color:#fff">⚙️ AI Audit Filter Toggles</h2>
     <div class="config-grid">
       <label class="checkbox-label">
-        <input type="checkbox" id="ruleRank" checked onchange="analyzeAll()">
-        Auto-Accept Dynamic/New Ranks (Never Drop Valid Posts)
+        <input type="checkbox" id="ruleRank" onchange="analyzeAll()">
+        Accept Unverified/Dynamic Ranks (flagged for review — not recommended)
       </label>
       <label class="checkbox-label">
         <input type="checkbox" id="ruleClock" checked onchange="analyzeAll()">
         Require Shift Off-Duty Pairing
       </label>
       <label class="checkbox-label">
-        <input type="checkbox" id="ruleMinHour" checked onchange="analyzeAll()">
+        <input type="checkbox" id="ruleMinHour" onchange="analyzeAll()">
         Reject Shifts Under 1 Hour (&lt; 60 mins)
       </label>
       <label class="checkbox-label">
@@ -620,7 +690,7 @@
   <section class="card">
     <h2>4. Manual Adjustments</h2>
     <div class="row3">
-      <div><label>Employee Name (Supports Any Rank Format)</label><input id="labName" placeholder="e.g. ARO | Roger Sagar"></div>
+      <div><label>Employee Name & Rank Format</label><input id="labName" placeholder="e.g. Surgeon | Roger Sagar"></div>
       <div><label>Medicines Created</label><input id="meds" type="number" min="0" value="0"></div>
       <div><label>Delivery Trips</label><input id="deliveries" type="number" min="0" value="0"></div>
     </div>
@@ -656,6 +726,27 @@
   <section class="card">
     <h2>7. AI Audit Engine Flags & Anomalies</h2>
     <div id="flaws" class="table-responsive empty">No anomalies detected yet.</div>
+  </section>
+
+  <section class="card">
+    <h2>🤖 8. Smart Payroll Assistant</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Built-in rule-based assistant — reads straight from your data and calculations. Ask questions or type an employee name.</p>
+    <div class="chip-container">
+      <div class="chip" onclick="askAssistant('Explain my current flags')">Explain my current flags</div>
+      <div class="chip" onclick="askAssistant('Header format?')">Header format?</div>
+      <div class="chip" onclick="askAssistant('FTO-authorized ranks?')">FTO-authorized ranks?</div>
+      <div class="chip" onclick="askAssistant('Why was someone excluded?')">Why was someone excluded?</div>
+      <div class="chip" onclick="askAssistant('Night shift pay?')">Night shift pay?</div>
+    </div>
+    <div class="chat-box">
+      <div id="chatLog" class="chat-log">
+        <div class="chat-msg assistant">Hey — I'm the built-in assistant. Ask me about rank rules, the Discord format, why a flag was raised, how pay is calculated, or type an employee's name to get their current earnings breakdown.</div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Ask a question, or type an employee's name..." onkeydown="if(event.key==='Enter')submitChat()">
+        <button onclick="submitChat()">Ask</button>
+      </div>
+    </div>
   </section>
 </div>
 
@@ -695,6 +786,7 @@ const RATES = {
 
 let manual = [], parsedShifts = [], labEntries = [], ftoEntries = [];
 let currentCompiledPeople = [];
+let currentFlawsList = [];
 
 const money = n => "$" + Math.round(n).toLocaleString("en-US");
 const minsToHM = m => `${Math.floor(m / 60)}h ${m % 60}m`;
@@ -722,42 +814,69 @@ function splitPay(start, end, type) {
 }
 
 function classifyDuty(label) {
-  if (!label) return "PH";
+  if (!label) return null;
   const x = label.toLowerCase().replace(/[^a-z]/g, "");
   if (x.includes("ph")) return "PH";
   if (x.includes("sh") || x.includes("sandy")) return "SH";
   if (x.includes("call") || x.includes("gs") || x.includes("ground")) return "CALLS";
-  return "PH";
+  return null;
 }
 
-function normalizeLocation(label) {
-  if (!label) return "unknown";
-  return label.toLowerCase().replace(/[^a-z0-9]/g, "").trim();
+function normalizeLocationCategory(label) {
+  const t = classifyDuty(label);
+  return t ? t : "unknown";
 }
 
 function cleanLine(s) { return s.replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim(); }
 
-function extractRankAndName(header) {
-  if (!header) return { rank: "EMS", name: "" };
+function parseHeaderAndExtractRank(header, autoAcceptRanks) {
+  if (!header) return { rank: null, name: "", valid: false };
   let s = header.replace(/<@!?\d+>/g, "").replace(/@\S+/g, "").replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim();
-  const parts = s.split("|").map(x => x.trim());
-  
-  let rawRank = "", rawName = "";
-  if (parts.length >= 2) {
-    rawRank = parts[0].replace(/[^a-zA-Z0-9\s\-]/g, "").trim();
-    rawName = parts.slice(1).join(" ").replace(/—.*$/g, "").replace(/\[.*?\]/g, "").replace(/,/g, "").trim();
-  } else {
-    rawName = s;
-    rawRank = "EMS";
+  const parts = s.split("|").map(x => x.trim()).filter(Boolean);
+
+  let foundRank = null;
+  let rankIndex = -1;
+
+  for (let i = 0; i < parts.length; i++) {
+    const cleaned = parts[i].replace(/[^a-zA-Z0-9\s\-]/g, "").trim().toUpperCase();
+    const matched = KNOWN_RANKS.find(r => r === cleaned);
+    if (matched) {
+      foundRank = matched;
+      rankIndex = i;
+      break;
+    }
   }
 
-  const cleanRankUpper = rawRank.toUpperCase();
-  const matched = KNOWN_RANKS.find(r => r === cleanRankUpper);
-  
+  if (!foundRank) {
+    for (let i = 0; i < parts.length; i++) {
+      const cleaned = parts[i].replace(/[^a-zA-Z0-9\s\-]/g, "").trim().toUpperCase();
+      if (cleaned.length > 0 && !/^\d+$/.test(cleaned) && !cleaned.includes("ID")) {
+        foundRank = parts[i].replace(/[^a-zA-Z0-9\s\-]/g, "").trim();
+        rankIndex = i;
+        break;
+      }
+    }
+  }
+
+  if (!foundRank) {
+    return { rank: null, name: s, valid: false };
+  }
+
+  const nameParts = parts.filter((_, idx) => idx !== rankIndex);
+  let rawName = nameParts.join(" ").replace(/—.*$/g, "").replace(/\[.*?\]/g, "").replace(/,/g, "").trim();
+  if (!rawName) rawName = s;
+
+  const cleanRankUpper = foundRank.toUpperCase();
+  const isKnown = KNOWN_RANKS.includes(cleanRankUpper);
+
+  if (!isKnown && !autoAcceptRanks) {
+    return { rank: foundRank, name: rawName, valid: false, unverified: true };
+  }
+
   return { 
-    rank: matched || (rawRank.length > 0 ? rawRank : "EMS"), 
+    rank: isKnown ? cleanRankUpper : foundRank, 
     name: rawName, 
-    rawRank: rawRank 
+    valid: true 
   };
 }
 
@@ -772,6 +891,7 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
   const out = [], flaws = [];
   let currentPerson = null;
   let currentDate = "DefaultDate";
+  let activePostValid = true;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -781,9 +901,21 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
     const parts = line.split("|").map(x => x.trim()).filter(Boolean);
 
     if (parts.length >= 2 && !/on\s*duty/i.test(line) && !/off\s*duty/i.test(line)) {
-      currentPerson = extractRankAndName(line);
+      const res = parseHeaderAndExtractRank(line, autoAcceptRanks);
+      currentPerson = res;
+      activePostValid = res.valid;
+      if (!res.valid) {
+        flaws.push({ 
+          name: res.name || "Unknown Header", 
+          reason: res.unverified ? 
+            `Line ${i + 1}: Unrecognized or dynamic rank "${res.rank}" submitted without auto-accept enabled.` : 
+            `Line ${i + 1}: Header "${line}" contains no recognized rank. Post excluded (not employed rule).` 
+        });
+      }
       continue;
     }
+
+    if (!activePostValid) continue;
 
     const onMatch = line.match(/^On\s*duty\s*[:|]?\s*(.+?)\s*[:|]\s*(\d{1,2}\s*:\s*\d{2})/i);
     const offMatch = line.match(/^Off\s*duty\s*[:|]?\s*(.+?)\s*[:|]\s*(\d{1,2}\s*:\s*\d{2})/i);
@@ -792,16 +924,20 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
       const duty = onMatch[1].trim(), tm = onMatch[2].replace(/\s+/g, ""), start = toMin(tm);
       const personName = currentPerson ? currentPerson.name : "Unknown Employee";
       if (start === null) {
-        flaws.push({ name: personName, reason: `Line ${i + 1}: Shift start time "${tm}" is invalid. Please format times in HH:MM format.` });
+        flaws.push({ name: personName, reason: `Line ${i + 1}: Shift start time "${tm}" is invalid.` });
       }
       const type = classifyDuty(duty);
+      if (!type) {
+        flaws.push({ name: personName, reason: `Line ${i + 1}: Unknown duty location type "${duty}". Excluded to prevent unverified pay.` });
+        continue;
+      }
       out.push({ name: personName, rank: currentPerson ? currentPerson.rank : "EMS", date: currentDate, label: duty, start, startText: tm, type: type, complete: false, line: i + 1 });
     } else if (offMatch) {
       const duty = offMatch[1].trim(), tm = offMatch[2].replace(/\s+/g, ""), end = toMin(tm);
       const personName = currentPerson ? currentPerson.name : "Unknown Employee";
       
       if (end === null) {
-        flaws.push({ name: personName, reason: `Line ${i + 1}: Shift end time "${tm}" is invalid. Please format times in HH:MM format.` });
+        flaws.push({ name: personName, reason: `Line ${i + 1}: Shift end time "${tm}" is invalid.` });
       }
       
       let matchIdx = -1;
@@ -816,10 +952,10 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
         const onLocation = out[matchIdx].label;
         const offLocation = duty;
         
-        if (normalizeLocation(onLocation) !== normalizeLocation(offLocation)) {
+        if (normalizeLocationCategory(onLocation) !== normalizeLocationCategory(offLocation)) {
           flaws.push({
             name: personName,
-            reason: `Location mismatch detected! Shift started at "${onLocation}" (${out[matchIdx].startText}) but off-duty was logged at "${offLocation}" (${tm}). Clock-in and clock-out locations must match.`
+            reason: `Location category mismatch! Shift started at "${onLocation}" (${out[matchIdx].startText}) but off-duty was logged at "${offLocation}" (${tm}).`
           });
           out.splice(matchIdx, 1);
         } else {
@@ -832,7 +968,7 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
           if (ruleMinHour && dur < 60) {
             flaws.push({
               name: personName,
-              reason: `Shift logged from ${out[matchIdx].startText} to ${tm} was only ${dur} minutes long. EMS policy requires shifts to be at least 1 hour (60 minutes) to qualify for bonus payout.`
+              reason: `Shift logged from ${out[matchIdx].startText} to ${tm} was only ${dur} minutes long (< 60 mins rule).`
             });
             out.splice(matchIdx, 1);
           } else {
@@ -858,6 +994,22 @@ function parseRota(text, autoAcceptRanks, ruleClock, ruleMinHour) {
       }
     }
   }
+
+  for (let i = 0; i < out.length; i++) {
+    for (let j = i + 1; j < out.length; j++) {
+      const a = out[i], b = out[j];
+      if (a.name === b.name && a.complete && b.complete && a.date === b.date && a.date !== "DefaultDate") {
+        const overlap = !(a.end <= b.start || b.end <= a.start);
+        if (overlap) {
+          flaws.push({
+            name: a.name,
+            reason: `Shift overlap detected on ${a.date}: Shift ${a.startText}–${a.endText} overlaps with shift ${b.startText}–${b.endText}.`
+          });
+        }
+      }
+    }
+  }
+
   return { out, flaws };
 }
 
@@ -866,15 +1018,16 @@ function parseLab(text, autoAcceptRanks, ruleZeroProd) {
   const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
   const records = [];
   let currentPerson = null, date = null, cap = null, del = null;
+  let activePostValid = true;
   const flaws = [];
 
   function flush() {
     const personName = currentPerson ? currentPerson.name : "Unknown Employee";
-    if (date && (cap !== null || del !== null)) {
+    if (activePostValid && date && (cap !== null || del !== null)) {
       if (ruleZeroProd && cap === 0 && del === 0) {
         flaws.push({
           name: personName,
-          reason: `Submitted a Labtech log on ${date} with 0 Captchas and 0 Deliveries. Log rejected due to zero activity.`
+          reason: `Submitted a Labtech log on ${date} with 0 Captchas and 0 Deliveries. Log rejected.`
         });
       } else {
         records.push({ name: personName, rank: currentPerson ? currentPerson.rank : "EMS", date, captchas: cap ?? 0, deliveries: del ?? 0 });
@@ -889,17 +1042,20 @@ function parseLab(text, autoAcceptRanks, ruleZeroProd) {
 
     if (parts.length >= 2 && !/^date\s*[:\s]/i.test(line) && !/^captchas?\s+completed\s*[:\s]/i.test(line) && !/^deliveries\s+made\s*[:\s]/i.test(line)) {
       flush(); 
-      currentPerson = extractRankAndName(line);
+      const res = parseHeaderAndExtractRank(line, autoAcceptRanks);
+      currentPerson = res;
+      activePostValid = res.valid;
+      if (!res.valid) {
+        flaws.push({
+          name: res.name || "Unknown Header",
+          reason: `Lab Header "${line}" has no recognized rank. Excluded.`
+        });
+      }
     }
     const dm = line.match(/^Date\s*[:\s]\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
     if (dm) { if (date && currentPerson && (cap !== null || del !== null)) flush(); date = dm[1]; }
     const cm = line.match(/^Captchas?\s+Completed\s*[:\s]\s*(\d+)/i); if (cm) cap = +cm[1];
     const lm = line.match(/^Deliveries\s+Made\s*[:\s]\s*(\d+)/i); if (lm) del = +lm[1];
-
-    if (date && cap !== null && del !== null && i + 1 < lines.length) {
-      const next = lines[i + 1];
-      if (!/^Captchas?\s+Completed/i.test(next) && !/^Deliveries\s+Made/i.test(next)) flush();
-    }
   }
   flush();
 
@@ -918,20 +1074,36 @@ function parseLab(text, autoAcceptRanks, ruleZeroProd) {
   return { result, flaws };
 }
 
-function parseFto(text) {
+function parseFto(text, autoAcceptRanks) {
   if (!text.trim()) return { result: [], flaws: [] };
   const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
   const records = [];
   const flaws = [];
   let currentFto = null;
-  let formDate = null, day = null, trainee = null;
+  let activePostValid = true;
+  let formDate = null, day = null, trainee = null, passedStatus = true;
 
   function flush() {
-    if (currentFto && day) {
-      const rate = day === 1 ? 45000 : (day === 2 ? 35000 : 0);
-      records.push({ ftoName: currentFto.name, rank: currentFto.rank, date: formDate, day, trainee: trainee || "Unknown", pay: rate });
+    if (activePostValid && currentFto && day) {
+      const rankUpper = currentFto.rank.toUpperCase();
+      const isAuthorized = HC_FTO_RANKS.includes(rankUpper) || KNOWN_RANKS.includes(rankUpper);
+      
+      if (!isAuthorized) {
+        flaws.push({
+          name: currentFto.name,
+          reason: `FTO training logged by rank "${currentFto.rank}" which is not FTO-authorized. Training payout denied.`
+        });
+      } else if (!passedStatus) {
+        flaws.push({
+          name: currentFto.name,
+          reason: `FTO training session for trainee "${trainee || 'Unknown'}" was marked Failed. Payout is $0.`
+        });
+      } else {
+        const rate = day === 1 ? 45000 : (day === 2 ? 35000 : 0);
+        records.push({ ftoName: currentFto.name, rank: currentFto.rank, date: formDate, day, trainee: trainee || "Unknown", pay: rate });
+      }
     }
-    day = null; trainee = null;
+    day = null; trainee = null; passedStatus = true;
   }
 
   for (let i = 0; i < lines.length; i++) {
@@ -941,7 +1113,15 @@ function parseFto(text) {
     if (!isFormLabel && (line.includes("|") || line.includes("—"))) {
       flush();
       const rawHeader = line.split("—")[0];
-      currentFto = extractRankAndName(rawHeader);
+      const res = parseHeaderAndExtractRank(rawHeader, autoAcceptRanks);
+      currentFto = res;
+      activePostValid = res.valid;
+      if (!res.valid) {
+        flaws.push({
+          name: res.name || "Unknown FTO",
+          reason: `FTO Header "${rawHeader}" has no recognized rank. Excluded.`
+        });
+      }
       continue;
     }
 
@@ -953,8 +1133,14 @@ function parseFto(text) {
 
     const traineeMatch = line.match(/^Trainee\s*Name\s*[\/\s]*ID\s*[:\s]\s*(.+)/i);
     if (traineeMatch) {
-      const parsedTrainee = extractRankAndName(traineeMatch[1]);
+      const parsedTrainee = parseHeaderAndExtractRank(traineeMatch[1], autoAcceptRanks);
       trainee = parsedTrainee.name;
+    }
+
+    const pfMatch = line.match(/Passed\s*[\/\s]*Failed\s*[:\s]*([a-zA-Z]+)/i);
+    if (pfMatch) {
+      const stat = pfMatch[1].toLowerCase();
+      if (stat.includes("fail")) passedStatus = false;
     }
   }
 
@@ -976,9 +1162,11 @@ function analyzeAll() {
   labEntries = labRes.result;
   flaws.push(...labRes.flaws);
 
-  const ftoRes = parseFto(document.getElementById("ftoRaw").value);
+  const ftoRes = parseFto(document.getElementById("ftoRaw").value, autoAcceptRanks);
   ftoEntries = ftoRes.result;
   flaws.push(...ftoRes.flaws);
+
+  currentFlawsList = flaws;
 
   const people = {};
   const getPerson = (name, rank) => {
@@ -1074,7 +1262,6 @@ async function syncToGoogleSheets() {
     return;
   }
 
-  // Opens your specific Google Sheet instantly in a new tab
   window.open(GOOGLE_SHEET_URL, '_blank');
 
   const payload = currentCompiledPeople.map(p => ({
@@ -1135,8 +1322,8 @@ function copyDiscordSummary() {
 
 function addManual() {
   const inputName = document.getElementById("labName").value;
-  const parsed = extractRankAndName(inputName);
-  if (!parsed.name) { alert("Please enter an employee name."); return; }
+  const parsed = parseHeaderAndExtractRank(inputName, true);
+  if (!parsed.name) { alert("Please enter an employee name and rank."); return; }
   
   const meds = Math.max(0, +document.getElementById("meds").value || 0);
   const del = Math.max(0, +document.getElementById("deliveries").value || 0);
@@ -1154,6 +1341,57 @@ function renderManual() {
   const el = document.getElementById("manualList");
   if (!manual.length) { el.innerHTML = ""; return; }
   el.innerHTML = `<table><tr><th>Employee</th><th>Lab Production</th><th>Deliveries</th><th>FTO Training</th><th>Manual Bonus</th><th>Action</th></tr>${manual.map((x, i) => `<tr><td><span class="rank-pill ${HC_FTO_RANKS.includes(x.rank.toUpperCase()) ? 'green' : 'blue'}" style="margin-right:4px">${esc(x.rank)}</span> <b>${esc(x.name)}</b></td><td>${x.meds} meds = ${money(x.captcha * 5000)}</td><td>${x.del} trips = ${money(x.del * 10000)}</td><td>${x.f1}×D1 + ${x.f2}×D2 = ${money(x.f1 * 45000 + x.f2 * 35000)}</td><td><b>${money(x.total)}</b></td><td><button class="danger" style="padding:4px 8px;font-size:12px" onclick="manual.splice(${i},1);renderManual();analyzeAll()">Delete</button></td></tr>`).join("")}</table>`;
+}
+
+function askAssistant(query) {
+  document.getElementById("chatInput").value = query;
+  submitChat();
+}
+
+function submitChat() {
+  const inputEl = document.getElementById("chatInput");
+  const q = inputEl.value.trim();
+  if (!q) return;
+
+  const chatLog = document.getElementById("chatLog");
+  chatLog.innerHTML += `<div class="chat-msg user"><b>You:</b> ${esc(q)}</div>`;
+  inputEl.value = "";
+
+  let reply = "";
+  const lowerQ = q.toLowerCase();
+
+  const matchedPerson = currentCompiledPeople.find(p => p.name.toLowerCase().includes(lowerQ) || lowerQ.includes(p.name.toLowerCase()));
+
+  if (matchedPerson) {
+    reply = `📊 <b>Earnings Breakdown for ${esc(matchedPerson.name)} (${esc(matchedPerson.rank)}):</b><br>` +
+            `• Total Duty Hours: ${minsToHM(matchedPerson.minutes)}<br>` +
+            `• Shift Duty Pay: ${money(matchedPerson.shiftBonus)}<br>` +
+            `• Labtech Pay: ${money(matchedPerson.labBonus)}<br>` +
+            `• FTO Training Pay: ${money(matchedPerson.ftoBonus)} (${matchedPerson.ftoCount} sessions)<br>` +
+            `• Manual Adjustments: ${money(matchedPerson.manualBonus)}<br>` +
+            `<b>Total Payout: ${money(matchedPerson.totalBonus)}</b>`;
+  } else if (lowerQ.includes("flag") || lowerQ.includes("anomaly") || lowerQ.includes("error")) {
+    if (currentFlawsList.length === 0) {
+      reply = "✓ There are currently 0 flags or anomalies detected in your loaded logs!";
+    } else {
+      reply = `⚠️ There are currently <b>${currentFlawsList.length} flag(s)</b> detected:<br>` +
+              currentFlawsList.map(f => `• <b>${esc(f.name)}:</b> ${esc(f.reason)}`).join("<br>");
+    }
+  } else if (lowerQ.includes("header") || lowerQ.includes("format")) {
+    reply = "<b>Header Format Rule:</b> Posts must contain a recognized rank anywhere in the pipe-separated segments (e.g. <code>SURGEON | Roger Sagar | 12345</code> or <code>12345 | SURGEON | Roger Sagar</code>). If no recognized rank is found anywhere in the header, the post is treated as unverified and excluded.";
+  } else if (lowerQ.includes("fto") || lowerQ.includes("rank")) {
+    reply = "<b>FTO Authorization:</b> FTO training payouts are restricted to High Command and Training ranks (FTO, HR, DOD, HOD, CO-HR, DC, COS, Deputy Chief, ARO). Also, FTO logs must be marked <b>Passed</b>; logged <b>Failed</b> sessions pay $0.";
+  } else if (lowerQ.includes("night") || lowerQ.includes("hour") || lowerQ.includes("pay")) {
+    reply = "<b>Pay Rates:</b><br>" +
+            "• PH (Primary Hospital): Day $10k/hr | Night ($21:00–06:00) $25k/hr<br>" +
+            "• SH (Sandy Shores): Day $30k/hr | Night $40k/hr<br>" +
+            "• Calls / Ground: Day $15k/hr | Night $20k/hr";
+  } else {
+    reply = `I couldn't find an employee named "${esc(q)}" in the current calculated payroll table. Try typing an exact employee name, or click one of the quick topic chips above!`;
+  }
+
+  chatLog.innerHTML += `<div class="chat-msg assistant"><b>Assistant:</b> ${reply}</div>`;
+  chatLog.scrollTop = chatLog.scrollHeight;
 }
 
 function loadFtoExample() {
