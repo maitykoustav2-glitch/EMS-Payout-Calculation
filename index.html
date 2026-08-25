@@ -229,7 +229,7 @@
 </div>
 
 <script>
-const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyO8lBNMRAbMnsJefFhpXCnk8B7QM1cb8K8Giv6XEJy/dev";
+const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbys-Zlo2zDBaytlNm3k_iP_CSPJZRdPC5aSnR_69bSatfREXbzPKcL6Z6XVdLSzQVWXSA/exec";
 const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1WoJm1_bMVqwUeP8rd_86O933sfIkdWf6VrqM4ZqOFaQ/edit?gid=0#gid=0";
 
 function loadLocalImage(event) {
@@ -248,12 +248,11 @@ const KNOWN_BASE_RANKS = [
   "AIR RESCUE OPERATION", "FTO", "HR", "DOD", "HOD", "DC", "COS", "DEPUTY CHIEF", "DEPUTY"
 ];
 
-// EXACT BONUS RATES STRUCTURE
 const RATES = {
   PH: { day: 10000, night: 25000 },
   SH: { day: 30000, night: 40000 },
   CALLS: { day: 15000, night: 20000 },
-  LABS: { day: 0, night: 0 } // No bonus for pure time spent in labs blocks per rule
+  LABS: { day: 0, night: 0 }
 };
 
 let manual = [], parsedShifts = [], labEntries = [], ftoEntries = [];
@@ -270,7 +269,6 @@ function toMin(s) {
   return (h <= 23 && mi <= 59) ? (h * 60 + mi) : null;
 }
 
-// Splits a shift minute-by-minute across Day (06:00 to 21:00) and Night (21:00 to 06:00)
 function splitPay(start, end, type) {
   let total = 0, dayMins = 0, nightMins = 0;
   let d = end - start;
@@ -280,7 +278,6 @@ function splitPay(start, end, type) {
   
   for (let i = 0; i < d; i++) {
     const t = (start + i) % 1440;
-    // Night Shift Rule: 21:00 (1260 mins) to 06:00 (360 mins)
     const isNight = (t >= 1260 || t < 360);
     if (isNight) {
       total += rateObj.night / 60;
@@ -384,29 +381,41 @@ function parseRota(text, autoAcceptRanks, ruleClock) {
   return { out: out.filter(x => x.complete || !ruleClock), flaws, inspection };
 }
 
-function parseLabtechLogs(text, autoAcceptRanks) {
+function parseLabtechLogs(text, autoAcceptRanks, ruleZeroProd) {
   if (!text.trim()) return { entries: [], flaws: [], inspection: [] };
   const lines = text.split(/\r?\n/).map(cleanLine);
   const entries = [], flaws = [], inspection = [];
-  let currentPerson = null, activeValid = true;
+  let currentPerson = { rank: "LT", name: "Unknown Employee", valid: true };
 
   for (let i = 0; i < lines.length; i++) {
     const rawLine = lines[i], lineNum = i + 1;
     if (!rawLine) continue;
+
+    // Check if line is a header
     const parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
-    if (parts.length >= 2 && !/captcha|medicine|delivery|labs/i.test(rawLine)) {
+    if (parts.length >= 2 && !/captcha|medicine|delivery|meds|labs|on duty|off duty/i.test(rawLine)) {
       const res = parseHeaderAndExtractRank(rawLine, autoAcceptRanks);
-      currentPerson = res;
-      activeValid = res.valid;
+      currentPerson = res.valid ? res : { rank: "LT", name: rawLine, valid: true };
+      inspection.push({ lineNum, content: rawLine, type: "Lab Header", status: "Verified", reason: "Processed lab header" });
       continue;
     }
-    if (!activeValid) continue;
-    const capMatch = rawLine.match(/(?:captcha|captchas)\s*[:|]\s*(\d+)/i);
-    const delMatch = rawLine.match(/(?:medicine delivery|delivery|deliveries|meds)\s*[:|]\s*(\d+)/i);
+
+    // Match counts anywhere on the line or specific key-values
+    const capMatch = rawLine.match(/(?:captcha|captchas|cap)\s*[:|=]?\s*(\d+)/i);
+    const delMatch = rawLine.match(/(?:medicine\s*delivery|delivery|deliveries|meds)\s*[:|=]?\s*(\d+)/i);
+
     if (capMatch || delMatch) {
       const captchas = capMatch ? parseInt(capMatch[1], 10) : 0;
       const deliveries = delMatch ? parseInt(delMatch[1], 10) : 0;
-      entries.push({ name: currentPerson ? currentPerson.name : "Unknown", rank: currentPerson ? currentPerson.rank : "LT", captchas, deliveries, lineNum });
+
+      if (ruleZeroProd && captchas === 0 && deliveries === 0) {
+        flaws.push({ lineNum, name: currentPerson.name, reason: `Line ${lineNum}: Lab log rejected due to 0 captchas and deliveries.` });
+        inspection.push({ lineNum, content: rawLine, type: "Lab Stats", status: "Rejected", reason: "Zero production" });
+        continue;
+      }
+
+      entries.push({ name: currentPerson.name, rank: currentPerson.rank || "LT", captchas, deliveries, lineNum });
+      inspection.push({ lineNum, content: rawLine, type: "Lab Stats", status: "Verified", reason: `Parsed ${captchas} captchas, ${deliveries} deliveries` });
     }
   }
   return { entries, flaws, inspection };
@@ -416,23 +425,28 @@ function parseFtoLogs(text, autoAcceptRanks) {
   if (!text.trim()) return { entries: [], flaws: [], inspection: [] };
   const lines = text.split(/\r?\n/).map(cleanLine);
   const entries = [], flaws = [], inspection = [];
-  let currentPerson = null, activeValid = true;
+  let currentPerson = { rank: "FTO", name: "Unknown Employee", valid: true };
 
   for (let i = 0; i < lines.length; i++) {
     const rawLine = lines[i], lineNum = i + 1;
     if (!rawLine) continue;
+
     const parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
     if (parts.length >= 2 && !/day\s*1|day\s*2/i.test(rawLine)) {
       const res = parseHeaderAndExtractRank(rawLine, autoAcceptRanks);
-      currentPerson = res;
-      activeValid = res.valid;
+      currentPerson = res.valid ? res : { rank: "FTO", name: rawLine, valid: true };
+      inspection.push({ lineNum, content: rawLine, type: "FTO Header", status: "Verified", reason: "Processed FTO header" });
       continue;
     }
-    if (!activeValid) continue;
-    const fto1Match = rawLine.match(/day\s*1\s*[:|]\s*(\d+)/i);
-    const fto2Match = rawLine.match(/day\s*2\s*[:|]\s*(\d+)/i);
+
+    const fto1Match = rawLine.match(/day\s*1\s*[:|=]?\s*(\d+)/i);
+    const fto2Match = rawLine.match(/day\s*2\s*[:|=]?\s*(\d+)/i);
+
     if (fto1Match || fto2Match) {
-      entries.push({ name: currentPerson ? currentPerson.name : "Unknown", rank: currentPerson ? currentPerson.rank : "FTO", fto1: fto1Match ? parseInt(fto1Match[1], 10) : 0, fto2: fto2Match ? parseInt(fto2Match[1], 10) : 0, lineNum });
+      const fto1 = fto1Match ? parseInt(fto1Match[1], 10) : 0;
+      const fto2 = fto2Match ? parseInt(fto2Match[1], 10) : 0;
+      entries.push({ name: currentPerson.name, rank: currentPerson.rank || "FTO", fto1, fto2, lineNum });
+      inspection.push({ lineNum, content: rawLine, type: "FTO Stats", status: "Verified", reason: `Parsed Day 1: ${fto1}, Day 2: ${fto2}` });
     }
   }
   return { entries, flaws, inspection };
@@ -478,7 +492,7 @@ function analyzeAll() {
   const ruleZeroProd = document.getElementById('ruleZeroProd').checked;
 
   const dutyRes = parseRota(document.getElementById('raw').value, ruleRank, ruleClock);
-  const labRes = parseLabtechLogs(document.getElementById('labRaw').value, ruleRank);
+  const labRes = parseLabtechLogs(document.getElementById('labRaw').value, ruleRank, ruleZeroProd);
   const ftoRes = parseFtoLogs(document.getElementById('ftoRaw').value, ruleRank);
 
   parsedShifts = dutyRes.out;
@@ -509,7 +523,6 @@ function analyzeAll() {
     p.shiftPay += split.total;
   });
 
-  // Calculate 4.6 hours weekly threshold check (4.6 hours = 276 minutes)
   Object.values(peopleMap).forEach(p => {
     if (!ruleWeeklyThreshold || p.minutes >= 276) {
       p.bonusEligible = true;
@@ -644,7 +657,7 @@ function copyDiscordSummary() {
   msg += `# Total Employee Bonus  <a:FPSarrow_kalyug:1196873649152589914>  ${money(totalSum)} <:JG_CatShyAtamas:749600429272465518>\n\n`;
   msg += `Note: If you have any queries regarding your bonus, please contact : <@735845569972535337>  \n`;
   msg += `@Former Medic  @Former High Command Former EMS members are welcome back!\n`;
-  msg += `Saving Lives, Building Futures\n`;
+  msg + `Saving Lives, Building Futures\n`;
   msg += `Best Regards !\n\n`;
   msg += `<@&1405437550050410496> <@&1405432868511023134>`;
 
