@@ -16,7 +16,6 @@
             --success: #10b981;
         }
         
-        /* Loading Screen Overlay */
         #loader-overlay {
             position: fixed;
             top: 0;
@@ -120,7 +119,7 @@
         }
         .grid-layout {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 25px;
         }
         @media (max-width: 1024px) {
@@ -134,24 +133,27 @@
             margin-bottom: 25px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
         }
+        .card.full-width {
+            grid-column: 1 / -1;
+        }
         .card h3 {
             margin-top: 0;
             color: var(--accent);
-            font-size: 1.2em;
+            font-size: 1.1em;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         textarea {
             width: 100%;
-            height: 180px;
+            height: 130px;
             background-color: var(--bg-input);
             color: var(--text-main);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 15px;
+            padding: 12px;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9em;
+            font-size: 0.85em;
             resize: vertical;
             box-sizing: border-box;
             outline: none;
@@ -172,6 +174,7 @@
             transition: all 0.2s;
             margin-top: 15px;
             font-size: 0.95em;
+            width: 100%;
         }
         button.primary-btn:hover {
             opacity: 0.9;
@@ -230,79 +233,6 @@
             cursor: pointer;
             accent-color: var(--accent);
         }
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            height: 0;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            background: var(--bg-input);
-        }
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-        #ai-chat-container {
-            margin-top: 15px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-input);
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            height: 300px;
-        }
-        #chat-log {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            font-family: monospace;
-            font-size: 0.9em;
-        }
-        .chat-msg {
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-        .chat-msg.user {
-            color: var(--accent);
-        }
-        .chat-msg.assistant {
-            color: #34d399;
-        }
-        #chat-input-area {
-            display: flex;
-            border-top: 1px solid var(--border-color);
-            padding: 10px;
-            background: var(--bg-card);
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-        }
-        #chat-input {
-            flex: 1;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 8px 12px;
-            border-radius: 6px;
-            outline: none;
-            font-size: 0.9em;
-        }
-        #chat-send {
-            margin-top: 0;
-            margin-left: 10px;
-            background-color: var(--accent);
-            color: #090d16;
-            border: none;
-            padding: 8px 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -315,13 +245,13 @@
 
 <div class="container">
     
-    <!-- HEADER BAR WITH LOGO AND SPREADSHEET LINK -->
+    <!-- HEADER BAR -->
     <div class="header-card">
         <div class="header-title-area">
             <img src="0CDE3F33-3116-4DB7-9E6F-665585B1E1CE.png" alt="EMS Logo" class="ems-logo" onerror="this.src='https://via.placeholder.com/64?text=EMS'">
             <div>
                 <h1>Grand RP EMS <span>Bonus System Pro</span></h1>
-                <p class="subtitle">Secure Department Payroll, Rota Parser & Google Sheet Sync Hub</p>
+                <p class="subtitle">Secure Department Payroll, Multi-Rota Parser & Google Sheet Sync Hub</p>
             </div>
         </div>
         <div class="header-actions">
@@ -342,105 +272,81 @@
             <span id="sCount">0</span>
         </div>
         <div class="stat-box">
-            <h4>Detected Flaws</h4>
-            <span id="sFlaws">0</span>
+            <h4>Parsed Logs</h4>
+            <span id="sLogs">0</span>
         </div>
     </div>
 
-    <!-- MAIN TWO-COLUMN LAYOUT -->
+    <!-- THREE ROTA INPUT SECTIONS -->
     <div class="grid-layout">
         
-        <!-- LEFT COLUMN -->
-        <div>
-            <!-- SECTION 1: INPUTS -->
-            <div class="card">
-                <h3>📋 Paste Activity & Rota Logs</h3>
-                <textarea id="inputDuty" placeholder="Paste your discord logs here, e.g.:
-@Trainee Name | Tyrell Wylin | 12947
-On Duty SH : 10:37 
-Off Duty SH : 12:40 
-On Duty GS Calls : 11:20
-Off Duty GS Calls : 12:06"></textarea>
-                <button class="primary-btn" onclick="analyzeAll()">Analyze & Calculate Precise Bonuses</button>
-            </div>
-
-            <!-- SECTION 2: RESULTS TABLE -->
-            <div class="card">
-                <h3>📊 Compiled Payroll Results</h3>
-                <p style="color: var(--text-muted); font-size: 0.9em; margin-top:0;">Check or uncheck members to control synchronization status.</p>
-                
-                <div class="table-container">
-                    <table id="resultsTable">
-                        <thead>
-                            <tr>
-                                <th style="width: 50px;">Sync</th>
-                                <th>Rank</th>
-                                <th>Name</th>
-                                <th>ID</th>
-                                <th>Calculated Bonus ($)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="resultsBody">
-                            <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No data analyzed yet. Paste logs above and click analyze.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <button class="primary-btn" onclick="syncToSheet()" style="background-color: var(--success); color: #fff;">
-                    🚀 Sync Checked to Google Sheet (Web App)
-                </button>
-            </div>
+        <!-- SECTION 1: LABTECH ROTA -->
+        <div class="card">
+            <h3>🧪 Labtech Rota Logs</h3>
+            <textarea id="inputLab" placeholder="Paste Labtech logs here..."></textarea>
         </div>
 
-        <!-- RIGHT COLUMN -->
-        <div>
-            <!-- SECTION 3: YOUTUBE GUIDE -->
-            <div class="card">
-                <h3>🎥 Video Guide & Walkthrough</h3>
-                <p style="color: var(--text-muted); font-size: 0.9em; margin-top:0;">Quick instruction on rota formatting and web app tools.</p>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="EMS Bonus System Guide" allowfullscreen></iframe>
-                </div>
-            </div>
+        <!-- SECTION 2: FTO ROTA -->
+        <div class="card">
+            <h3>🎓 FTO Rota Logs (Trainer Payout Only)</h3>
+            <textarea id="inputFto" placeholder="DC-T | Trainer Name | ID
+Training Day 1
+Trainee Name | ID : ..."></textarea>
+        </div>
 
-            <!-- SECTION 4: AI ASSISTANT -->
-            <div class="card">
-                <h3>🤖 Autonomous Smart Assistant</h3>
-                <p style="color: var(--text-muted); font-size: 0.9em; margin-top:0;">Query individual staff hours or payouts instantly.</p>
-                <div id="ai-chat-container">
-                    <div id="chat-log">
-                        <div class="chat-msg assistant"><b>Autonomous Agent:</b> System online. Strict rota parser loaded. Type a staff name or ID below!</div>
-                    </div>
-                    <div id="chat-input-area">
-                        <input type="text" id="chat-input" placeholder="e.g., How much did Tyrell Wylin earn?" onkeydown="if(event.key==='Enter') sendQuery()">
-                        <button id="chat-send" onclick="sendQuery()">Send</button>
-                    </div>
-                </div>
-            </div>
+        <!-- SECTION 3: SHIFTS ROTA (Full Width) -->
+        <div class="card full-width">
+            <h3>⏱️ Shifts Rota (PH, SH, GS Calls)</h3>
+            <textarea id="inputShifts" style="height: 100px;" placeholder="Paste shift logs here..."></textarea>
+            <button class="primary-btn" onclick="analyzeAll()">Analyze All Three Rotas & Calculate Precise Bonuses</button>
         </div>
 
     </div>
+
+    <!-- COMPILED RESULTS TABLE -->
+    <div class="card full-width">
+        <h3>📊 Compiled Master Payroll Results</h3>
+        <p style="color: var(--text-muted); font-size: 0.9em; margin-top:0;">Bonuses are allocated strictly to trainers (shadows excluded).</p>
+        
+        <div class="table-container">
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">Sync</th>
+                        <th>Staff Name</th>
+                        <th>ID</th>
+                        <th>Category / Source</th>
+                        <th>Calculated Bonus ($)</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                    <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No data analyzed yet. Paste logs above and click analyze.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <button class="primary-btn" onclick="syncToSheet()" style="background-color: var(--success); color: #fff; margin-top: 20px;">
+            🚀 Sync Checked to Google Sheet (Web App)
+        </button>
+    </div>
+
 </div>
 
 <script>
-    // Hide loading screen smoothly once DOM is ready
     window.addEventListener('load', () => {
         setTimeout(() => {
             const loader = document.getElementById('loader-overlay');
             loader.style.opacity = '0';
             setTimeout(() => loader.style.display = 'none', 500);
-        }, 600);
+        }, 500);
     });
 
     let currentCompiledPeople = [];
-    let currentFlawsList = [];
-
-    // Official Rate Table (Night vs Day, Labs = $0)
     const RATES = {
         night: { ph: 25000, sh: 40000, calls: 20000 },
         day: { ph: 10000, sh: 30000, calls: 15000 },
         fto: { day1: 45000, day2: 35000 },
-        lab: 0
+        lab: 0 
     };
 
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyO8lBNMRAbMnsJefFhpXCnk8B7QM1cb8K8Giv6XEJy/dev";
@@ -470,98 +376,115 @@ Off Duty GS Calls : 12:06"></textarea>
     }
 
     function analyzeAll() {
-        let rawText = document.getElementById('inputDuty').value;
-        let lines = rawText.split('\n');
         let peopleMap = {};
-        currentFlawsList = [];
 
-        let currentStaff = { rank: "Staff", name: "General Staff", id: "00000", pay: 0, rawLines: [], sync: true };
-
-        function commitStaff() {
-            if (currentStaff.pay > 0 || currentStaff.rawLines.length > 1) {
-                let key = currentStaff.id !== "00000" ? currentStaff.id : currentStaff.name;
-                if (!peopleMap[key]) {
-                    peopleMap[key] = { ...currentStaff };
-                } else {
-                    peopleMap[key].pay += currentStaff.pay;
-                    peopleMap[key].rawLines.push(...currentStaff.rawLines);
-                }
+        function addRecord(name, id, category, pay) {
+            if (!name || name === "General Staff" || name.toLowerCase().includes("trainee")) return;
+            let key = id && id !== "00000" ? id : name;
+            if (!peopleMap[key]) {
+                peopleMap[key] = { name: name, id: id || "N/A", category: category, pay: 0, sync: true };
             }
+            peopleMap[key].pay += pay;
         }
 
-        let activeDuty = null;
-        let activeStartTime = null;
-
-        lines.forEach((line, index) => {
-            let l = line.trim();
-            if (!l) return;
-            let lLower = l.toLowerCase();
-
-            if (l.includes("ERROR") || l.length < 3) {
-                currentFlawsList.push({lineNum: index + 1, text: l});
-            }
-
-            if (l.includes('|') && (l.includes('Trainee Name') || l.includes('ID') || l.includes('@') || l.includes('Captchas'))) {
-                commitStaff();
-                currentStaff = { rank: "Staff", name: "Staff Member", id: "00000", pay: 0, rawLines: [l], sync: true };
-
-                let parts = l.split('|').map(p => p.trim());
-                if (parts.length >= 3) {
-                    currentStaff.rank = parts[0].replace(/Trainee Name\s*:/i, '').replace('@', '').trim();
-                    currentStaff.name = parts[1].replace(/Trainee Name\s*:/i, '').trim();
-                    currentStaff.id = parts[2].replace(/ID\s*:/i, '').trim();
-                }
-                activeDuty = null;
-                activeStartTime = null;
-                return;
-            }
-
-            currentStaff.rawLines.push(l);
-
-            if (lLower.includes('on duty')) {
-                if (lLower.includes('gs calls')) activeDuty = 'calls';
-                else if (lLower.includes('sh')) activeDuty = 'sh';
-                else if (lLower.includes('ph')) activeDuty = 'ph';
-
-                let timePart = l.split(':').slice(1).join(':');
-                if (timePart) activeStartTime = timePart.trim();
-                return;
-            }
-
-            if (lLower.includes('off duty') && activeDuty && activeStartTime) {
-                let timePart = l.split(':').slice(1).join(':');
-                if (timePart) {
-                    let endTime = timePart.trim();
-                    let hours = calculateDuration(activeStartTime, endTime);
-                    let night = isNightShift(activeStartTime);
-                    let earned = 0;
-
-                    if (activeDuty === 'calls') {
-                        earned = hours * (night ? RATES.night.calls : RATES.day.calls);
-                    } else if (activeDuty === 'sh') {
-                        earned = hours * (night ? RATES.night.sh : RATES.day.sh);
-                    } else if (activeDuty === 'ph') {
-                        earned = hours * (night ? RATES.night.ph : RATES.day.ph);
+        // 1. Labtech Rota
+        let labText = document.getElementById('inputLab').value;
+        if (labText.trim()) {
+            let lines = labText.split('\n');
+            lines.forEach(l => {
+                if (l.includes('|')) {
+                    let parts = l.split('|').map(p => p.trim());
+                    if (parts.length >= 2) {
+                        addRecord(parts[1], parts[2] || "00000", "Labtech", RATES.lab);
                     }
-
-                    currentStaff.pay += earned;
-                    activeDuty = null;
-                    activeStartTime = null;
                 }
-                return;
-            }
+            });
+        }
 
-            if (lLower.includes('training day 1') || lLower.includes('day 1')) {
-                currentStaff.pay += RATES.fto.day1;
-            } else if (lLower.includes('training day 2') || lLower.includes('day 2')) {
-                currentStaff.pay += RATES.fto.day2;
-            }
-        });
+        // 2. FTO Rota (Strictly Trainer/Main Line, ignoring shadows)
+        let ftoText = document.getElementById('inputFto').value;
+        if (ftoText.trim()) {
+            let blocks = ftoText.split(/(?=DC-T|Training Day)/i);
+            blocks.forEach(block => {
+                let lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+                let trainerName = "";
+                let trainerID = "";
+                let isDay2 = block.toLowerCase().includes('day 2');
+                let ftoPay = isDay2 ? RATES.fto.day2 : RATES.fto.day1;
 
-        commitStaff();
+                lines.forEach(l => {
+                    let lLower = l.toLowerCase();
+                    // Grab primary trainer header line (e.g., DC-T | Patrosh Markamm | 39659)
+                    if (l.includes('|') && (l.includes('DC-T') || l.includes('FTO') || (!lLower.includes('trainee') && !lLower.includes('shadow')))) {
+                        let parts = l.split('|').map(p => p.trim());
+                        if (parts.length >= 3 && !trainerName) {
+                            trainerName = parts[1].replace('@', '').trim();
+                            trainerID = parts[2].trim();
+                        }
+                    }
+                });
+
+                if (trainerName) {
+                    addRecord(trainerName, trainerID, "FTO Trainer", ftoPay);
+                }
+            });
+        }
+
+        // 3. Shifts Rota
+        let shiftsText = document.getElementById('inputShifts').value;
+        if (shiftsText.trim()) {
+            let lines = shiftsText.split('\n');
+            let currentName = "Staff";
+            let currentID = "00000";
+            let activeDuty = null;
+            let activeStartTime = null;
+
+            lines.forEach(l => {
+                let line = l.trim();
+                if (!line) return;
+                let lLower = line.toLowerCase();
+
+                if (line.includes('|') && (line.includes('ID') || line.includes('@') || line.includes('Name'))) {
+                    let parts = line.split('|').map(p => p.trim());
+                    if (parts.length >= 3) {
+                        currentName = parts[1].replace(/Trainee Name\s*:/i, '').trim();
+                        currentID = parts[2].replace(/ID\s*:/i, '').trim();
+                    }
+                    return;
+                }
+
+                if (lLower.includes('on duty')) {
+                    if (lLower.includes('gs calls')) activeDuty = 'calls';
+                    else if (lLower.includes('sh')) activeDuty = 'sh';
+                    else if (lLower.includes('ph')) activeDuty = 'ph';
+
+                    let timePart = line.split(':').slice(1).join(':');
+                    if (timePart) activeStartTime = timePart.trim();
+                    return;
+                }
+
+                if (lLower.includes('off duty') && activeDuty && activeStartTime) {
+                    let timePart = line.split(':').slice(1).join(':');
+                    if (timePart) {
+                        let endTime = timePart.trim();
+                        let hours = calculateDuration(activeStartTime, endTime);
+                        let night = isNightShift(activeStartTime);
+                        let earned = 0;
+
+                        if (activeDuty === 'calls') earned = hours * (night ? RATES.night.calls : RATES.day.calls);
+                        else if (activeDuty === 'sh') earned = hours * (night ? RATES.night.sh : RATES.day.sh);
+                        else if (activeDuty === 'ph') earned = hours * (night ? RATES.night.ph : RATES.day.ph);
+
+                        addRecord(currentName, currentID, "Shift Rota", earned);
+                        activeDuty = null;
+                        activeStartTime = null;
+                    }
+                }
+            });
+        }
 
         currentCompiledPeople = Object.values(peopleMap);
-        document.getElementById('sFlaws').innerText = currentFlawsList.length;
+        document.getElementById('sLogs').innerText = currentCompiledPeople.length;
         renderResults(currentCompiledPeople);
         updateDashboardStats();
     }
@@ -578,9 +501,9 @@ Off Duty GS Calls : 12:06"></textarea>
             let checkedAttr = p.sync !== false ? 'checked' : '';
             tr.innerHTML = `
                 <td><input type="checkbox" ${checkedAttr} onchange="toggleSync(${idx}, this.checked)"></td>
-                <td>${p.rank}</td>
                 <td>${p.name}</td>
                 <td>${p.id}</td>
+                <td><span style="background:var(--bg-input); padding:4px 8px; border-radius:4px; font-size:0.85em; color:var(--accent);">${p.category}</span></td>
                 <td>$${p.pay.toLocaleString()}</td>
             `;
             tbody.appendChild(tr);
@@ -601,7 +524,6 @@ Off Duty GS Calls : 12:06"></textarea>
         document.getElementById('sCount').innerText = activePeople.length;
     }
 
-    // Live Web App Sync Function
     async function syncToSheet() {
         let activePeople = currentCompiledPeople.filter(p => p.sync !== false);
         if (activePeople.length === 0) {
@@ -610,7 +532,7 @@ Off Duty GS Calls : 12:06"></textarea>
         }
 
         try {
-            let response = await fetch(WEB_APP_URL, {
+            await fetch(WEB_APP_URL, {
                 method: "POST",
                 mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
@@ -619,45 +541,8 @@ Off Duty GS Calls : 12:06"></textarea>
             alert(`Successfully dispatched ${activePeople.length} staff record(s) to your Google Sheets Web App!`);
         } catch (error) {
             console.error("Sync error:", error);
-            alert("Sync triggered. (Note: Due to browser security restrictions with Google Apps Script cross-origin POSTs, verify your destination spreadsheet to confirm entries landed).");
+            alert("Sync triggered. Please verify your destination spreadsheet to confirm entries landed.");
         }
-    }
-
-    function sendQuery() {
-        const input = document.getElementById('chat-input');
-        const query = input.value.trim();
-        if (!query) return;
-
-        const chatLog = document.getElementById('chat-log');
-        chatLog.innerHTML += `<div class="chat-msg user"><b>You:</b> ${query}</div>`;
-        input.value = "";
-        chatLog.scrollTop = chatLog.scrollHeight;
-
-        setTimeout(() => {
-            let reply = processSmartQuery(query);
-            chatLog.innerHTML += `<div class="chat-msg assistant"><b>Autonomous Agent:</b> ${reply}</div>`;
-            chatLog.scrollTop = chatLog.scrollHeight;
-        }, 300);
-    }
-
-    function processSmartQuery(query) {
-        const qLower = query.toLowerCase();
-
-        if (qLower.includes("top") || qLower.includes("highest")) {
-            if (currentCompiledPeople.length === 0) return "No compiled data available yet. Please run analysis first.";
-            let sorted = [...currentCompiledPeople].sort((a,b) => b.pay - a.pay);
-            let top = sorted[0];
-            return `The top earner is <b>${top.name}</b> (${top.rank}) with a total bonus of <b>$${top.pay.toLocaleString()}</b>.`;
-        }
-
-        let matched = currentCompiledPeople.find(p => p.name.toLowerCase().includes(qLower) || p.id.toLowerCase().includes(qLower));
-        if (matched) {
-            return `<b>Breakdown for ${matched.name} (ID: ${matched.id}):</b><br>
-            - Rank: ${matched.rank}<br>
-            - Total Payout: $${matched.pay.toLocaleString()}<br>
-            - Source Rota Logs:<br><small>${matched.rawLines.join('<br>')}</small>`;
-        }
-        return `I couldn't find a record for "${query}". Try searching by staff name or ID!`;
     }
 </script>
 </body>
