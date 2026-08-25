@@ -9,8 +9,6 @@
     --bg:#0b0e14; --card:#151921; --muted:#8a94a6; --text:#f1f5f9; 
     --line:#242b38; --accent:#6366f1; --accent-hover:#4f46e5;
     --good:#10b981; --warn:#f59e0b; --bad:#ef4444; 
-    --rank-blue:#0f172a; --rank-blue-border:#3b82f6;
-    --rank-green:#022c22; --rank-green-border:#10b981;
     --youtube:#ff0000;
   }
   *{box-sizing:border-box} 
@@ -30,7 +28,7 @@
   h1{margin:0;font-size:clamp(22px, 2.8vw, 32px);font-weight:800;color:#fff;}
   .sub{color:var(--muted);margin-top:6px;font-size:clamp(13px, 1.3vw, 16px);}
   .badge{padding:12px 20px;border:1px solid var(--line);border-radius:24px;color:#cbd5e1;background:#1e2330;font-size:14px;font-weight:600;}
-  .card, .config-card, .rank-ref-card, .guide-card { background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 32px;margin-bottom:28px; }
+  .card, .config-card, .guide-card { background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 32px;margin-bottom:28px; }
   .guide-header { display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:20px; }
   h2{margin:0 0 16px 0;font-size:20px;font-weight:700;color:#fff;}
   .yt-button { display:inline-flex;align-items:center;gap:10px;background:var(--youtube);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px; }
@@ -88,7 +86,7 @@
       <input type="file" id="imageInput" accept="image/*" onchange="loadLocalImage(event)">
       <div>
         <h1>Grand RP EMS Bonus System Pro</h1>
-        <div class="sub">Saving Lives, Building Futures | Former EMS Members Welcome Back!</div>
+        <div class="sub">Saving Lives, Building Futures | Smart 29-Rank & Department AI Active</div>
       </div>
     </div>
     <div class="badge">Night Shift: 21:00 – 06:00 | Day Shift: 06:00 – 21:00</div>
@@ -103,17 +101,17 @@
       <div class="guide-step">
         <div class="guide-step-num">Step 1</div>
         <div class="guide-step-title">Paste Logs</div>
-        <div class="guide-step-desc">Paste lobby shifts, GS/ARO calls, and labs blocks.</div>
+        <div class="guide-step-desc">Paste shifts, lab data, and FTO training forms with rank/department credentials.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 2</div>
-        <div class="guide-step-title">Configure Rules</div>
-        <div class="guide-step-desc">Enforces the 4.6 hours weekly threshold even with short sub-60m shifts.</div>
+        <div class="guide-step-title">AI Rank & Dept Recognition</div>
+        <div class="guide-step-desc">Auto-normalizes all 29 ranks, parses department tags (HS, GS, LT, ARD, Train), and blocks Ex-Employees.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 3</div>
         <div class="guide-step-title">Calculate & Sync</div>
-        <div class="guide-step-desc">Computes separate Day/Night hourly pay and syncs directly to Google Sheets.</div>
+        <div class="guide-step-desc">Computes Day/Night hourly pay, flat bonuses, and syncs directly to Google Sheets.</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">Step 4</div>
@@ -136,7 +134,7 @@
   <div class="grid3">
     <section class="card">
       <h2>1. Lobby & Call Shifts Rota</h2>
-      <textarea id="raw" placeholder="Paste shifts here...&#10;MS | Markk Maddison | 182901 — 12:16&#10;On Duty PH Front: 07:46&#10;Off Duty PH Front : 10:11"></textarea>
+      <textarea id="raw" placeholder="Paste shifts here...&#10;Dr [HS] | Markk Maddison | 182901 — 12:16&#10;On Duty PH Front: 07:46&#10;Off Duty PH Front : 10:11"></textarea>
       <div class="btns">
         <button onclick="analyzeAll()">Calculate Shifts</button>
         <button class="secondary" onclick="loadExample()">Sample Shift</button>
@@ -145,7 +143,7 @@
 
     <section class="card">
       <h2>2. Labtech Rota</h2>
-      <textarea id="labRaw" placeholder="Paste Lab logs or blocks here...&#10;FTO | David Vuković | 181883 [RMA] — 02:24&#10;On Duty Labs: 14:00&#10;Off Duty Labs: 15:00&#10;Captchas: 5&#10;Medicine Delivery: 10"></textarea>
+      <textarea id="labRaw" placeholder="Paste Lab logs or blocks here...&#10;FTO-LT | David Vuković | 181883 — 02:24&#10;On Duty Labs: 14:00&#10;Off Duty Labs: 15:00&#10;Captchas: 5&#10;Medicine Delivery: 10"></textarea>
       <div class="btns">
         <button onclick="analyzeAll()">Calculate Lab</button>
         <button class="secondary" onclick="loadLabExample()">Sample Lab</button>
@@ -154,7 +152,7 @@
 
     <section class="card">
       <h2>3. FTO Training Rota</h2>
-      <textarea id="ftoRaw" placeholder="HR | DemonDoma | 101843 [GRND] — 22-08-2026 18:15&#10;Training Day 2&#10;Trainee Name | ID : @MS-LT | Agent Armanii | 42048&#10;Start Time : 13:32&#10;End Time : 13:42&#10;FTO Feedback : Good&#10;Passed/Failed: Passed"></textarea>
+      <textarea id="ftoRaw" placeholder="HR-Train | DemonDoma | 101843 — 22-08-2026 18:15&#10;Training Day 2&#10;Trainee Name | ID : @MS-LT | Agent Armanii | 42048&#10;Start Time : 13:32&#10;End Time : 13:42&#10;FTO Feedback : Good&#10;Passed/Failed: Passed"></textarea>
       <div class="btns">
         <button onclick="analyzeAll()">Calculate FTO</button>
         <button class="secondary" onclick="loadFtoExample()">Sample FTO</button>
@@ -165,7 +163,7 @@
   <section class="card">
     <h2>4. Manual Adjustments</h2>
     <div class="row3">
-      <div><label>Employee Name & Rank Format</label><input id="labName" placeholder="e.g. Deputy-HS | Roger Sagar"></div>
+      <div><label>Employee Name & Rank Format</label><input id="labName" placeholder="e.g. FTO-GS | Roger Sagar"></div>
       <div><label>Captchas ($5k each)</label><input id="meds" type="number" min="0" value="0"></div>
       <div><label>Medicine Deliveries ($10k each)</label><input id="deliveries" type="number" min="0" value="0"></div>
     </div>
@@ -218,7 +216,7 @@
     </div>
     <div class="chat-box">
       <div id="chatLog" class="chat-log">
-        <div class="chat-msg assistant"><b>Autonomous Agent:</b> Hello High Command! I am your advanced Neural AI audit assistant. Say hello, ask about log flaws, or request exact solutions anytime!</div>
+        <div class="chat-msg assistant"><b>Autonomous Agent:</b> Hello High Command! Full 29-rank dictionary, department tag reader, and training eligibility engine are online!</div>
       </div>
       <div class="chat-input-row">
         <input type="text" id="chatInput" placeholder="Say hi, ask about line flaws, or type a question..." onkeydown="if(event.key==='Enter')submitChat()">
@@ -241,12 +239,52 @@ function loadLocalImage(event) {
   }
 }
 
-const KNOWN_BASE_RANKS = [
-  "FRESHER", "TRAINEE", "MS", "INTERN", "LT", "LAB TECH", "FR", "CA", "JP", "JR-EMT", "EMT", "CS",
-  "PHARMACIST", "PHARM", "PHAR", "RANK 11", "RANK 12", "RANK 21", "PSYCHIATRIST", "PSYCH", "DOCTOR", "DOC", 
-  "SENIOR PHARMACIST", "PARAMEDIC", "LP", "LEAD PARAMEDIC", "LEAD PHARMACIST", "SURGEON", "ARO", 
-  "AIR RESCUE OPERATION", "FTO", "HR", "DOD", "HOD", "DC", "COS", "DEPUTY CHIEF", "DEPUTY"
+// OFFICIAL 29-RANK DICTIONARY & ABBREVIATIONS
+const RANK_DICTIONARY = {
+  "FRESHER": "Fresher",
+  "TRAINEE": "Trainee",
+  "MS": "Medical Student", "MEDICAL STUDENT": "Medical Student",
+  "INTERN": "Intern",
+  "LT": "Lab Technician", "LAB TECHNICIAN": "Lab Technician", "LAB TECH": "Lab Tech",
+  "FR": "First Responder", "FIRST RESPONDER": "First Responder",
+  "CA": "Clinical Assistant", "CLINICAL ASSISTANT": "Clinical Assistant",
+  "JP": "Junior Pharmacist", "JUNIOR PHARMACIST": "Junior Pharmacist",
+  "J.EMT": "Junior EMT", "J EMT": "Junior EMT", "JUNIOR EMT": "Junior EMT",
+  "CS": "Clinical Specialist", "CLINICAL SPECIALIST": "Clinical Specialist",
+  "PHARM": "Pharmacist", "PHAR": "Pharmacist", "PHARMACIST": "Pharmacist",
+  "EMT": "EMT",
+  "DOC": "Doctor", "DR": "Doctor", "DOCTOR": "Doctor",
+  "SP": "Senior Pharmacist", "SENIOR PHARMACIST": "Senior Pharmacist",
+  "PARAMEDIC": "Paramedic",
+  "PSYCHIATRIST SUPERVISOR": "Psychiatrist Supervisor", "PSYCH SUPERVISOR": "Psychiatrist Supervisor",
+  "ASSISTANT SURGEON": "Assistant Surgeon", "ASST SURGEON": "Assistant Surgeon",
+  "LP": "Lead Pharmacist", "LEAD PHARMACIST": "Lead Pharmacist", "LEAD PARAMEDIC": "Lead Paramedic",
+  "SURGEON": "Surgeon",
+  "ARO": "Air Rescue Operators", "AIR RESCUE OPERATORS": "Air Rescue Operators",
+  "FTO": "Field Training Officer", "FIELD TRAINING OFFICER": "Field Training Officer",
+  "HR": "Human Resource", "HUMAN RESOURCE": "Human Resource",
+  "DOD": "Dean Of Division", "DEAN OF DIVISION": "Dean Of Division",
+  "HOD": "Head Of Division", "HEAD OF DIVISION": "Head Of Division",
+  "CO HR": "Chief Of Human Resource", "CHIEF OF HUMAN RESOURCE": "Chief Of Human Resource",
+  "DC": "Division Chief", "DIVISION CHIEF": "Division Chief",
+  "COS": "Chief Of Staff", "CHIEF OF STAFF": "Chief Of Staff",
+  "DEPUTY CHIEF": "Deputy Chief", "DEPUTY": "Deputy Chief"
+};
+
+// AUTHORIZED TRAINERS: FTO to Deputy Chief
+const AUTHORIZED_TRAINERS = [
+  "FTO", "FIELD TRAINING OFFICER",
+  "HR", "HUMAN RESOURCE",
+  "DOD", "DEAN OF DIVISION",
+  "HOD", "HEAD OF DIVISION",
+  "CO HR", "CHIEF OF HUMAN RESOURCE",
+  "DC", "DIVISION CHIEF",
+  "COS", "CHIEF OF STAFF",
+  "DEPUTY CHIEF"
 ];
+
+// RECOGNIZED EMS DEPARTMENTS
+const DEPARTMENTS = ["HS", "GS", "LT", "ARD", "TRAIN", "T"];
 
 const RATES = {
   PH: { day: 10000, night: 25000 },
@@ -302,34 +340,67 @@ function classifyDuty(label) {
 
 function cleanLine(s) { return s.replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim(); }
 
+// ADVANCED AI CREDENTIAL & RANK READER ENGINE WITH DEPARTMENT & EX-EMPLOYEE FILTERING
 function parseHeaderAndExtractRank(header, autoAcceptRanks) {
-  if (!header) return { rank: null, name: "", valid: false };
-  let s = header.replace(/<@!?\d+>/g, "").replace(/@\S+/g, "").replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim();
-  const parts = s.split("|").map(x => x.trim()).filter(Boolean);
-  let foundRank = null, rankIndex = -1;
+  if (!header) return { rank: null, dept: "", name: "", valid: false, isExEmployee: false, canTrain: false };
+  
+  let cleanStr = header.replace(/<@!?\d+>/g, "").replace(/@\S+/g, "").replace(/\(edited\)/gi, "").replace(/[*_~`]/g, "").trim();
+  
+  // Ex-Employee / Former / No Rank guard rule (e.g. EX FTO David Vukovic or raw names without ranks)
+  const isExEmployee = /ex[- ]?employee|former|ex\s+[a-z]+|blacklist|retired|resigned/i.test(cleanStr);
+  if (isExEmployee) {
+    return { rank: "Ex-Employee", dept: "", name: cleanStr, valid: false, isExEmployee: true, canTrain: false };
+  }
+
+  // Extract department tag if attached like [HS], [GS], -LT, -ARD, etc.
+  let foundDept = "";
+  DEPARTMENTS.forEach(d => {
+    const regex = new RegExp(`(?:\\[|\\-|\\s)+(${d})(?:\\]|\\s)*$`, "i");
+    if (regex.test(cleanStr)) {
+      foundDept = d.toUpperCase();
+      cleanStr = cleanStr.replace(regex, "").trim();
+    }
+  });
+
+  const parts = cleanStr.split("|").map(x => x.trim()).filter(Boolean);
+  let foundNormalizedRank = null, rankIndex = -1;
 
   for (let i = 0; i < parts.length; i++) {
     const segment = parts[i].trim();
     const upperSeg = segment.toUpperCase();
     let subParts = upperSeg.split(/[\-\/\s]+/);
-    if (KNOWN_BASE_RANKS.includes(subParts[0]) || (subParts[0] === "RANK" && subParts.length > 1 && !isNaN(subParts[1]))) {
-      foundRank = segment;
+    
+    // Check rank match against 29-Rank Dictionary
+    if (RANK_DICTIONARY[subParts[0]] || RANK_DICTIONARY[upperSeg]) {
+      foundNormalizedRank = RANK_DICTIONARY[subParts[0]] || RANK_DICTIONARY[upperSeg];
+      rankIndex = i;
+      break;
+    } else if (subParts[0] === "RANK" && subParts.length > 1 && !isNaN(subParts[1])) {
+      foundNormalizedRank = segment;
       rankIndex = i;
       break;
     }
   }
 
-  if (!foundRank && autoAcceptRanks && parts.length > 0) {
-    foundRank = parts[0];
-    rankIndex = 0;
+  // If no rank prefix found and auto-accept is off, or if it's just a raw name (e.g., "David Vukovic"), treat as invalid/no rank
+  if (!foundNormalizedRank) {
+    if (autoAcceptRanks && parts.length > 1) {
+      foundNormalizedRank = parts[0];
+      rankIndex = 0;
+    } else {
+      return { rank: null, dept: foundDept, name: cleanStr, valid: false, isExEmployee: false, canTrain: false };
+    }
   }
-
-  if (!foundRank) return { rank: null, name: s, valid: false };
 
   const nameParts = parts.filter((_, idx) => idx !== rankIndex);
   let rawName = nameParts.join(" ").replace(/—.*$/g, "").replace(/\[.*?\]/g, "").replace(/,/g, "").trim();
-  if (!rawName) rawName = s;
-  return { rank: foundRank, name: rawName, valid: true };
+  if (!rawName) rawName = cleanStr;
+
+  // Check if trainer/rank is authorized to conduct training (FTO up to Deputy Chief)
+  const upperRankCheck = foundNormalizedRank.toUpperCase();
+  const canTrain = AUTHORIZED_TRAINERS.some(t => upperRankCheck.includes(t));
+
+  return { rank: foundNormalizedRank, dept: foundDept, name: rawName, valid: true, isExEmployee: false, canTrain };
 }
 
 function parseRota(text, autoAcceptRanks, ruleClock) {
@@ -346,9 +417,16 @@ function parseRota(text, autoAcceptRanks, ruleClock) {
     if (parts.length >= 2 && !/on\s*duty/i.test(rawLine) && !/off\s*duty/i.test(rawLine)) {
       const res = parseHeaderAndExtractRank(rawLine, autoAcceptRanks);
       currentPerson = res;
-      activePostValid = res.valid;
-      inspection.push({ lineNum, content: rawLine, type: "Header", status: res.valid ? "Verified" : "Rejected", reason: res.valid ? "Valid header" : `Invalid header format.` });
-      if (!res.valid) flaws.push({ lineNum, name: res.name || "Unknown", reason: `Line ${lineNum}: Unrecognized header format.` });
+      activePostValid = res.valid && !res.isExEmployee;
+      
+      let status = res.valid ? "Verified" : (res.isExEmployee ? "Blocked (Ex-Employee)" : "Rejected (No Valid Rank)");
+      inspection.push({ lineNum, content: rawLine, type: "Header", status, reason: res.isExEmployee ? "Ex-employee / Ex-rank detected. Payout blocked." : (res.valid ? `AI mapped rank: ${res.rank} ${res.dept ? '['+res.dept+']' : ''}` : "Missing valid rank credential.") });
+      
+      if (res.isExEmployee) {
+        flaws.push({ lineNum, name: res.name, reason: `Line ${lineNum}: Ex-employee / Ex-rank credential match detected. Access denied.` });
+      } else if (!res.valid) {
+        flaws.push({ lineNum, name: res.name || "Unknown", reason: `Line ${lineNum}: Unrecognized or missing rank credential format.` });
+      }
       continue;
     }
 
@@ -363,7 +441,7 @@ function parseRota(text, autoAcceptRanks, ruleClock) {
       if (start === null) { flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Invalid start time "${tm}".` }); continue; }
       const type = classifyDuty(duty);
       if (!type) { flaws.push({ lineNum, name: personName, reason: `Line ${lineNum}: Unknown duty location "${duty}".` }); continue; }
-      out.push({ lineNum, name: personName, rank: currentPerson ? currentPerson.rank : "EMS", label: duty, start, startText: tm, type, complete: false });
+      out.push({ lineNum, name: personName, rank: currentPerson ? currentPerson.rank : "EMS", dept: currentPerson ? currentPerson.dept : "", label: duty, start, startText: tm, type, complete: false });
     } else if (offMatch) {
       const duty = offMatch[1].trim(), tm = offMatch[2].replace(/\s+/g, ""), end = toMin(tm);
       if (end === null) continue;
@@ -385,7 +463,7 @@ function parseLabtechLogs(text, autoAcceptRanks, ruleZeroProd) {
   if (!text.trim()) return { entries: [], flaws: [], inspection: [] };
   const lines = text.split(/\r?\n/).map(cleanLine);
   const entries = [], flaws = [], inspection = [];
-  let currentPerson = { rank: "LT", name: "Unknown Employee", valid: true };
+  let currentPerson = { rank: "Lab Technician", dept: "LT", name: "Unknown Employee", valid: true, isExEmployee: false };
 
   for (let i = 0; i < lines.length; i++) {
     const rawLine = lines[i], lineNum = i + 1;
@@ -394,10 +472,13 @@ function parseLabtechLogs(text, autoAcceptRanks, ruleZeroProd) {
     const parts = rawLine.split("|").map(x => x.trim()).filter(Boolean);
     if (parts.length >= 2 && !/captcha|medicine|delivery|meds|labs|on duty|off duty/i.test(rawLine)) {
       const res = parseHeaderAndExtractRank(rawLine, autoAcceptRanks);
-      currentPerson = res.valid ? res : { rank: "LT", name: rawLine, valid: true };
-      inspection.push({ lineNum, content: rawLine, type: "Lab Header", status: "Verified", reason: "Processed lab header" });
+      currentPerson = res.valid ? res : { rank: "Lab Technician", dept: "LT", name: rawLine, valid: true, isExEmployee: res.isExEmployee };
+      inspection.push({ lineNum, content: rawLine, type: "Lab Header", status: res.isExEmployee ? "Blocked" : "Verified", reason: res.isExEmployee ? "Ex-employee blocked" : `AI mapped rank: ${currentPerson.rank}` });
+      if (res.isExEmployee) flaws.push({ lineNum, name: res.name, reason: `Line ${lineNum}: Ex-employee lab log rejected.` });
       continue;
     }
+
+    if (currentPerson.isExEmployee) continue;
 
     const capMatch = rawLine.match(/(?:captcha|captchas|cap)\s*[:|=]?\s*(\d+)/i);
     const delMatch = rawLine.match(/(?:medicine\s*delivery|delivery|deliveries|meds)\s*[:|=]?\s*(\d+)/i);
@@ -412,7 +493,7 @@ function parseLabtechLogs(text, autoAcceptRanks, ruleZeroProd) {
         continue;
       }
 
-      entries.push({ name: currentPerson.name, rank: currentPerson.rank || "LT", captchas, deliveries, lineNum });
+      entries.push({ name: currentPerson.name, rank: currentPerson.rank || "Lab Technician", captchas, deliveries, lineNum });
       inspection.push({ lineNum, content: rawLine, type: "Lab Stats", status: "Verified", reason: `Parsed ${captchas} captchas, ${deliveries} deliveries` });
     }
   }
@@ -424,24 +505,31 @@ function parseFtoLogs(text, autoAcceptRanks) {
   const lines = text.split(/\r?\n/).map(cleanLine);
   const entries = [], flaws = [], inspection = [];
   
-  let currentTrainer = { rank: "FTO", name: "Unknown Trainer" };
+  let currentTrainer = { rank: "Field Training Officer", name: "Unknown Trainer", canTrain: true, isExEmployee: false };
   let currentTrainingDay = 1;
 
   for (let i = 0; i < lines.length; i++) {
     const rawLine = lines[i], lineNum = i + 1;
     if (!rawLine) continue;
 
-    // Detect Trainer Header block
-    if (/^(hr|fto|command|hc|deputy)\s*\|/i.test(rawLine) || (rawLine.includes("|") && !rawLine.includes("Trainee"))) {
+    if (/^(hr|fto|command|hc|deputy|director|dean|hod|cos)\s*\|/i.test(rawLine) || (rawLine.includes("|") && !rawLine.includes("Trainee"))) {
       const res = parseHeaderAndExtractRank(rawLine, autoAcceptRanks);
       if (res.valid) {
         currentTrainer = res;
       }
-      inspection.push({ lineNum, content: rawLine, type: "FTO Trainer Header", status: "Verified", reason: `Trainer set to ${currentTrainer.name} (${currentTrainer.rank})` });
+      
+      if (res.isExEmployee) {
+        flaws.push({ lineNum, name: res.name, reason: `Line ${lineNum}: Ex-employee trainer blocked from claiming FTO payouts.` });
+      } else if (!res.canTrain) {
+        flaws.push({ lineNum, name: res.name, reason: `Line ${lineNum}: Rank credential "${res.rank}" is below FTO and not authorized to conduct/claim training bonuses.` });
+      }
+
+      inspection.push({ lineNum, content: rawLine, type: "FTO Trainer Header", status: res.canTrain && !res.isExEmployee ? "Verified" : "Unauthorized/Blocked", reason: `AI mapped trainer rank: ${currentTrainer.rank} (Authorized Trainer: ${currentTrainer.canTrain})` });
       continue;
     }
 
-    // Detect Training Day type (Day 1 or Day 2)
+    if (currentTrainer.isExEmployee || !currentTrainer.canTrain) continue;
+
     if (/training\s*day\s*2/i.test(rawLine)) {
       currentTrainingDay = 2;
       continue;
@@ -450,7 +538,6 @@ function parseFtoLogs(text, autoAcceptRanks) {
       continue;
     }
 
-    // Detect Trainee block line
     if (/trainee/i.test(rawLine) || rawLine.includes("@")) {
       let traineeNamePart = rawLine.replace(/trainee\s*name\s*[:|]/i, "").trim();
       const parsedTrainee = parseHeaderAndExtractRank(traineeNamePart, true);
@@ -464,18 +551,18 @@ function parseFtoLogs(text, autoAcceptRanks) {
         lineNum
       });
 
-      inspection.push({ lineNum, content: rawLine, type: "FTO Trainee Log", status: "Verified", reason: `Credited 1 Training Day ${currentTrainingDay} to trainer ${currentTrainer.name} for trainee ${tName}` });
+      inspection.push({ lineNum, content: rawLine, type: "FTO Trainee Log", status: "Verified", reason: `Credited Day ${currentTrainingDay} training bonus to authorized trainer ${currentTrainer.name} for trainee ${tName}` });
     }
   }
   return { entries, flaws, inspection };
 }
 
 function loadExample() {
-  document.getElementById('raw').value = `MS | Markk Maddison | 182901 — 12:16\nOn Duty PH Front: 07:46\nOff Duty PH Front : 10:11`;
+  document.getElementById('raw').value = `Dr [HS] | Markk Maddison | 182901 — 12:16\nOn Duty PH Front: 07:46\nOff Duty PH Front : 10:11`;
   analyzeAll();
 }
-function loadLabExample() { document.getElementById('labRaw').value = `FTO | David Vuković | 181883 [RMA] — 02:24\nOn Duty Labs: 14:00\nOff Duty Labs: 15:00\nCaptchas: 5\nMedicine Delivery: 10`; analyzeAll(); }
-function loadFtoExample() { document.getElementById('ftoRaw').value = `HR | DemonDoma | 101843 [GRND] — 22-08-2026 18:15\nTraining Day 2\nTrainee Name | ID : @MS-LT | Agent Armanii | 42048\nStart Time : 13:32\nEnd Time : 13:42\nFTO Feedback : Good\nPassed/Failed: Passed`; analyzeAll(); }
+function loadLabExample() { document.getElementById('labRaw').value = `FTO-LT | David Vuković | 181883 — 02:24\nOn Duty Labs: 14:00\nOff Duty Labs: 15:00\nCaptchas: 5\nMedicine Delivery: 10`; analyzeAll(); }
+function loadFtoExample() { document.getElementById('ftoRaw').value = `HR-Train | DemonDoma | 101843 — 22-08-2026 18:15\nTraining Day 2\nTrainee Name | ID : @MS-LT | Agent Armanii | 42048\nStart Time : 13:32\nEnd Time : 13:42\nFTO Feedback : Good\nPassed/Failed: Passed`; analyzeAll(); }
 
 function addManual() {
   const name = document.getElementById('labName').value.trim();
@@ -520,20 +607,21 @@ function analyzeAll() {
   currentFlawsList = [...dutyRes.flaws, ...labRes.flaws, ...ftoRes.flaws];
 
   const peopleMap = {};
-  function ensurePerson(name, rank = "EMS") {
+  function ensurePerson(name, rank = "EMS", dept = "") {
     if (!peopleMap[name]) {
       peopleMap[name] = { 
-        name, rank, minutes: 0, dayMins: 0, nightMins: 0, 
+        name, rank, dept, minutes: 0, dayMins: 0, nightMins: 0, 
         shiftPay: 0, labPay: 0, ftoPay: 0, manualBonus: 0, pay: 0, 
         captchas: 0, deliveries: 0, fto1: 0, fto2: 0, bonusEligible: false 
       };
     }
     if (rank && rank !== "EMS") peopleMap[name].rank = rank;
+    if (dept) peopleMap[name].dept = dept;
     return peopleMap[name];
   }
 
   parsedShifts.forEach(s => {
-    const p = ensurePerson(s.name, s.rank);
+    const p = ensurePerson(s.name, s.rank, s.dept);
     const split = splitPay(s.start, s.end, s.type);
     p.minutes += split.minutes;
     p.dayMins += split.dayMins;
@@ -604,14 +692,16 @@ function renderResults(people) {
   el.className = "table-responsive";
   let html = `<table><thead><tr>
     <th><input type="checkbox" class="row-checkbox" checked onclick="toggleSelectAll(this)"></th>
-    <th>Rank</th><th>Employee Name</th><th>Duty Hours</th><th>Day Mins</th><th>Night Mins</th><th>Shift Pay</th><th>Lab/FTO Pay</th><th>Total Payout</th><th>4.6h Status</th>
+    <th>Normalized Rank (AI)</th><th>Department</th><th>Employee Name</th><th>Duty Hours</th><th>Day Mins</th><th>Night Mins</th><th>Shift Pay</th><th>Lab/FTO Pay</th><th>Total Payout</th><th>4.6h Status</th>
   </tr></thead><tbody>`;
 
   people.forEach((p, idx) => {
     const statusBadge = p.bonusEligible ? `<span class="ok" style="font-weight:700">Eligible (≥4.6h)</span>` : `<span class="bad" style="font-weight:700">Withheld (&lt;4.6h)</span>`;
+    const deptBadge = p.dept ? `<span class="pill" style="background:#065f46;color:#6ee7b7">${p.dept}</span>` : `<span class="pill" style="background:#1f2937;color:#9ca3af">General</span>`;
     html += `<tr>
       <td><input type="checkbox" class="row-checkbox person-checkbox" checked data-index="${idx}"></td>
-      <td><span class="pill">${p.rank}</span></td>
+      <td><span class="pill" style="background:#1e3a8a;color:#93c5fd">${p.rank}</span></td>
+      <td>${deptBadge}</td>
       <td><b>${p.name}</b></td>
       <td>${minsToHM(p.minutes)}</td>
       <td>${minsToHM(p.dayMins)}</td>
@@ -632,9 +722,9 @@ function toggleSelectAll(master) {
 
 function renderFlaws(flaws) {
   const el = document.getElementById('flaws');
-  if (!flaws.length) { el.className = "table-responsive empty"; el.innerHTML = "✅ Zero anomalies detected. All logs pass audit verification!"; return; }
+  if (!flaws.length) { el.className = "table-responsive empty"; el.innerHTML = "✅ Zero anomalies detected. All credential checks pass AI audit verification!"; return; }
   el.className = "table-responsive";
-  let html = `<table><thead><tr><th>Line #</th><th>Employee</th><th>Anomaly Discovered</th></tr></thead><tbody>`;
+  let html = `<table><thead><tr><th>Line #</th><th>Employee / Target</th><th>AI Flag / Credential Issue</th></tr></thead><tbody>`;
   flaws.forEach(f => {
     html += `<tr><td><span class="pill bad">Line ${f.lineNum}</span></td><td><b>${f.name}</b></td><td style="color:var(--warn)">${f.reason}</td></tr>`;
   });
@@ -646,7 +736,7 @@ function renderInspectionScreen(rows) {
   const el = document.getElementById('inspectionScreen');
   if (!rows.length) { el.className = "table-responsive empty"; el.innerHTML = "No parsed rota entries to display yet."; return; }
   el.className = "table-responsive";
-  let html = `<table><thead><tr><th>Line #</th><th>Type</th><th>Raw Content</th><th>Status</th><th>Details</th></tr></thead><tbody>`;
+  let html = `<table><thead><tr><th>Line #</th><th>Type</th><th>Raw Content</th><th>AI Status</th><th>AI Details</th></tr></thead><tbody>`;
   rows.forEach(r => {
     html += `<tr><td><b>#${r.lineNum}</b></td><td><span class="pill">${r.type}</span></td><td style="font-family:monospace">${r.content}</td><td><span class="ok" style="font-weight:700">${r.status}</span></td><td style="color:var(--muted)">${r.reason}</td></tr>`;
   });
@@ -690,6 +780,7 @@ function syncToGoogleSheets() {
   if (!currentCompiledPeople.length) { alert("No calculated payroll data available to sync."); return; }
   const payload = currentCompiledPeople.map(p => ({
     rank: p.rank,
+    dept: p.dept || "General",
     name: p.name,
     dutyHours: minsToHM(p.minutes),
     dayMins: minsToHM(p.dayMins),
@@ -730,16 +821,16 @@ function submitChat() {
   chatLog.scrollTop = chatLog.scrollHeight;
 
   setTimeout(() => {
-    let reply = "I am processing your request. All logs and calculations are active!";
+    let reply = "I am processing your request. Smart rank reading active!";
     const qLower = query.toLowerCase();
     if (qLower.includes("hi") || qLower.includes("hello") || qLower.includes("hey")) {
-      reply = "Hello High Command! 👋 Saving Lives, Building Futures!";
+      reply = "Hello High Command! 👋 All 29 ranks, department tags, and ex-employee filters are live!";
     } else if (qLower.includes("flaw") || qLower.includes("error") || qLower.includes("line")) {
-      reply = currentFlawsList.length ? `Found ${currentFlawsList.length} flaw(s). Check Section 7 above.` : "Zero flaws detected! All logs are clean.";
+      reply = currentFlawsList.length ? `Found ${currentFlawsList.length} rank or credential flaw(s). Check Section 7 above.` : "Zero flaws detected! All credentials pass AI validation.";
     } else if (qLower.includes("top earner")) {
       if (currentCompiledPeople.length) {
         const sorted = [...currentCompiledPeople].sort((a,b)=>b.pay-a.pay);
-        reply = `Top earner is <b>${sorted[0].name}</b> with ${money(sorted[0].pay)}.`;
+        reply = `Top earner is <b>${sorted[0].name}</b> (${sorted[0].rank}) with ${money(sorted[0].pay)}.`;
       } else {
         reply = "Please calculate rota first.";
       }
