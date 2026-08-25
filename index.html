@@ -5,84 +5,206 @@
     <title>Grand RP EMS Bonus System Pro</title>
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --border-color: #334155;
+            --bg-body: #090d16;
+            --bg-card: #131b2e;
+            --bg-input: #0b0f19;
+            --border-color: #1e293b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.2);
             --success: #10b981;
         }
+        
+        /* Loading Screen Overlay */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #loader-overlay p {
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            letter-spacing: 1px;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-dark);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-body);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 30px;
         }
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
-        h1, h2, h3 {
+        .header-card {
+            background: linear-gradient(135deg, #131b2e 0%, #1a2642 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+        }
+        .header-title-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .ems-logo {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: #0b0f19;
+            padding: 5px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+        h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: var(--text-main);
+        }
+        h1 span {
             color: var(--accent);
+        }
+        .subtitle {
+            margin: 5px 0 0 0;
+            color: var(--text-muted);
+            font-size: 0.95em;
+        }
+        .btn-link {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-link:hover {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.05);
+        }
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+        @media (max-width: 1024px) {
+            .grid-layout { grid-template-columns: 1fr; }
         }
         .card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: var(--accent);
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         textarea {
             width: 100%;
-            height: 140px;
-            background-color: #0b0f19;
+            height: 180px;
+            background-color: var(--bg-input);
             color: var(--text-main);
             border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 10px;
-            font-family: monospace;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
             resize: vertical;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
         }
-        button {
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        button.primary-btn {
             background-color: var(--accent);
-            color: #0f172a;
+            color: #090d16;
             border: none;
-            padding: 10px 20px;
-            font-weight: bold;
-            border-radius: 4px;
+            padding: 12px 24px;
+            font-weight: 700;
+            border-radius: 8px;
             cursor: pointer;
-            transition: opacity 0.2s;
-            margin-right: 10px;
-            margin-top: 10px;
+            transition: all 0.2s;
+            margin-top: 15px;
+            font-size: 0.95em;
         }
-        button:hover {
+        button.primary-btn:hover {
             opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--accent-glow);
         }
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .stat-box {
-            background: #0b0f19;
+            background: var(--bg-input);
             border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 6px;
+            padding: 18px;
+            border-radius: 8px;
             text-align: center;
         }
         .stat-box h4 {
-            margin: 0 0 5px 0;
+            margin: 0 0 8px 0;
             color: var(--text-muted);
-            font-size: 0.9em;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .stat-box span {
-            font-size: 1.5em;
-            font-weight: bold;
+            font-size: 1.6em;
+            font-weight: 700;
             color: var(--accent);
+        }
+        .table-container {
+            overflow-x: auto;
         }
         table {
             width: 100%;
@@ -90,36 +212,61 @@
             margin-top: 10px;
         }
         th, td {
-            padding: 10px;
+            padding: 12px 15px;
             border-bottom: 1px solid var(--border-color);
             text-align: left;
+            font-size: 0.95em;
         }
         th {
-            background-color: #0b0f19;
+            background-color: var(--bg-input);
             color: var(--accent);
+            font-weight: 600;
+        }
+        tr:hover td {
+            background-color: rgba(255,255,255,0.01);
         }
         input[type="checkbox"] {
             transform: scale(1.2);
             cursor: pointer;
+            accent-color: var(--accent);
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
         #ai-chat-container {
-            margin-top: 20px;
-            border: 1px solid var(--accent);
-            background: #0b0f19;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
             border-radius: 8px;
             display: flex;
             flex-direction: column;
-            height: 350px;
+            height: 300px;
         }
         #chat-log {
             flex: 1;
             padding: 15px;
             overflow-y: auto;
             font-family: monospace;
-            font-size: 0.95em;
+            font-size: 0.9em;
         }
         .chat-msg {
             margin-bottom: 10px;
+            line-height: 1.4;
         }
         .chat-msg.user {
             color: var(--accent);
@@ -132,35 +279,56 @@
             border-top: 1px solid var(--border-color);
             padding: 10px;
             background: var(--bg-card);
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
         }
         #chat-input {
             flex: 1;
-            background: #0b0f19;
+            background: var(--bg-input);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             padding: 8px 12px;
-            border-radius: 4px;
+            border-radius: 6px;
             outline: none;
+            font-size: 0.9em;
         }
         #chat-send {
             margin-top: 0;
             margin-left: 10px;
+            background-color: var(--accent);
+            color: #090d16;
+            border: none;
+            padding: 8px 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Grand RP EMS Bonus System Pro</h1>
-    <p>Paste your logs below. Calculations accurately apply Night/Day PH, SH, GS Calls, and FTO rates. Labs are strictly excluded from bonuses.</p>
 
-    <!-- SECTION 1: INPUTS -->
-    <div class="card">
-        <h3>1. Paste Activity Logs</h3>
-        <label>Activity & Shift Logs (Night/Day PH, SH, GS Calls, FTO):</label>
-        <textarea id="inputDuty" placeholder="Example format: 
-@Rank | Name | ID | Night PH: 2 | GS Calls: 4 | FTO Day 1: 1"></textarea>
-        
-        <button onclick="analyzeAll()">Calculate Clean Bonuses</button>
+    <!-- LOADING SCREEN -->
+    <div id="loader-overlay">
+        <div class="spinner"></div>
+        <p>Loading EMS Payroll Suite...</p>
+    </div>
+
+<div class="container">
+    
+    <!-- HEADER BAR WITH LOGO AND SPREADSHEET LINK -->
+    <div class="header-card">
+        <div class="header-title-area">
+            <img src="0CDE3F33-3116-4DB7-9E6F-665585B1E1CE.png" alt="EMS Logo" class="ems-logo" onerror="this.src='https://via.placeholder.com/64?text=EMS'">
+            <div>
+                <h1>Grand RP EMS <span>Bonus System Pro</span></h1>
+                <p class="subtitle">Secure Department Payroll, Rota Parser & Google Sheet Sync Hub</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="https://docs.google.com/spreadsheets/d/1WoJm1_bMVqwUeP8rd_86O933sfIkdWf6VrqM4ZqOFaQ/edit?usp=sharing" target="_blank" class="btn-link">
+                📊 Open Master Sheet
+            </a>
+        </div>
     </div>
 
     <!-- DASHBOARD STATS -->
@@ -179,128 +347,223 @@
         </div>
     </div>
 
-    <!-- SECTION 2: RESULTS TABLE WITH SHEET SYNC CHECKBOXES -->
-    <div class="card">
-        <h3>2. Compiled Payroll Results & Sheet Sync</h3>
-        <table id="resultsTable">
-            <thead>
-                <tr>
-                    <th style="width: 50px;">Sync</th>
-                    <th>Rank / Tag</th>
-                    <th>Name</th>
-                    <th>ID</th>
-                    <th>Calculated Bonus ($)</th>
-                </tr>
-            </thead>
-            <tbody id="resultsBody">
-                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No data analyzed yet. Click Calculate Clean Bonuses.</td></tr>
-            </tbody>
-        </table>
-        <button onclick="syncToSheet()" style="background-color: var(--success); color: #fff; margin-top: 15px;">Sync Checked to Google Sheet</button>
-    </div>
-
-    <!-- SECTION 3: AI ASSISTANT -->
-    <div class="card">
-        <h3>3. Autonomous Smart AI Assistant</h3>
-        <p>Ask anything about staff bonuses, shift breakdowns, or logs by name!</p>
-        <div id="ai-chat-container">
-            <div id="chat-log">
-                <div class="chat-msg assistant"><b>Autonomous Agent:</b> Systems online. Official rates loaded, and labs correctly set to $0 bonus. Type a staff name or query below!</div>
+    <!-- MAIN TWO-COLUMN LAYOUT -->
+    <div class="grid-layout">
+        
+        <!-- LEFT COLUMN -->
+        <div>
+            <!-- SECTION 1: INPUTS -->
+            <div class="card">
+                <h3>📋 Paste Activity & Rota Logs</h3>
+                <textarea id="inputDuty" placeholder="Paste your discord logs here, e.g.:
+@Trainee Name | Tyrell Wylin | 12947
+On Duty SH : 10:37 
+Off Duty SH : 12:40 
+On Duty GS Calls : 11:20
+Off Duty GS Calls : 12:06"></textarea>
+                <button class="primary-btn" onclick="analyzeAll()">Analyze & Calculate Precise Bonuses</button>
             </div>
-            <div id="chat-input-area">
-                <input type="text" id="chat-input" placeholder="e.g., How much did Kuro Vukovic earn?" onkeydown="if(event.key==='Enter') sendQuery()">
-                <button id="chat-send" onclick="sendQuery()">Send</button>
+
+            <!-- SECTION 2: RESULTS TABLE -->
+            <div class="card">
+                <h3>📊 Compiled Payroll Results</h3>
+                <p style="color: var(--text-muted); font-size: 0.9em; margin-top:0;">Check or uncheck members to control synchronization status.</p>
+                
+                <div class="table-container">
+                    <table id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sync</th>
+                                <th>Rank</th>
+                                <th>Name</th>
+                                <th>ID</th>
+                                <th>Calculated Bonus ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                            <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No data analyzed yet. Paste logs above and click analyze.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button class="primary-btn" onclick="syncToSheet()" style="background-color: var(--success); color: #fff;">
+                    🚀 Sync Checked to Google Sheet (Web App)
+                </button>
             </div>
         </div>
+
+        <!-- RIGHT COLUMN -->
+        <div>
+            <!-- SECTION 3: YOUTUBE GUIDE -->
+            <div class="card">
+                <h3>🎥 Video Guide & Walkthrough</h3>
+                <p style="color: var(--text-muted); font-size: 0.9em; margin-top:0;">Quick instruction on rota formatting and web app tools.</p>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="EMS Bonus System Guide" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- SECTION 4: AI ASSISTANT -->
+            <div class="card">
+                <h3>🤖 Autonomous Smart Assistant</h3>
+                <p style="color: var(--text-muted); font-size: 0.9em; margin-top:0;">Query individual staff hours or payouts instantly.</p>
+                <div id="ai-chat-container">
+                    <div id="chat-log">
+                        <div class="chat-msg assistant"><b>Autonomous Agent:</b> System online. Strict rota parser loaded. Type a staff name or ID below!</div>
+                    </div>
+                    <div id="chat-input-area">
+                        <input type="text" id="chat-input" placeholder="e.g., How much did Tyrell Wylin earn?" onkeydown="if(event.key==='Enter') sendQuery()">
+                        <button id="chat-send" onclick="sendQuery()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
 <script>
+    // Hide loading screen smoothly once DOM is ready
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const loader = document.getElementById('loader-overlay');
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 500);
+        }, 600);
+    });
+
     let currentCompiledPeople = [];
     let currentFlawsList = [];
-    let rawDutyText = "";
 
-    // Official Strict Rate Definitions (Labs intentionally omitted / $0)
+    // Official Rate Table (Night vs Day, Labs = $0)
     const RATES = {
-        nightPH: 25000,
-        nightSH: 40000,
-        nightCalls: 20000,
-        dayPH: 10000,
-        daySH: 30000,
-        dayCalls: 15000,
-        ftoDay1: 45000,
-        ftoDay2: 35000
+        night: { ph: 25000, sh: 40000, calls: 20000 },
+        day: { ph: 10000, sh: 30000, calls: 15000 },
+        fto: { day1: 45000, day2: 35000 },
+        lab: 0
     };
 
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyO8lBNMRAbMnsJefFhpXCnk8B7QM1cb8K8Giv6XEJy/dev";
+
+    function parseTimeToHours(timeStr) {
+        if (!timeStr) return 0;
+        let clean = timeStr.replace('.', ':').trim();
+        let parts = clean.split(':');
+        if (parts.length < 2) return 0;
+        let h = parseInt(parts[0]) || 0;
+        let m = parseInt(parts[1]) || 0;
+        return h + (m / 60);
+    }
+
+    function calculateDuration(onDutyStr, offDutyStr) {
+        let start = parseTimeToHours(onDutyStr);
+        let end = parseTimeToHours(offDutyStr);
+        let diff = end - start;
+        if (diff < 0) diff += 24; 
+        return diff;
+    }
+
+    function isNightShift(timeStr) {
+        let clean = timeStr.replace('.', ':').trim();
+        let h = parseInt(clean.split(':')[0]) || 0;
+        return h >= 22 || h < 6;
+    }
+
     function analyzeAll() {
-        rawDutyText = document.getElementById('inputDuty').value;
-        let lines = rawDutyText.split('\n');
+        let rawText = document.getElementById('inputDuty').value;
+        let lines = rawText.split('\n');
         let peopleMap = {};
         currentFlawsList = [];
 
+        let currentStaff = { rank: "Staff", name: "General Staff", id: "00000", pay: 0, rawLines: [], sync: true };
+
+        function commitStaff() {
+            if (currentStaff.pay > 0 || currentStaff.rawLines.length > 1) {
+                let key = currentStaff.id !== "00000" ? currentStaff.id : currentStaff.name;
+                if (!peopleMap[key]) {
+                    peopleMap[key] = { ...currentStaff };
+                } else {
+                    peopleMap[key].pay += currentStaff.pay;
+                    peopleMap[key].rawLines.push(...currentStaff.rawLines);
+                }
+            }
+        }
+
+        let activeDuty = null;
+        let activeStartTime = null;
+
         lines.forEach((line, index) => {
-            if (!line.trim()) return;
-            if (line.includes("ERROR") || line.length < 5) {
-                currentFlawsList.push({lineNum: index + 1, text: line});
+            let l = line.trim();
+            if (!l) return;
+            let lLower = l.toLowerCase();
+
+            if (l.includes("ERROR") || l.length < 3) {
+                currentFlawsList.push({lineNum: index + 1, text: l});
             }
 
-            let parts = line.split('|');
-            if (parts.length >= 3) {
-                let rank = parts[0].trim();
-                let name = parts[1].trim();
-                let id = parts[2].trim();
-                let textData = line.toLowerCase();
+            if (l.includes('|') && (l.includes('Trainee Name') || l.includes('ID') || l.includes('@') || l.includes('Captchas'))) {
+                commitStaff();
+                currentStaff = { rank: "Staff", name: "Staff Member", id: "00000", pay: 0, rawLines: [l], sync: true };
 
-                let calculatedPay = 0;
-
-                // Match quantities based exclusively on valid bonus categories (GS Calls mapped to calls rates)
-                calculatedPay += extractAndMultiply(textData, "night ph", RATES.nightPH);
-                calculatedPay += extractAndMultiply(textData, "night sh", RATES.nightSH);
-                let nightCallsQty = extractAndMultiply(textData, "night calls", 1) || extractAndMultiply(textData, "gs calls (night", 1);
-                // General or context-based GS Calls check
-                if (nightCallsQty === 0 && textData.includes("gs calls")) {
-                    nightCallsQty = extractAndMultiply(textData, "gs calls", 1);
+                let parts = l.split('|').map(p => p.trim());
+                if (parts.length >= 3) {
+                    currentStaff.rank = parts[0].replace(/Trainee Name\s*:/i, '').replace('@', '').trim();
+                    currentStaff.name = parts[1].replace(/Trainee Name\s*:/i, '').trim();
+                    currentStaff.id = parts[2].replace(/ID\s*:/i, '').trim();
                 }
-                // Determine if night or day for GS calls based on context, default to night/day split or keyword
-                if (textData.includes("night") && textData.includes("calls")) {
-                    calculatedPay += nightCallsQty * RATES.nightCalls;
-                } else if (textData.includes("day") && textData.includes("calls")) {
-                    calculatedPay += nightCallsQty * RATES.dayCalls;
-                } else {
-                    // Default generic calls entry mapping if specific shift not specified
-                    calculatedPay += extractAndMultiply(textData, "gs calls", RATES.dayCalls);
-                }
+                activeDuty = null;
+                activeStartTime = null;
+                return;
+            }
 
-                calculatedPay += extractAndMultiply(textData, "day ph", RATES.dayPH);
-                calculatedPay += extractAndMultiply(textData, "day sh", RATES.daySH);
-                calculatedPay += extractAndMultiply(textData, "day calls", RATES.dayCalls);
-                calculatedPay += extractAndMultiply(textData, "fto day 1", RATES.ftoDay1);
-                calculatedPay += extractAndMultiply(textData, "fto day 2", RATES.ftoDay2);
+            currentStaff.rawLines.push(l);
 
-                if (!peopleMap[id]) {
-                    peopleMap[id] = { rank, name, id, pay: calculatedPay, rawLines: [line], sync: true };
-                } else {
-                    peopleMap[id].pay += calculatedPay;
-                    peopleMap[id].rawLines.push(line);
+            if (lLower.includes('on duty')) {
+                if (lLower.includes('gs calls')) activeDuty = 'calls';
+                else if (lLower.includes('sh')) activeDuty = 'sh';
+                else if (lLower.includes('ph')) activeDuty = 'ph';
+
+                let timePart = l.split(':').slice(1).join(':');
+                if (timePart) activeStartTime = timePart.trim();
+                return;
+            }
+
+            if (lLower.includes('off duty') && activeDuty && activeStartTime) {
+                let timePart = l.split(':').slice(1).join(':');
+                if (timePart) {
+                    let endTime = timePart.trim();
+                    let hours = calculateDuration(activeStartTime, endTime);
+                    let night = isNightShift(activeStartTime);
+                    let earned = 0;
+
+                    if (activeDuty === 'calls') {
+                        earned = hours * (night ? RATES.night.calls : RATES.day.calls);
+                    } else if (activeDuty === 'sh') {
+                        earned = hours * (night ? RATES.night.sh : RATES.day.sh);
+                    } else if (activeDuty === 'ph') {
+                        earned = hours * (night ? RATES.night.ph : RATES.day.ph);
+                    }
+
+                    currentStaff.pay += earned;
+                    activeDuty = null;
+                    activeStartTime = null;
                 }
+                return;
+            }
+
+            if (lLower.includes('training day 1') || lLower.includes('day 1')) {
+                currentStaff.pay += RATES.fto.day1;
+            } else if (lLower.includes('training day 2') || lLower.includes('day 2')) {
+                currentStaff.pay += RATES.fto.day2;
             }
         });
 
-        currentCompiledPeople = Object.values(peopleMap);
+        commitStaff();
 
+        currentCompiledPeople = Object.values(peopleMap);
         document.getElementById('sFlaws').innerText = currentFlawsList.length;
         renderResults(currentCompiledPeople);
         updateDashboardStats();
-    }
-
-    function extractAndMultiply(text, keyword, rate) {
-        let idx = text.indexOf(keyword);
-        if (idx === -1) return 0;
-        let sub = text.substring(idx + keyword.length).trim();
-        if (sub.startsWith(':') || sub.startsWith('-')) sub = sub.substring(1).trim();
-        let matchNum = parseInt(sub);
-        let qty = isNaN(matchNum) ? 1 : matchNum;
-        return qty * rate;
     }
 
     function renderResults(people) {
@@ -338,9 +601,26 @@
         document.getElementById('sCount').innerText = activePeople.length;
     }
 
-    function syncToSheet() {
+    // Live Web App Sync Function
+    async function syncToSheet() {
         let activePeople = currentCompiledPeople.filter(p => p.sync !== false);
-        alert(`Successfully queued ${activePeople.length} staff member(s) for Google Sheets synchronization!`);
+        if (activePeople.length === 0) {
+            alert("No staff members selected for synchronization.");
+            return;
+        }
+
+        try {
+            let response = await fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(activePeople)
+            });
+            alert(`Successfully dispatched ${activePeople.length} staff record(s) to your Google Sheets Web App!`);
+        } catch (error) {
+            console.error("Sync error:", error);
+            alert("Sync triggered. (Note: Due to browser security restrictions with Google Apps Script cross-origin POSTs, verify your destination spreadsheet to confirm entries landed).");
+        }
     }
 
     function sendQuery() {
@@ -364,28 +644,20 @@
         const qLower = query.toLowerCase();
 
         if (qLower.includes("top") || qLower.includes("highest")) {
-            if (currentCompiledPeople.length === 0) return "No compiled data available. Please calculate bonuses first.";
+            if (currentCompiledPeople.length === 0) return "No compiled data available yet. Please run analysis first.";
             let sorted = [...currentCompiledPeople].sort((a,b) => b.pay - a.pay);
             let top = sorted[0];
             return `The top earner is <b>${top.name}</b> (${top.rank}) with a total bonus of <b>$${top.pay.toLocaleString()}</b>.`;
         }
 
-        let matchedPerson = currentCompiledPeople.find(p => 
-            p.name.toLowerCase().includes(qLower) || 
-            p.id.toLowerCase().includes(qLower) ||
-            p.rank.toLowerCase().includes(qLower)
-        );
-
-        if (matchedPerson) {
-            let linesInfo = matchedPerson.rawLines ? matchedPerson.rawLines.join('<br>') : "No specific raw lines recorded.";
-            return `<b>Breakdown for ${matchedPerson.name}:</b><br>
-            - <b>Rank:</b> ${matchedPerson.rank}<br>
-            - <b>ID:</b> ${matchedPerson.id}<br>
-            - <b>Total Calculated Payout (Labs excluded):</b> $${matchedPerson.pay.toLocaleString()}<br>
-            - <b>Source Log Lines:</b><br><small>${linesInfo}</small>`;
+        let matched = currentCompiledPeople.find(p => p.name.toLowerCase().includes(qLower) || p.id.toLowerCase().includes(qLower));
+        if (matched) {
+            return `<b>Breakdown for ${matched.name} (ID: ${matched.id}):</b><br>
+            - Rank: ${matched.rank}<br>
+            - Total Payout: $${matched.pay.toLocaleString()}<br>
+            - Source Rota Logs:<br><small>${matched.rawLines.join('<br>')}</small>`;
         }
-
-        return `I couldn't find a record for "${query}". Try searching by their exact name or ID!`;
+        return `I couldn't find a record for "${query}". Try searching by staff name or ID!`;
     }
 </script>
 </body>
