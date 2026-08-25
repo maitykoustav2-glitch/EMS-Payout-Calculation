@@ -661,6 +661,8 @@
 
 <script>
 const SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzgpnvDLqhLm0Mo24RDE7L2YOvw6jBTPluibYB4K0ic4ADIScCKoUdC1THBkGxLagRg_w/exec";
+// REPLACE THIS URL WITH YOUR ACTUAL GOOGLE SPREADSHEET URL
+const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/edit";
 
 function loadLocalImage(event) {
   const file = event.target.files[0];
@@ -1073,6 +1075,9 @@ async function syncToGoogleSheets() {
     return;
   }
 
+  // Opens the Google Sheet in a new browser tab immediately upon button click
+  window.open(GOOGLE_SHEET_URL, '_blank');
+
   const payload = currentCompiledPeople.map(p => ({
     rank: p.rank || "N/A",
     name: p.name,
@@ -1091,7 +1096,7 @@ async function syncToGoogleSheets() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    alert("✅ Payroll successfully streamed to Google Sheet!");
+    console.log("✅ Payroll successfully streamed to Google Sheet!");
   } catch (err) {
     alert("❌ Error sending data to Google Sheet.");
     console.error(err);
